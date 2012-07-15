@@ -1,0 +1,142 @@
+==13418== Helgrind, a thread error detector
+==13418== Copyright (C) 2007-2011, and GNU GPL'd, by OpenWorks LLP et al.
+==13418== Using Valgrind-3.7.0 and LibVEX; rerun with -h for copyright info
+==13418== Command: ./test
+==13418== Parent PID: 8192
+==13418== 
+==13418== ---Thread-Announcement------------------------------------------
+==13418== 
+==13418== Thread #1 is the program's root thread
+==13418== 
+==13418== ---Thread-Announcement------------------------------------------
+==13418== 
+==13418== Thread #3 was created
+==13418==    at 0x44A74C8: clone (in /lib/libc-2.15.so)
+==13418== 
+==13418== ----------------------------------------------------------------
+==13418== 
+==13418== Lock at 0x45BB5E8 was first observed
+==13418==    at 0x402D0EA: pthread_mutex_init (in /usr/lib/valgrind/vgpreload_helgrind-x86-linux.so)
+==13418==    by 0x40AE247: SDL_CreateMutex (in /usr/lib/libSDL-1.2.so.0.11.4)
+==13418==    by 0x4060459: ??? (in /usr/lib/libSDL-1.2.so.0.11.4)
+==13418==    by 0x4084B2D: SDL_VideoInit (in /usr/lib/libSDL-1.2.so.0.11.4)
+==13418==    by 0x405A5D1: SDL_InitSubSystem (in /usr/lib/libSDL-1.2.so.0.11.4)
+==13418==    by 0x804A3EB: RuPPAT::RuPPAT(int, int, int, unsigned int) (RuPPAT.cpp:26)
+==13418==    by 0x8049BCD: Game::Game() (Game.cpp:8)
+==13418==    by 0x80498CC: __static_initialization_and_destruction_0(int, int) (main.cpp:24)
+==13418==    by 0x8049921: _GLOBAL__sub_I_selection (main.cpp:126)
+==13418==    by 0x804E2A1: __libc_csu_init (in /home/morgan/Dropbox/Projects/shipsRework2/test)
+==13418==    by 0x43D8369: (below main) (in /lib/libc-2.15.so)
+==13418== 
+==13418== Possible data race during write of size 1 at 0x8051328 by thread #1
+==13418== Locks held: 1, at address 0x45BB5E8
+==13418==    at 0x40605E5: SDL_PeepEvents (in /usr/lib/libSDL-1.2.so.0.11.4)
+==13418==    by 0x4060907: SDL_PollEvent (in /usr/lib/libSDL-1.2.so.0.11.4)
+==13418==    by 0x8049C66: Game::run(std::string, std::string) (Game.cpp:46)
+==13418==    by 0x8049468: main (main.cpp:39)
+==13418== 
+==13418== This conflicts with a previous read of size 1 by thread #3
+==13418== Locks held: none
+==13418==    at 0x804B7C7: RuPPAT::RK4_parse() (RuPPAT.cpp:609)
+==13418==    by 0x804BB54: RuPPAT::RK4_parse_helper(void*) (RuPPAT.h:111)
+==13418==    by 0x402CF65: ??? (in /usr/lib/valgrind/vgpreload_helgrind-x86-linux.so)
+==13418==    by 0x415DCE7: start_thread (in /lib/libpthread-2.15.so)
+==13418==    by 0x44A74DD: clone (in /lib/libc-2.15.so)
+==13418== 
+==13418== ----------------------------------------------------------------
+==13418== 
+==13418== Lock at 0x45BB5E8 was first observed
+==13418==    at 0x402D0EA: pthread_mutex_init (in /usr/lib/valgrind/vgpreload_helgrind-x86-linux.so)
+==13418==    by 0x40AE247: SDL_CreateMutex (in /usr/lib/libSDL-1.2.so.0.11.4)
+==13418==    by 0x4060459: ??? (in /usr/lib/libSDL-1.2.so.0.11.4)
+==13418==    by 0x4084B2D: SDL_VideoInit (in /usr/lib/libSDL-1.2.so.0.11.4)
+==13418==    by 0x405A5D1: SDL_InitSubSystem (in /usr/lib/libSDL-1.2.so.0.11.4)
+==13418==    by 0x804A3EB: RuPPAT::RuPPAT(int, int, int, unsigned int) (RuPPAT.cpp:26)
+==13418==    by 0x8049BCD: Game::Game() (Game.cpp:8)
+==13418==    by 0x80498CC: __static_initialization_and_destruction_0(int, int) (main.cpp:24)
+==13418==    by 0x8049921: _GLOBAL__sub_I_selection (main.cpp:126)
+==13418==    by 0x804E2A1: __libc_csu_init (in /home/morgan/Dropbox/Projects/shipsRework2/test)
+==13418==    by 0x43D8369: (below main) (in /lib/libc-2.15.so)
+==13418== 
+==13418== Possible data race during read of size 1 at 0x8051328 by thread #3
+==13418== Locks held: none
+==13418==    at 0x804B7C7: RuPPAT::RK4_parse() (RuPPAT.cpp:609)
+==13418==    by 0x804BB54: RuPPAT::RK4_parse_helper(void*) (RuPPAT.h:111)
+==13418==    by 0x402CF65: ??? (in /usr/lib/valgrind/vgpreload_helgrind-x86-linux.so)
+==13418==    by 0x415DCE7: start_thread (in /lib/libpthread-2.15.so)
+==13418==    by 0x44A74DD: clone (in /lib/libc-2.15.so)
+==13418== 
+==13418== This conflicts with a previous write of size 1 by thread #1
+==13418== Locks held: 1, at address 0x45BB5E8
+==13418==    at 0x40605E5: SDL_PeepEvents (in /usr/lib/libSDL-1.2.so.0.11.4)
+==13418==    by 0x4060907: SDL_PollEvent (in /usr/lib/libSDL-1.2.so.0.11.4)
+==13418==    by 0x8049C66: Game::run(std::string, std::string) (Game.cpp:46)
+==13418==    by 0x8049468: main (main.cpp:39)
+==13418== 
+==13418== ---Thread-Announcement------------------------------------------
+==13418== 
+==13418== Thread #2 was created
+==13418==    at 0x44A74C8: clone (in /lib/libc-2.15.so)
+==13418== 
+==13418== ----------------------------------------------------------------
+==13418== 
+==13418== Possible data race during write of size 1 at 0x8051330 by thread #1
+==13418== Locks held: none
+==13418==    at 0x8049D14: Game::handleEvents(Event_desc&) (Game.cpp:76)
+==13418==    by 0x8049C66: Game::run(std::string, std::string) (Game.cpp:46)
+==13418==    by 0x8049468: main (main.cpp:39)
+==13418== 
+==13418== This conflicts with a previous read of size 1 by thread #2
+==13418== Locks held: none
+==13418==    at 0x804B8AA: RuPPAT::runPPAT(bool*, Event_desc&) (RuPPAT.cpp:671)
+==13418==    by 0x8049B88: runPPAT_helper(void*) (RuPPAT.h:161)
+==13418==    by 0x402CF65: ??? (in /usr/lib/valgrind/vgpreload_helgrind-x86-linux.so)
+==13418==    by 0x415DCE7: start_thread (in /lib/libpthread-2.15.so)
+==13418==    by 0x44A74DD: clone (in /lib/libc-2.15.so)
+==13418== 
+==13418== ----------------------------------------------------------------
+==13418== 
+==13418== Possible data race during read of size 1 at 0x8051330 by thread #2
+==13418== Locks held: none
+==13418==    at 0x804B8AA: RuPPAT::runPPAT(bool*, Event_desc&) (RuPPAT.cpp:671)
+==13418==    by 0x8049B88: runPPAT_helper(void*) (RuPPAT.h:161)
+==13418==    by 0x402CF65: ??? (in /usr/lib/valgrind/vgpreload_helgrind-x86-linux.so)
+==13418==    by 0x415DCE7: start_thread (in /lib/libpthread-2.15.so)
+==13418==    by 0x44A74DD: clone (in /lib/libc-2.15.so)
+==13418== 
+==13418== This conflicts with a previous write of size 1 by thread #1
+==13418== Locks held: none
+==13418==    at 0x8049D14: Game::handleEvents(Event_desc&) (Game.cpp:76)
+==13418==    by 0x8049C66: Game::run(std::string, std::string) (Game.cpp:46)
+==13418==    by 0x8049468: main (main.cpp:39)
+==13418== 
+==13418== ----------------------------------------------------------------
+==13418== 
+==13418== Lock at 0x45BB5E8 was first observed
+==13418==    at 0x402D0EA: pthread_mutex_init (in /usr/lib/valgrind/vgpreload_helgrind-x86-linux.so)
+==13418==    by 0x40AE247: SDL_CreateMutex (in /usr/lib/libSDL-1.2.so.0.11.4)
+==13418==    by 0x4060459: ??? (in /usr/lib/libSDL-1.2.so.0.11.4)
+==13418==    by 0x4084B2D: SDL_VideoInit (in /usr/lib/libSDL-1.2.so.0.11.4)
+==13418==    by 0x405A5D1: SDL_InitSubSystem (in /usr/lib/libSDL-1.2.so.0.11.4)
+==13418==    by 0x804A3EB: RuPPAT::RuPPAT(int, int, int, unsigned int) (RuPPAT.cpp:26)
+==13418==    by 0x8049BCD: Game::Game() (Game.cpp:8)
+==13418==    by 0x80498CC: __static_initialization_and_destruction_0(int, int) (main.cpp:24)
+==13418==    by 0x8049921: _GLOBAL__sub_I_selection (main.cpp:126)
+==13418==    by 0x804E2A1: __libc_csu_init (in /home/morgan/Dropbox/Projects/shipsRework2/test)
+==13418==    by 0x43D8369: (below main) (in /lib/libc-2.15.so)
+==13418== 
+==13418== Possible data race during write of size 1 at 0x8051328 by thread #2
+==13418== Locks held: none
+==13418==    at 0x804B8B7: RuPPAT::runPPAT(bool*, Event_desc&) (RuPPAT.cpp:688)
+==13418==    by 0x8049B88: runPPAT_helper(void*) (RuPPAT.h:161)
+==13418==    by 0x402CF65: ??? (in /usr/lib/valgrind/vgpreload_helgrind-x86-linux.so)
+==13418==    by 0x415DCE7: start_thread (in /lib/libpthread-2.15.so)
+==13418==    by 0x44A74DD: clone (in /lib/libc-2.15.so)
+==13418== 
+==13418== This conflicts with a previous write of size 1 by thread #1
+==13418== Locks held: 1, at address 0x45BB5E8
+==13418==    at 0x40605E5: SDL_PeepEvents (in /usr/lib/libSDL-1.2.so.0.11.4)
+==13418==    by 0x4060907: SDL_PollEvent (in /usr/lib/libSDL-1.2.so.0.11.4)
+==13418==    by 0x8049C66: Game::run(std::string, std::string) (Game.cpp:46)
+==13418==    by 0x8049468: main (main.cpp:39)
+==13418== 
