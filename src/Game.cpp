@@ -122,22 +122,22 @@ void Game :: handleEvents(Event_desc &mainEvents)
 			if(event.key.keysym.sym == SDLK_SPACE)
 				mainEvents.space = true;
 
-			if(event.key.keysym.sym == SDLK_UP || event.key.keysym.sym == SDLK_w)
+			if(event.key.keysym.sym == SDLK_UP || event.key.keysym.sym == SDLK_w || event.key.keysym.sym == SDLK_k)
 				{
 						y-=2;
 					k_UP=true;
 				}
-			if(event.key.keysym.sym == SDLK_DOWN || event.key.keysym.sym == SDLK_s)
+			if(event.key.keysym.sym == SDLK_DOWN || event.key.keysym.sym == SDLK_s || event.key.keysym.sym == SDLK_j)
 				{
 					y+=2;
 					k_DOWN=true;
 				}
-			if(event.key.keysym.sym == SDLK_LEFT || event.key.keysym.sym == SDLK_a )
+			if(event.key.keysym.sym == SDLK_LEFT || event.key.keysym.sym == SDLK_a || event.key.keysym.sym == SDLK_h)
 				{
 					x-=2;
 					k_LEFT=true;
 				}
-			if(event.key.keysym.sym == SDLK_RIGHT || event.key.keysym.sym == SDLK_d)
+			if(event.key.keysym.sym == SDLK_RIGHT || event.key.keysym.sym == SDLK_d || event.key.keysym.sym == SDLK_l)
 				{				
 					x+=2;
 					k_RIGHT=true;
@@ -155,22 +155,22 @@ void Game :: handleEvents(Event_desc &mainEvents)
 			if(event.key.keysym.sym == SDLK_SPACE )
 				mainEvents.space = false;
 
-			if(event.key.keysym.sym == SDLK_UP || event.key.keysym.sym == SDLK_w)
+			if(event.key.keysym.sym == SDLK_UP || event.key.keysym.sym == SDLK_k)
 				{
 			
 					k_UP=false;
 				}
-			if(event.key.keysym.sym == SDLK_DOWN || event.key.keysym.sym == SDLK_s)
+			if(event.key.keysym.sym == SDLK_DOWN || event.key.keysym.sym == SDLK_s || event.key.keysym.sym == SDLK_j)
 				{
 			
 					k_DOWN=false;
 				}
-			if(event.key.keysym.sym == SDLK_LEFT || event.key.keysym.sym == SDLK_a)
+			if(event.key.keysym.sym == SDLK_LEFT || event.key.keysym.sym == SDLK_a || event.key.keysym.sym == SDLK_h)
 				{
 	
 					k_LEFT=false;
 				}
-			if(event.key.keysym.sym == SDLK_RIGHT || event.key.keysym.sym == SDLK_d)
+			if(event.key.keysym.sym == SDLK_RIGHT || event.key.keysym.sym == SDLK_d || event.key.keysym.sym == SDLK_l)
 				{				
 
 					k_RIGHT=false;
