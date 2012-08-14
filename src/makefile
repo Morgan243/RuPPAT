@@ -1,37 +1,46 @@
+####################################################################################
+#This makefile builds the RuPPAT engine and a series of small interactive test games
+#
+#Author: Morgan Stuart
+#
+##################################################################################
+
 
 CFLAGS=-lm -lSDL -lSDL_image -lSDL_gfx -lm -fopenmp -lpthread -lX11 -ggdb
-
+COMP=g++
+BUILD_DIR=../build/
+BUILD_OUT=-o $(BUILD_DIR)
 all: test
 
 test: main.o Render.o Game.o RuPPAT.o PhysFuncs.o Descriptors.o Player.o Object.o  
-	g++ main.o Render.o Game.o RuPPAT.o PhysFuncs.h Descriptors.h Player.o Object.o $(CFLAGS) -o test
+	$(COMP) main.o Render.o Game.o RuPPAT.o PhysFuncs.h Descriptors.h Player.o Object.o $(CFLAGS) $(BUILD_OUT)test && mv *.o *.gch $(BUILD_DIR) && ln -s $(BUILD_DIR)test ./test
 
 main.o: main.cpp
-	g++ -c main.cpp $(CFLAGS)
+	$(COMP) -c main.cpp $(CFLAGS)
 
 Render.o: Render.h Render.cpp
-	g++ -c Render.h Render.cpp $(CFLAGS)
+	$(COMP) -c Render.h Render.cpp $(CFLAGS) 
 
 Game.o: Game.h Game.cpp
-	g++ -c Game.h Game.cpp $(CFLAGS)
+	$(COMP) -c Game.h Game.cpp $(CFLAGS)
 
 RuPPAT.o: RuPPAT.cpp RuPPAT.h
-	g++ -c RuPPAT.h RuPPAT.cpp $(CFLAGS)
+	$(COMP) -c RuPPAT.h RuPPAT.cpp $(CFLAGS)
 
 PhysFuncs.o: PhysFuncs.h
-	g++ -c PhysFuncs.h $(CFLAGS)
+	$(COMP) -c PhysFuncs.h $(CFLAGS)
 
 Descriptors.o: Descriptors.h
-	g++ -c Descriptors.h $(CFLAGS)
+	$(COMP) -c Descriptors.h $(CFLAGS)
 
 Player.o: Player.h Player.cpp
-	g++ -c Player.h Player.cpp $(CFLAGS)
+	$(COMP) -c Player.h Player.cpp $(CFLAGS)
 
 Object.o: Object.h Object.cpp
-	g++ -c Object.h Object.cpp $(CFLAGS)
+	$(COMP) -c Object.h Object.cpp $(CFLAGS)
 
 clean: 
-	rm *.o test
+	rm $(BUILD_DIR)* test 
 
 
 #test : main.cpp Render.h Render.cpp Game.h Game.cpp RuPPAT.cpp RuPPAT.h  PhysFuncs.h Descriptors.h Player.cpp Player.h Object.h Object.cpp
