@@ -4,7 +4,8 @@
 
 //secondary-CONSTRUCTOR: leave many attributes statically defined by literals,
 //good for any quick tests
-Player :: Player(string sprite_path, int num_rotations, int startingAngle)
+Player :: Player(string sprite_path, int num_rotations, int startingAngle) 
+	: Object(sprite_path, 200,200,1000)
 {
 	currentAngle_index = startingAngle;	
 
@@ -48,7 +49,8 @@ Player :: Player(string sprite_path, int num_rotations, int startingAngle)
 
 //Constructor with more options
 Player :: Player(string sprite_path, int num_rotations, int startingAngle,
-		float maxaccel, int startX, int startY)
+		float maxaccel, int startX, int startY) 
+		: Object(sprite_path,startX,startY,1000)
 {
 	currentAngle_index = startingAngle;	
 

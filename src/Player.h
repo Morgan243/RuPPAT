@@ -10,17 +10,19 @@
 #include "math.h"
 
 #include "Descriptors.h"
+#include "Object.h"
 
 #include <vector>
 #include <iostream>
 
 using namespace std;
 
-class Player
+class Player : public Object
 {
 	public:
-		Player(string sprite_path, int num_rotations, int startingAngle);
-		Player(string sprite_path, int num_rotations, int startingAngle,
+		explicit Player(string sprite_path, int num_rotations, int startingAngle);
+
+		explicit Player(string sprite_path, int num_rotations, int startingAngle,
 					float maxaccel, int startX, int startY);
 		~Player();
 

@@ -1,5 +1,6 @@
-//Non player objects and stuff
+//Non player objects and such
 //
+//This is a parent class
 
 #include "SDL/SDL.h"
 #include "SDL/SDL_gfxPrimitives.h"
@@ -12,12 +13,16 @@
 #include <vector>
 #include <iostream>
 
+#ifndef OBJECT_H
+#define OBJECT_H
+
 using namespace std;
 
 class Object
 {
 	public:
-		Object(string sprite_path, int start_x, int start_y, int start_mass);
+
+	explicit Object(string sprite_path, int start_x, int start_y, int start_mass);
 		~Object();
 
 
@@ -41,3 +46,4 @@ class Object
 		Mass_desc descriptor;
 		SDL_Surface *sprite;	
 };
+#endif
