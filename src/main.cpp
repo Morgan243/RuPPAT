@@ -19,25 +19,27 @@ using namespace std;
 	string selection = "gwell";
 	string option;
 
+	//default resolution
 	int WIDTH_cl = 1024;
 	int HEIGHT_cl = 768;
 
 
 //let X display know we are going to have multiple threads
+//working on the buffer
 int x_o = XInitThreads();
 
 //stack is too small for this honey
 //most init outside main to use heap instead
 Game *game;
 
-//funciton handles command line arguments
+//handle command line arguments
 int handleInput(int argc,char *argv[]);
 
 
 
-/*\\\\\\\\\\\\\\\\\\\\\\\\\
- * ||||||||||||||||||||||||
- * ENTRY POINT
+/*\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+ * ||||||||||||||||||||||||||||||||
+ * `````````ENTRY POINT````````````
  */
 int main(int argc, char *argv[])
 {
@@ -48,6 +50,7 @@ int main(int argc, char *argv[])
 	//handle command line args, exit if -help used
 	if(handleInput(argc,argv)){return 0;}
 
+	//construct a new game, this only initiates vars and such
 	game = new Game(WIDTH_cl, HEIGHT_cl);
 	
 	//start up the game!!
@@ -65,20 +68,20 @@ int handleInput(int argc,char *argv[])
 		
 	if((strcmp(argv[i],"-help")==0)||(strcmp(argv[i],"-h")==0))
 		{
-cout << "\n\n\t______RuPAP Engine Demo______"<<endl;
-cout<<"\t\tMorgan Stuart\n"<< endl;
-cout << "  run gravity well demo: '-gwell'"<< endl;
-cout << "          run fire demo: '-fire'"<< endl;
-cout << "run particle orbit demo: '-porbit'"<< endl;
+			cout << "\n\n\t______RuPAP Engine Demo______"<<endl;
+			cout<<"\t\tMorgan Stuart\n"<< endl;
+			cout << "  run gravity well demo: '-gwell'"<< endl;
+			cout << "          run fire demo: '-fire'"<< endl;
+			cout << "run particle orbit demo: '-porbit'"<< endl;
 
-cout << "                print this menu: '-help'\n\n"<< endl;
-		k=1;
+			cout << "                print this menu: '-help'\n\n"<< endl;
+			k=1;
 		}
 
 
 	if((strcmp(argv[i],"-file")==0)||(strcmp(argv[i],"-f")==0))
 		{
-	//	filename = argv[i+1];	
+		//filename = argv[i+1];	
 		}
 
 		if(strcmp(argv[i],"-height")==0)
@@ -108,9 +111,7 @@ cout << "                print this menu: '-help'\n\n"<< endl;
 			selection = "boxin";
 		}
 
-
-//unimplemented!	
-
+		//unimplemented!	
 		if(strcmp(argv[i],"-fire")==0)
 		{
 			selection = "fire";
@@ -125,8 +126,6 @@ cout << "                print this menu: '-help'\n\n"<< endl;
 		{
 			selection = "hose";
 		}
-
-
 
 		if(strcmp(argv[i],"-explode")==0)
 		{

@@ -1,7 +1,11 @@
+//generic representation for interacting sprites (moving/alive/etc)
+
 #include "Object.h"
+
 
 Object :: Object(string sprite_path, int start_x, int start_y, int start_mass)
 {
+	//load the sprite from sprite_path
 	SDL_Surface *tempSprite, *tempSpriteOpt;
 
 		tempSprite = IMG_Load((char *)sprite_path.c_str());
@@ -10,9 +14,11 @@ Object :: Object(string sprite_path, int start_x, int start_y, int start_mass)
 
 		sprite = tempSpriteOpt;
 
+	//set x and y
 	descriptor.xLoc = (float)start_x;
 	descriptor.yLoc = (float)start_y;
 
+	//set mass
 	descriptor.mass = start_mass;
 		
 }

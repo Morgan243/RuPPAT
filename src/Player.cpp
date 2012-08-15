@@ -20,6 +20,7 @@ Player :: Player(string sprite_path, int num_rotations, int startingAngle)
 	
 	SDL_Surface *tempSprite, *tempSpriteOpt;
 
+  //create all the rotated version of sprite (rotate loaded, save, repeat)
   for(int i = 0; i< num_rotations;i++)
 	{
 		tempSprite = IMG_Load((char *)sprite_path.c_str());
@@ -45,7 +46,7 @@ Player :: Player(string sprite_path, int num_rotations, int startingAngle)
 
 }
 
-
+//Constructor with more options
 Player :: Player(string sprite_path, int num_rotations, int startingAngle,
 		float maxaccel, int startX, int startY)
 {
@@ -69,8 +70,6 @@ Player :: Player(string sprite_path, int num_rotations, int startingAngle,
 	
 		tempSpriteOpt = SDL_DisplayFormatAlpha(tempSprite);
 
-//		SDL_SetColorKey(tempSpriteOpt,SDL_SRCCOLORKEY ,0x00FF00);
-
 		rotations.push_back(rotozoomSurface(tempSpriteOpt, 
 							i*DEGREE_INCREMENT,
 							 1.0, 0));
@@ -89,7 +88,7 @@ Player :: Player(string sprite_path, int num_rotations, int startingAngle,
 
 }
 
-
+//Deconstructor 
 Player :: ~Player()
 {
 

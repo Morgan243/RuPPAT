@@ -37,12 +37,13 @@ int x, y, up_count, down_count, left_count, right_count,
 	 key_count_limit=0, defaultTurnAmnt=4, fastTurn=3,
 		w_count=0, s_count=0, a_count=0, d_count=0;
 
-
+//keep track of button presses
 bool k_UP=false, k_DOWN=false, k_LEFT=false, k_RIGHT=false,
 	k_lCTRL=false, k_lMOUSE;
 
-
+//mouse position
 int mouse_x, mouse_y;
+
 ///////////////////////////////////////////////////
 //|||||||||
 //RUN the game!
@@ -71,6 +72,8 @@ void Game :: run(string selection, string option)
 
 	int game_rate = 60;
 	int interval = 1000/game_rate;
+	
+	//get the tick# when events should be handled
 	int nextTick = SDL_GetTicks() + interval;
 
 	//just keep checking events until done
@@ -78,16 +81,17 @@ void Game :: run(string selection, string option)
 	{
 		handleEvents(mainEvents);
 
-		if(nextTick > SDL_GetTicks())SDL_Delay(nextTick - SDL_GetTicks());
+		//should the game wait to check events	
+		if(nextTick > SDL_GetTicks())
+			SDL_Delay(nextTick - SDL_GetTicks());
 	
-	nextTick = SDL_GetTicks() + interval;	
+		nextTick = SDL_GetTicks() + interval;	
 
 	}
 	
 	//joining 
 	cout<<"joining RuPPAT in GAME"<<endl;
 	pthread_join(RuPPAT_th,NULL);
-
 }
 
 
@@ -95,6 +99,7 @@ void Game :: run(string selection, string option)
 //all other threads only poll for values relevent to them
 void Game :: handleEvents(Event_desc &mainEvents)
 {
+	//keep working while events exist
 	while(SDL_PollEvent(&event))
 	{
 		//if evenet was quit, finsh everything up
@@ -108,69 +113,103 @@ void Game :: handleEvents(Event_desc &mainEvents)
 			cout<<"keydown!"<<endl;
 
 
+			//LEFT CONTROL
 			if(event.key.keysym.sym == SDLK_LCTRL)
 				{
 					k_lCTRL = true;
 				}
 
+			//ESCAPE
 			if(event.key.keysym.sym == SDLK_ESCAPE)
 				{
 					done = true;
 					cout<<"doneskies!!"<<endl;
 				}
 
+			//SPACE
 			if(event.key.keysym.sym == SDLK_SPACE)
 				mainEvents.space = true;
 
-			if(event.key.keysym.sym == SDLK_UP || event.key.keysym.sym == SDLK_w || event.key.keysym.sym == SDLK_k)
+			//UP, W, K
+			if(event.key.keysym.sym == SDLK_UP 
+				|| event.key.keysym.sym == SDLK_w 
+				|| event.key.keysym.sym == SDLK_k)
 				{
-						y-=2;
+					y-=2;
 					k_UP=true;
 				}
-			if(event.key.keysym.sym == SDLK_DOWN || event.key.keysym.sym == SDLK_s || event.key.keysym.sym == SDLK_j)
+
+			//DOWN,S,J
+			if(event.key.keysym.sym == SDLK_DOWN 
+				|| event.key.keysym.sym == SDLK_s 
+				|| event.key.keysym.sym == SDLK_j)
 				{
 					y+=2;
 					k_DOWN=true;
 				}
-			if(event.key.keysym.sym == SDLK_LEFT || event.key.keysym.sym == SDLK_a || event.key.keysym.sym == SDLK_h)
+
+			//LEFT,A,H
+			if(event.key.keysym.sym == SDLK_LEFT 
+				|| event.key.keysym.sym == SDLK_a 
+				|| event.key.keysym.sym == SDLK_h)
 				{
 					x-=2;
 					k_LEFT=true;
 				}
-			if(event.key.keysym.sym == SDLK_RIGHT || event.key.keysym.sym == SDLK_d || event.key.keysym.sym == SDLK_l)
+
+			//RIGHT,D,L
+			if(event.key.keysym.sym == SDLK_RIGHT 
+				|| event.key.keysym.sym == SDLK_d 
+				|| event.key.keysym.sym == SDLK_l)
 				{				
 					x+=2;
 					k_RIGHT=true;
 				}
 			}
-		//if a key was released
+		//if a key was RELEASED
 		if(event.type == SDL_KEYUP)
 			{
 
+			//LEFT CONTROL
 			if(event.key.keysym.sym == SDLK_LCTRL )
 			{
 				k_lCTRL = false;
 			}
 
+			//SPACE
 			if(event.key.keysym.sym == SDLK_SPACE )
 				mainEvents.space = false;
 
-			if(event.key.keysym.sym == SDLK_UP || event.key.keysym.sym == SDLK_k)
+			//UP, K
+			if(event.key.keysym.sym == SDLK_UP 
+				|| event.key.keysym.sym == SDLK_k)
 				{
 			
 					k_UP=false;
 				}
-			if(event.key.keysym.sym == SDLK_DOWN || event.key.keysym.sym == SDLK_s || event.key.keysym.sym == SDLK_j)
+
+			//DOWN, S, J
+			if(event.key.keysym.sym == SDLK_DOWN 
+				|| event.key.keysym.sym == SDLK_s 
+				|| event.key.keysym.sym == SDLK_j)
 				{
 			
 					k_DOWN=false;
 				}
-			if(event.key.keysym.sym == SDLK_LEFT || event.key.keysym.sym == SDLK_a || event.key.keysym.sym == SDLK_h)
+
+			//LEFT,A,H
+			if(event.key.keysym.sym == SDLK_LEFT 
+				|| event.key.keysym.sym == SDLK_a 
+				|| event.key.keysym.sym == SDLK_h)
 				{
 	
 					k_LEFT=false;
 				}
-			if(event.key.keysym.sym == SDLK_RIGHT || event.key.keysym.sym == SDLK_d || event.key.keysym.sym == SDLK_l)
+
+			//RIGHT,D,L
+			if(event.key.keysym.sym == SDLK_RIGHT 
+				|| event.key.keysym.sym == SDLK_d 
+				|| event.key.keysym.sym == SDLK_l)
 				{				
 
 					k_RIGHT=false;
@@ -182,14 +221,12 @@ void Game :: handleEvents(Event_desc &mainEvents)
 		//	HANDLE LONG PRESSES
 		if(k_lCTRL)
 			{
-				//turn to position
-			//	printf("would be turing towards: %d,%d",
-			//	event.motion.x, event.motion.y);
-					
-				//mouse button one is pressed, store location of mouse in two ints	
+				//mouse button one is pressed, store location of mouse in two ints
 				if(SDL_BUTTON(1)&SDL_GetMouseState(&mouse_x, &mouse_y))
 				{
-				engine->turnPlayerToCoord(0, mouse_x, mouse_y, defaultTurnAmnt);	
+				engine->turnPlayerToCoord(0, mouse_x, mouse_y, defaultTurnAmnt);
+
+					//check if its time to accelerate
 					if(up_count>key_count_limit)
 						{
 						engine->accelPlayer(0,true);
@@ -201,20 +238,23 @@ void Game :: handleEvents(Event_desc &mainEvents)
 						}
 				}
 				else
-				engine->turnPlayerToCoord(0, mouse_x, mouse_y, defaultTurnAmnt);	
+				//otherwise, left click is pressed, so just turn the player
+				engine->turnPlayerToCoord(0, mouse_x, mouse_y, defaultTurnAmnt);
+
 			}
 
-		//handle counting the time of the mouse press
+		//handle counting the time of the key presses
 		//might need to change to make slower sysems more responsive 
-		//(use ticks or someotherreal workld time to garuntee the "feel" of user IO)
+		//(use ticks or someotherreal world time to garuntee the "feel" of user IO)
 		if(k_UP)
 			{
+			//reached desired time between accels, so accel and reset counter
 			if(up_count>key_count_limit)
 				{
 				engine->accelPlayer(0,true);
 				up_count=0;
 				}
-			else
+			else//otherwise, just increment the count
 				{
 				up_count++;
 				}			
@@ -265,22 +305,22 @@ void Game :: handleEvents(Event_desc &mainEvents)
 //to initial/default values
 void Game :: initEvent(Event_desc &initMe)
 {
-	initMe.space =false;
-	initMe.w =false;
-	initMe.a =false;
-	initMe.s =false;
-	initMe.d =false;
-	initMe.up =false;
-	initMe.left =false;
-	initMe.down =false;
-	initMe.right =false;
-	initMe.enter =false;
-	initMe.rightCtrl =false;
-	initMe.leftCtrl =false;
+	initMe.space = false;
+	initMe.w = false;
+	initMe.a = false;
+	initMe.s = false;
+	initMe.d = false;
+	initMe.up = false;
+	initMe.left = false;
+	initMe.down = false;
+	initMe.right = false;
+	initMe.enter = false;
+	initMe.rightCtrl = false;
+	initMe.leftCtrl = false;
 }
 
-
-void Game :: rotateSpriteToCoor(int p_ID,int x, int y, int rate)
+//interface provided for whatever contaings the game object
+void Game :: rotateSpriteToCoor(int p_ID, int x, int y, int rate)
 {
 //	printf("Curren ship angle: %f", getAngle());
 	engine->turnPlayerToCoord( p_ID, x, y, rate);
