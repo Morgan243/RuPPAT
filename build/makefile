@@ -27,6 +27,7 @@ Game.o: $(SOURCE_DIR)Game.h $(SOURCE_DIR)Game.cpp
 	$(COMP) -c $(SOURCE_DIR)Game.h $(SOURCE_DIR)Game.cpp $(CFLAGS) 
 
 RuPPAT.o: $(SOURCE_DIR)RuPPAT.cpp $(SOURCE_DIR)RuPPAT.h
+	$(COMP) -c $(SOURCE_DIR)RuPPAT.h $(SOURCE_DIR)RuPPAT.cpp $(CFLAGS)
 
 PhysFuncs.o: $(SOURCE_DIR)PhysFuncs.h
 	$(COMP) -c $(SOURCE_DIR)PhysFuncs.h $(CFLAGS) 
