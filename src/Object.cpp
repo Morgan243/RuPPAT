@@ -4,7 +4,7 @@
 
 
 Object :: Object(string sprite_path, int start_x, int start_y, int start_mass)
-{
+{//{{{
 	//load the sprite from sprite_path
 	SDL_Surface *tempSprite, *tempSpriteOpt;
 
@@ -15,13 +15,13 @@ Object :: Object(string sprite_path, int start_x, int start_y, int start_mass)
 		sprite = tempSpriteOpt;
 
 	//set x and y
-	descriptor.xLoc = (float)start_x;
-	descriptor.yLoc = (float)start_y;
+	descriptor.x = (float)start_x;
+	descriptor.y = (float)start_y;
 
 	//set mass
 	descriptor.mass = start_mass;
 		
-}
+}//}}}
 
 Object :: ~Object()
 {
@@ -31,8 +31,13 @@ Object :: ~Object()
 
 Mass_desc Object :: getDesc()
 {
-	return descriptor;
+	Mass_desc mass;
+	mass.mass = descriptor.mass;
+	mass.xLoc = descriptor.x;
+	mass.yLoc = descriptor.y;
+	return mass; 
 }
+
 
 
 SDL_Surface * Object :: getSprite()
@@ -43,10 +48,44 @@ SDL_Surface * Object :: getSprite()
 
 int Object :: getX()
 {
-	return descriptor.xLoc;
+	return descriptor.x;
 }
 
 int Object :: getY()
 {
-	return descriptor.yLoc;
+	return descriptor.y;
 }
+
+float Object :: getXvel()
+{
+	return descriptor.xVel;
+}
+
+float Object :: getYvel()
+{
+	return descriptor.yVel;
+}
+
+float Object :: getXacc()
+{
+	return descriptor.xAcc;
+}
+
+float Object :: getYacc()
+{
+	return descriptor.yAcc;
+
+
+}
+
+
+//void Object :: accelForward()
+//{
+//
+//
+//}
+//
+//void Object :: accelBackward()
+//{
+//
+//}

@@ -1,4 +1,10 @@
-//Non player objects and such
+//Object is the base class for moveable Entities
+// 	an object doesnt necessarily have a sprite.
+// 	you must derive from object and compose a 
+// 	class with the Sprite class in it
+//
+// 	Thus, Object can be used for invisible masses
+// 	and other effects
 //
 //This is a parent class
 
@@ -9,6 +15,7 @@
 #include "math.h"
 
 #include "Descriptors.h"
+#include "Sprite.h"
 
 #include <vector>
 #include <iostream>
@@ -25,8 +32,9 @@ class Object
 	explicit Object(string sprite_path, int start_x, int start_y, int start_mass);
 		~Object();
 
-
+		//for compatability, gets a mass desc out of Entity_desc
 		Mass_desc getDesc();
+		Entity_desc getDescriptor();
 
 		SDL_Surface *getSprite();
 
@@ -34,16 +42,18 @@ class Object
 		int getX();
 		int getY();
 
-	private:
+		float getXvel();
+		float getYvel();
 
-		float x, y;
-		float xVel, yVel;//velocity vector
-		float xAcc, yAcc;//acceleration vector
-		int xGacc,yGacc; //grav acceleration
-	
-		int mass; //mass	
+		float getXacc();
+		float getYacc();
 
-		Mass_desc descriptor;
+		void accelForward();	
+		void accelBackward();
+
+	protected:
+
+		Entity_desc descriptor;
 		SDL_Surface *sprite;	
 };
 #endif

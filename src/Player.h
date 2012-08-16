@@ -11,12 +11,14 @@
 
 #include "Descriptors.h"
 #include "Object.h"
+#include "Sprite.h"
 
 #include <vector>
 #include <iostream>
 
 using namespace std;
 
+//Player inherits from object
 class Player : public Object
 {
 	public:
@@ -52,15 +54,6 @@ class Player : public Object
 		void setDescriptor(Entity_desc new_desc);
 		Entity_desc getDescriptor();
 
-		int getX();
-		int getY();
-
-		float getXvel();
-		float getYvel();
-
-		float getXacc();
-		float getYacc();
-
 		void accelForward();	
 		void accelBackward();
 
@@ -70,23 +63,17 @@ class Player : public Object
 
 		float lastErr;
 		float rotationalErrorAccum;
-	private:
+	protected:
 	
 		float DEGREE_INCREMENT;
 		int currentAngle_index;
 		float currentAngle_index_f;
 
-		float x, y;
-		float xVel, yVel;//velocity vector
-		float xAcc, yAcc;//acceleration vector
-		int xGacc,yGacc; //grav acceleration
-	
-		int mass; //mass	
-
 		float rotationRate;
 
 		float exhaustX, exhaustY;
-		Entity_desc descriptor;
+	
+		Sprite sprite;
 
 		vector<SDL_Surface *> rotations;
 };

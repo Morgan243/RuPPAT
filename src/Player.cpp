@@ -5,7 +5,8 @@
 //secondary-CONSTRUCTOR: leave many attributes statically defined by literals,
 //good for any quick tests
 Player :: Player(string sprite_path, int num_rotations, int startingAngle) 
-	: Object(sprite_path, 200,200,1000)
+	: Object(sprite_path, 200,200,1000), sprite(sprite_path, num_rotations, startingAngle)
+//{{{
 {
 	currentAngle_index = startingAngle;	
 
@@ -46,11 +47,14 @@ Player :: Player(string sprite_path, int num_rotations, int startingAngle)
 	descriptor.noDrawEffect = false;
 
 }
+//}}}
 
 //Constructor with more options
 Player :: Player(string sprite_path, int num_rotations, int startingAngle,
 		float maxaccel, int startX, int startY) 
-		: Object(sprite_path,startX,startY,1000)
+		: Object(sprite_path,startX,startY,1000), sprite(sprite_path, 
+								num_rotations,startingAngle)
+//{{{
 {
 	currentAngle_index = startingAngle;	
 
@@ -89,6 +93,7 @@ Player :: Player(string sprite_path, int num_rotations, int startingAngle,
 	descriptor.noDrawEffect = false;
 
 }
+//}}}
 
 //Deconstructor 
 Player :: ~Player()
@@ -99,67 +104,76 @@ Player :: ~Player()
 
 void Player :: setRotation_rate(int rotRate)
 {
-	rotationRate = rotRate;
-
+	//rotationRate = rotRate;
+	sprite.setRotationRate(rotRate);
 }
 
 float Player :: getRotation_rate()
 {
-	return rotationRate;
+	//return rotationRate;
+	return sprite.getRotationRate();
 }
 
 void Player :: incrementRotation_rate()
 {
-	rotationRate += 0.01;
+	//rotationRate += 0.01;
+	sprite.incrementRotationRate();
 }
 
 void Player :: decrementRotation_rate()
 {
-	rotationRate -= 0.01;
+	//rotationRate -= 0.01;
+	sprite.decrementRotationRate();
 
 }
 
 void Player :: updateSprite()
 {
-	currentAngle_index_f += rotationRate;
-	if(currentAngle_index_f >=360.0)currentAngle_index_f=0.0;
-	if(currentAngle_index_f < 0.0) currentAngle_index_f = 359.0;
-
+//	currentAngle_index_f += rotationRate;
+//	if(currentAngle_index_f >=360.0)currentAngle_index_f=0.0;
+//	if(currentAngle_index_f < 0.0) currentAngle_index_f = 359.0;
+	sprite.updateSprite();
 }
 
 float Player :: getAngle()
 {
-	return (float)currentAngle_index_f*DEGREE_INCREMENT;
+	//return (float)currentAngle_index_f*DEGREE_INCREMENT;
+	return sprite.getAngle();
 }
 
 void Player :: setAngle_index(int angleIndex)
 {
-	currentAngle_index = angleIndex;
+	//currentAngle_index = angleIndex;
+	sprite.setAngleIndex(angleIndex);
 }
 
 
 void Player :: incrementAngle_index()
 {
-	currentAngle_index++;
+	//currentAngle_index++;
+	sprite.incrementAngleIndex();
 }
 
 
 void Player :: decrementAngle_index()
 {
-	currentAngle_index--;
+	//currentAngle_index--;
+	sprite.decrementAngleIndex();
 }
 
 
 SDL_Surface *Player :: getSprite()
 {
-	int tmp_angle = (int) currentAngle_index_f;
-	return rotations[tmp_angle];
+	//int tmp_angle = (int) currentAngle_index_f;
+	//return rotations[tmp_angle];
+	return sprite.getSprite();
 }
 
 
 SDL_Surface *Player :: getSprite(int angle)
 {
-	return rotations[angle];
+	//return rotations[angle];
+	return sprite.getSprite(angle);
 }
 
 void Player :: setDescriptor(Entity_desc new_desc)
@@ -172,36 +186,6 @@ Entity_desc Player :: getDescriptor()
 	return descriptor;
 }
 
-int Player :: getX()
-{
-	return descriptor.x;
-}
-
-int Player :: getY()
-{
-	return descriptor.y;
-}
-
-
-float Player :: getXvel()
-{
-	return descriptor.xVel;
-}
-
-float Player :: getYvel() 
-{
-	return descriptor.yVel;
-}
-
-float Player :: getXacc() 
-{
-	return descriptor.xAcc;
-}
-
-float Player :: getYacc() 
-{
-	return descriptor.yAcc;
-}
 
 void Player :: accelForward() 
 {
@@ -214,9 +198,9 @@ void Player :: accelBackward()
 }
 
 void Player :: setAccelVectors(bool forward)
-{
+{//{{{
 
-		float heading = DEGREE_INCREMENT * currentAngle_index_f;
+		float heading = sprite.getAngle();
 	if(forward)
 	{
 
@@ -235,7 +219,6 @@ void Player :: setAccelVectors(bool forward)
 			exhaustX=-1*descriptor.maxAccel*cos(heading*3.141/180);
 			exhaustY=(descriptor.maxAccel*sin(heading*3.141/180));
 
-	//	heading = heading - 90;
 			descriptor.xVel += descriptor.maxAccel*cos(heading*3.141/180);
 			descriptor.yVel += -1*(descriptor.maxAccel*sin(heading*3.141/180));
 			}
@@ -243,7 +226,7 @@ void Player :: setAccelVectors(bool forward)
 			{
 			exhaustX=-1*descriptor.maxAccel*cos(heading*3.141/180);
 			exhaustY=(descriptor.maxAccel*sin(heading*3.141/180));
-		//	heading = heading -180;
+
 			descriptor.xVel += descriptor.maxAccel*cos(heading*3.141/180);
 			descriptor.yVel += -1*(descriptor.maxAccel*sin(heading*3.141/180));
 			}
@@ -259,10 +242,8 @@ void Player :: setAccelVectors(bool forward)
 
 		else if(heading == 0)
 			{
-			//descriptor.xAcc = descriptor.maxAccel*1000;
 			descriptor.xVel += descriptor.maxAccel;
-			//descriptor.yVel += 0;
-			cout<<"Acceled at ZERO! "<<descriptor.xAcc<<endl;
+			//cout<<"Acceled at ZERO! "<<descriptor.xAcc<<endl;
 			}
 
 
@@ -280,7 +261,6 @@ void Player :: setAccelVectors(bool forward)
 			}
 		else if(heading>90 && heading<180)
 			{
-		//	heading = heading - 90;
 			exhaustX=descriptor.maxAccel*cos(heading*3.141/180);
 			exhaustY=-1*(descriptor.maxAccel*sin(heading*3.141/180));
 
@@ -289,7 +269,6 @@ void Player :: setAccelVectors(bool forward)
 			}
 		else if(heading>180 && heading<260)
 			{
-		//	heading = heading -180;
 			exhaustX=descriptor.maxAccel*cos(heading*3.141/180);
 			exhaustY=-1*(descriptor.maxAccel*sin(heading*3.141/180));
 
@@ -308,21 +287,19 @@ void Player :: setAccelVectors(bool forward)
 
 		else if(heading == 0)
 			{
-			//descriptor.xAcc = descriptor.maxAccel*1000;
 			descriptor.xVel -= descriptor.maxAccel;
-			//descriptor.yVel += 0;
-			cout<<"Acceled at ZERO! "<<descriptor.xAcc<<endl;
+			//cout<<"Acceled at ZERO! "<<descriptor.xAcc<<endl;
 			}
 
 	}
 }
-
+//}}}
 
 void Player :: getXY_exhaust(float &xVel, float &yVel)
 {
 //	float heading = DEGREE_INCREMENT * currentAngle_index_f;
-xVel=exhaustX;
-yVel=exhaustY;
+	xVel=exhaustX;
+	yVel=exhaustY;
 }
 
 

@@ -23,6 +23,8 @@ Game :: Game(int WIDTH_cl, int HEIGHT_cl)
 	
 	//engine->addPlayer("white_rocket.png", 360, 0, 1, 400, 200);
 	engine->addObject("red_planet.png", (int)(WIDTH_cl/2), (int)(HEIGHT_cl/2), 100000);
+	
+
 }
 
 
@@ -180,8 +182,9 @@ void Game :: handleEvents(Event_desc &mainEvents)
 			if(event.key.keysym.sym == SDLK_SPACE )
 				mainEvents.space = false;
 
-			//UP, K
-			if(event.key.keysym.sym == SDLK_UP 
+			//UP, W,K
+			if(event.key.keysym.sym == SDLK_UP
+				|| event.key.keysym.sym == SDLK_w 
 				|| event.key.keysym.sym == SDLK_k)
 				{
 			
