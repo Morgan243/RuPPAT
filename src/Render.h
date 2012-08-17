@@ -20,6 +20,7 @@ public:
 	void OnRender();
 	
 	Uint32 getPixel(int x, int y, int screenID);
+
 	void putPixel(int x, int y, int color, int screenID);
 	
 	void putSprite(int x, int y, Entity_desc* entityDetails);
@@ -27,7 +28,10 @@ public:
 	void putSprite(int x, int y, SDL_Surface* sprite);
 
 	void putPixel2(int x, int y, Uint8 r, Uint8 g, Uint8 b);
-		SDL_Surface* mainScreen;
+
+	void applySurface(int x, int y, SDL_Surface* source);	
+	
+	SDL_Surface* mainScreen;
 private:
 	
 	

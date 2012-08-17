@@ -36,6 +36,8 @@ using namespace std;
 	vector<Entity_desc> entList;//indpenedt sprites on scree
 	vector<Entity_desc> entList_m;//sprites that attract others 
 
+	vector<SDL_Surface *>backgroundLayers;
+
 
 	vector<Player *> players;//independent sprite that controlled by AI or human
 
@@ -53,8 +55,10 @@ using namespace std;
 //------------CONSTRUCTOR--------
 //initialize some locks, start render (window)
 //and set some variables
-RuPPAT :: RuPPAT(int width,int height,int bpp, unsigned int flags)
+RuPPAT :: RuPPAT(int width,int height,int bpp, unsigned int flags,
+		string background_img_paths[], int num_bks)
 {
+	
 	//init all the locks--ERROR CHECK too 
 	if(pthread_rwlock_init(&pix_rw_lock, NULL))
 		{cout<<"ERROR initializing pixel rw lock: "<<endl;}
@@ -71,8 +75,23 @@ RuPPAT :: RuPPAT(int width,int height,int bpp, unsigned int flags)
 	if(pthread_mutex_init(&pix_list_lock_2,NULL))
 		{cout<<"ERROR initializing pix lock 2 lock: "<<endl;}
 
+
+
+	//start the render; opens up game window
 	mainRender = new Render(width, height, BPP, flags );
-	
+
+	for(int i = 0; i<num_bks;i++)
+	{
+	SDL_Surface *tempBkg, * tempBkgOpt;
+
+		tempBkg = IMG_Load((char *)background_img_paths[0].c_str());
+
+		tempBkgOpt = SDL_DisplayFormatAlpha(tempBkg);
+
+		backgroundLayers.push_back(tempBkgOpt);	
+
+	}
+
 	//engine needs to know how much real estate it has
 	WIDTH = width;
 	HEIGHT = height;
@@ -80,11 +99,14 @@ RuPPAT :: RuPPAT(int width,int height,int bpp, unsigned int flags)
 
 	//set grav constant
 	gravitationalConstant=22;
+
+		
+
 }
 
 
 //------------DECONSTRUCTOR-------
-//remove the mutexes
+//destroy the mutexes
 RuPPAT :: ~RuPPAT()
 {
 	pthread_mutex_destroy(&pix_list_lock_2);
@@ -116,11 +138,12 @@ void RuPPAT :: createPixElement(Pixel_desc *pixel )
 void RuPPAT :: parseSelectPixToSurface()
 {
    pthread_rwlock_rdlock(&pix_rw_lock);
+
 	int x, y, i, j, color, size=pixelList_m.size(), screenID=0;
+		
  //#pragma omp parallel for private(x,y,color, i, j)
 	 for( i=0 ; i< size ; i++)
 		{
-		
 		x =	pixelList_m[i].x;
 		y =	pixelList_m[i].y;
 		color =	pixelList_m[i].color;
@@ -137,16 +160,15 @@ void RuPPAT :: parseSelectPixToSurface()
 void RuPPAT :: parsePlayersToSurface()
 {
    pthread_rwlock_rdlock(&player_rw_lock);
+
 	int x, y, i, j, color, size=players.size(), screenID=0;
 
 //use line below to use OpenMP to launch a team of threads on the vector
  //#pragma omp parallel for private(x,y,color, i, j)
 	 for( i=0 ; i< size ; i++)
 		{
-		
 		x =	players[i]->getX();
 		y =	players[i]->getY();
-		//color =	players[i].color;
 		
 		players[i]->updateSprite();
 	
@@ -192,7 +214,10 @@ void RuPPAT :: setUpdateOnSelectPix(int set)
 }
 
 
-//------------handleAllDeleteME---------
+//------------handleAllDeleteME--------->NEED WORK
+//Pixels should add themselves to list for deletion
+//so the program doesnt have to search for them
+//
 //go through pix list and delete everything 
 //with deleteMe set high
 void RuPPAT :: handleAllDeleteMe()
@@ -212,7 +237,7 @@ void RuPPAT :: handleAllDeleteMe()
 
 
 //------------handleDelete-------------
-//remove pixelList elements that have deleteMe set
+//remove pixelList element that has deleteMe set
 //can do other things for delete later
 void RuPPAT :: handleDelete(int k)
 {
@@ -223,7 +248,11 @@ void RuPPAT :: handleDelete(int k)
 }
 
 
-//------------applyDimming--------------
+//------------applyDimming--------------NEED WORK
+//Pixels fade to black when they should be using
+//some kind of alpha blending or blending with
+//the backgroun
+//
 //dims a pixel struct, returns 1 if it is deleted do to dimming out
 int RuPPAT :: applyDimming(Pixel_desc &pix_t)
 {
@@ -756,7 +785,7 @@ Pixel_desc t_pix;
 //based on acceleration and such on all
 //elements in pixel list), incrementing time 
 //and rendering the pixels
-void RuPPAT :: RK4_parse()
+void RuPPAT :: RK4_parse(SDL_Surface* background)
 {
 Uint32 T1=0, T2=1000;
 T1=SDL_GetTicks(); 
@@ -770,6 +799,16 @@ int nextTick = SDL_GetTicks() + interval;
 char sel = 'g';
 void * select = &sel;
 
+//string fname = "bkg_1_1080.png";
+//		SDL_Surface *tempBkg, * tempBkgOpt;
+//	
+//		tempBkg = IMG_Load((char *)fname.c_str());
+//
+//		tempBkgOpt = SDL_DisplayFormatAlpha(tempBkg);
+//
+//		//backgroundLayers.push_back(tempBkgOpt);	
+//
+//	//	bkg = tempBkgOpt;	
 	//keep looping until program end
 	while(!done)
 	  {
@@ -778,10 +817,10 @@ void * select = &sel;
 		RK4_all(t, dt);
 		t += dt;
 		
-	//	cout<<"this t is:"<<this->t<<endl;
-		//cout<<"this dt is:"<<this->dt<<endl;
-		//reset screen to black
-		mainRender->setMainScreen(0x000000);
+
+		mainRender->applySurface(0,0,backgroundLayers[0]);
+
+
 		//draw pixels to surface
 		parseObjectsToSurface();	
 		parseSelectPixToSurface();
@@ -859,7 +898,11 @@ char select;
 	demo.character = &select;
 		void* args = &demo;
 
-	pthread_create(&rk4_th, NULL, RK4_parse_helper, this);
+	RK4_parse_helper_arg RK_help;
+	//RK_help.backg=bkg;
+	RK_help.context=this;
+	void* RK_args = &RK_help;
+	pthread_create(&rk4_th, NULL, RK4_parse_helper, RK_args);
 	//pthread_create(&demo_th,NULL, runDemos_helper,args);
 
 void *sel = &select;
@@ -1269,30 +1312,38 @@ void RuPPAT :: accelPlayer(int p_ID, bool isForward)
 void RuPPAT :: turnPlayer(int p_ID, bool isLeft, int numTurns)
 {
 
-while(numTurns-- > 0)
-{
-	if(isLeft)
+	while(numTurns-- > 0)
 	{
-		
-		pthread_rwlock_wrlock(&player_rw_lock);
-			players[p_ID]->incrementRotation_rate();
-		pthread_rwlock_unlock(&player_rw_lock);
+		if(isLeft)
+		{
+			
+			pthread_rwlock_wrlock(&player_rw_lock);
+				players[p_ID]->incrementRotation_rate();
+			pthread_rwlock_unlock(&player_rw_lock);
+		}
+		else
+		{
+			pthread_rwlock_wrlock(&player_rw_lock);
+				players[p_ID]->decrementRotation_rate();
+			pthread_rwlock_unlock(&player_rw_lock);
+		}
 	}
-	else
-	{
-		pthread_rwlock_wrlock(&player_rw_lock);
-			players[p_ID]->decrementRotation_rate();
-		pthread_rwlock_unlock(&player_rw_lock);
-	}
-}
 
 }
+
+//This function is intended to work like a PID loop (proportional, integral, derivative)
+// 	->the current implementation is a basterdize, semi-working version
+// The goal is to continually adjust the turn amount until the ship is pointing towards
+// the desired coordinates. Thus the manipulated variable is the rotation rate, and the
+// set point is a heading or vector alignment
 void RuPPAT :: turnPlayerToCoord(int p_ID, int x, int y, int rate)
 {
 
-	float playerDegree = 0.0,deg_playerToPoint = 0.0, tempErrAccum, tempErrDiff, angleDifScale=.01 ;
+	float playerDegree = 0.0,deg_playerToPoint = 0.0, 
+		tempErrAccum, tempErrDiff, angleDifScale=.01;
 	int x_diff = 0,  y_diff=0, rateLim = 3;
-	
+
+		//get some values out of the player object	
 		pthread_rwlock_wrlock(&player_rw_lock);
 	
 			playerDegree = players[p_ID]->getAngle();
@@ -1305,33 +1356,26 @@ void RuPPAT :: turnPlayerToCoord(int p_ID, int x, int y, int rate)
 	
 		pthread_rwlock_unlock(&player_rw_lock);
 
-//y is upside down compared to normal coordinate plane
-y_diff *= -1;
-//printf("ship angle = %f \nX diff = %d \t Y diff = %d \n", playerDegree, x_diff, y_diff);
+	//y is upside down compared to normal coordinate plane
+	y_diff *= -1;
+
 
 	//1st coordinate
 	if( (x_diff > 0) && (y_diff > 0))
 	{
-deg_playerToPoint = (180.0/3.141)*atan((float)y_diff/(float)x_diff);
-//printf("ANGLE BETWEEN mouse and ship is :  %f\n",deg_playerToPoint);
-
+	deg_playerToPoint = (180.0/3.141)*atan((float)y_diff/(float)x_diff);
 	}
 	else if( (x_diff < 0) && (y_diff > 0))
 	{
-
-deg_playerToPoint = 180.0 + ((180.0/3.141)*atan((float)y_diff/(float)x_diff));
-//printf("ANGLE BETWEEN mouse and ship is :  %f\n",deg_playerToPoint);
+	deg_playerToPoint = 180.0 + ((180.0/3.141)*atan((float)y_diff/(float)x_diff));
 	}
 	else if( (x_diff < 0) && (y_diff < 0))
 	{
-deg_playerToPoint = 180.0 + ((180.0/3.141)*atan((float)y_diff/(float)x_diff));
-//printf("ANGLE BETWEEN mouse and ship is :  %f\n",deg_playerToPoint);
-	
+	deg_playerToPoint = 180.0 + ((180.0/3.141)*atan((float)y_diff/(float)x_diff));
 	}
 	else if( (x_diff > 0) && (y_diff<0))
 	{
-deg_playerToPoint = 360.0 + ((180.0/3.141)*atan((float)y_diff/(float)x_diff));
-//printf("ANGLE BETWEEN mouse and ship is :  %f\n",deg_playerToPoint);
+	deg_playerToPoint = 360.0 + ((180.0/3.141)*atan((float)y_diff/(float)x_diff));
 	}
 
 
@@ -1392,14 +1436,12 @@ tempErrDiff =  angle_diff*.1 - tempErrDiff; //angle_diff - tempErrDiff;
 	{
 		if ((-1.0*angle_diff) > 180 && curr_rate<rateLim)
 		{
-		//	printf("turn left!\n");		
 			tempErrAccum -= (360-angle_diff)*angleDifScale;
 			printf("TURNING LEFT\n");
 			turnPlayer(p_ID, true, dif_rate);
 		}
 		else if ((-1.0*angle_diff) <180 && curr_rate<rateLim)
 		{
-	//	printf("turn right!\n");
 			tempErrAccum -= angle_diff*angleDifScale;
 			printf("TURNING RIGHT\n");
 			turnPlayer(p_ID, false, dif_rate);

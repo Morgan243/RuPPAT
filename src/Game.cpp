@@ -7,14 +7,17 @@ using namespace std;
 //-----CONSTRUCTOR
 Game :: Game()
 {
-	engine = new RuPPAT(1024, 768, BPP, SDL_HWSURFACE | SDL_DOUBLEBUF);
+	string bkg_paths[]={""};
+	engine = new RuPPAT(1024, 768, BPP, SDL_HWSURFACE | SDL_DOUBLEBUF, bkg_paths,0);
 	done = false;
 }
 
 //-----CONSTRUCTOR 2!!
 Game :: Game(int WIDTH_cl, int HEIGHT_cl)
 {
-	engine = new RuPPAT(WIDTH_cl, HEIGHT_cl, BPP, SDL_HWSURFACE | SDL_DOUBLEBUF);
+	string bkg_paths[]={"bkg_1_1080.png"};
+	engine = new RuPPAT(WIDTH_cl, HEIGHT_cl, BPP, SDL_HWSURFACE | SDL_DOUBLEBUF,
+		bkg_paths,1);
 	done = false;
 
 	//players.push_back(new Player("red_ship.png",360, 0));	
@@ -322,10 +325,9 @@ void Game :: initEvent(Event_desc &initMe)
 	initMe.leftCtrl = false;
 }
 
-//interface provided for whatever contaings the game object
+//interface provided object containing Game
 void Game :: rotateSpriteToCoor(int p_ID, int x, int y, int rate)
 {
-//	printf("Curren ship angle: %f", getAngle());
 	engine->turnPlayerToCoord( p_ID, x, y, rate);
 }
 

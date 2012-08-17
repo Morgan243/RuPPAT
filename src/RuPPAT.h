@@ -31,7 +31,8 @@ class RuPPAT
 {
 	public:
 		//CONSTRUCTOR
-		RuPPAT(int width,int height,int bpp, unsigned int flags);
+		RuPPAT(int width,int height,int bpp, unsigned int flags,
+			 string bkg_paths[], int num_bkgs);
 		//DECONSTRUCTOR
 		~RuPPAT();
 
@@ -65,7 +66,7 @@ class RuPPAT
 
 	void runDemos(void *selection);
 
-	void RK4_parse();
+	void RK4_parse(SDL_Surface* background);
 
 	void runPPAT(bool *mainDone, Event_desc &mainEvents, 
 			string selection, string option);
@@ -89,6 +90,8 @@ class RuPPAT
 
 	void turnPlayerToCoord(int p_ID, int x, int y, int rate);
 
+
+
 	private:
 
 		Uint32 thisTime;
@@ -96,7 +99,7 @@ class RuPPAT
 		Uint32 deltaTime;
 
 	
-
+	
 	bool done;//if this goes false, all threads stop, engine stops
 	bool orbGrav;//is orbital gravity on?
 	int gravitationalConstant;
@@ -152,9 +155,18 @@ class RuPPAT
 
 	
 	//.....[HELPER]RK4_pars
-	static void *RK4_parse_helper(void *context)
+	struct RK4_parse_helper_arg
 		{
-		((RuPPAT*)context)->RK4_parse();
+			void *context;
+			//vector<SDL_Surface *> bkg_layers;
+			SDL_Surface* backg;
+		};
+
+	static void *RK4_parse_helper(void *helper_in)
+		{
+		RK4_parse_helper_arg* helper = (RK4_parse_helper_arg*) helper_in;
+		
+		((RuPPAT*)helper->context)->RK4_parse(helper->backg);
 		return NULL;
 		};
 

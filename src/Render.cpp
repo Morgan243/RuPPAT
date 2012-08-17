@@ -127,4 +127,22 @@ void Render :: putSprite(int x, int y, SDL_Surface* sprite)
 SDL_BlitSurface(sprite,NULL,mainScreen,&imagePosition);
 }
 
+//blit a surface onto the main screen, good for backgrounds and testing sprites
+void Render::applySurface(int x, int y, SDL_Surface* source)
+{
+	//Need a rectangle to hold the offsets
+	SDL_Rect offset;
 
+	offset.x = x;
+	offset.y = y;
+	offset.w = mainScreen->w;
+	offset.h = mainScreen->h;
+	
+//if (SDL_MUSTLOCK(mainScreen)) 
+//	SDL_LockSurface(mainScreen);	
+
+	//finally blit the source onto main at (x,y) on main
+	SDL_BlitSurface(source,&offset,mainScreen,NULL);
+//if( SDL_MUSTLOCK(mainScreen) )
+//        SDL_UnlockSurface(mainScreen);
+}
