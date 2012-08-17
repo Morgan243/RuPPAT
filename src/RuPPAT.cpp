@@ -692,20 +692,20 @@ Pixel_desc t_pix;
 	   {
 			t_pix.color = rand()%0xffffff;
 		int count = 0;
-			t_pix.x = 470;
-			t_pix.y = 384;
+			t_pix.x = 747;
 			t_pix.yVel = 78;
 			t_pix.xAcc = 0;
 			t_pix.dimFactor = 1000;
 		while(count<175 && !done)
 		{  
+
+			t_pix.y = 584;
 			t_pix.x-=1;
 			createPixElement(&t_pix);
-			t_pix.y = 384 +rand()%26 - rand()%36;
+			t_pix.y = t_pix.y +rand()%26 - rand()%36;
 			createPixElement(&t_pix);	
-			t_pix.y = 384 +rand()%19 - rand()%16;
+			t_pix.y = t_pix.y +rand()%19 - rand()%16;
 			createPixElement(&t_pix);	
-			t_pix.y=384;
 		count++;
 		}
 	    break;
