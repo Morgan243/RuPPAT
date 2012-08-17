@@ -31,16 +31,13 @@ Render::Render(int width, int height, int bpp, Uint32 flags)
     fprintf(stderr, "Unable to set video: %s\n", SDL_GetError());
     exit(1);
   }
-
 }
 
 
 //-----------------DECONSTRUCTOR------
 Render::~Render()
 {
-
 SDL_Quit();
-
 }
 
 //-----------------setMainScreen-----
@@ -56,9 +53,7 @@ SDL_FillRect(mainScreen, NULL, color);
 //swap whats being shown with what has been added to main screen
 void Render::OnRender()
 {
-//	SDL_FillRect(mainScreen, NULL, 0x000000);
 	SDL_Flip(mainScreen);
-//	SDL_UpdateRect(mainScreen, 0, 0, mainWidth, mainHeight);
 }
 
 
@@ -138,7 +133,6 @@ void Render::applySurface(int x, int y, SDL_Surface* source)
 	offset.w = mainScreen->w;
 	offset.h = mainScreen->h;
 	
-
 	//finally blit the source onto main at (x,y) on main
 	SDL_BlitSurface(source,&offset,mainScreen,NULL);
 

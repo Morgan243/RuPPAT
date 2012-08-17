@@ -129,11 +129,11 @@ class RuPPAT
 
 
 	//.....[HELPER]updateSelectPix	
-	static void *updateSelectPix_helper(void *context)
-		{
-		((RuPPAT*)context)->updateSelectPix();
-		return NULL;
-		}
+//	static void *updateSelectPix_helper(void *context)
+//		{
+//		((RuPPAT*)context)->updateSelectPix();
+//		return NULL;
+//		}
 
 
 

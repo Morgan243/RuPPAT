@@ -36,15 +36,14 @@ using namespace std;
 	vector<Entity_desc> entList;//indpenedt sprites on scree
 	vector<Entity_desc> entList_m;//sprites that attract others 
 
-	vector<SDL_Surface *>backgroundLayers;
-
+	vector<SDL_Surface *>backgroundLayers;//layers of the background
 
 	vector<Player *> players;//independent sprite that controlled by AI or human
 
 	vector<Object *> objectList;
 
 	//unused as of now
-	vector<Mass_desc> pMassList;
+//	vector<Mass_desc> pMassList;
 
 
 
@@ -80,6 +79,7 @@ RuPPAT :: RuPPAT(int width,int height,int bpp, unsigned int flags,
 	//start the render; opens up game window
 	mainRender = new Render(width, height, BPP, flags );
 
+	//load all the layers for the background
 	for(int i = 0; i<num_bks;i++)
 	{
 	SDL_Surface *tempBkg, * tempBkgOpt;
@@ -99,8 +99,6 @@ RuPPAT :: RuPPAT(int width,int height,int bpp, unsigned int flags,
 
 	//set grav constant
 	gravitationalConstant=22;
-
-		
 
 }
 
@@ -312,10 +310,7 @@ int RuPPAT :: addPlayer(string spritePath, int numRotations, int startingAngle,
 			players.push_back(new Player(spritePath, numRotations, startingAngle,
 						maxAccel, x, y));
 			size = players.size()-1;
-		//	players[size]->accelForward();
-		//	players[size]->accelForward();
-		//	players[size]->accelForward();
-		//	players[size]->accelForward();
+
 		pthread_rwlock_unlock(&player_rw_lock);
 
 	return size;
@@ -799,33 +794,26 @@ int nextTick = SDL_GetTicks() + interval;
 char sel = 'g';
 void * select = &sel;
 
-//string fname = "bkg_1_1080.png";
-//		SDL_Surface *tempBkg, * tempBkgOpt;
-//	
-//		tempBkg = IMG_Load((char *)fname.c_str());
-//
-//		tempBkgOpt = SDL_DisplayFormatAlpha(tempBkg);
-//
-//		//backgroundLayers.push_back(tempBkgOpt);	
-//
-//	//	bkg = tempBkgOpt;	
+
 	//keep looping until program end
 	while(!done)
 	  {
 
-
 		RK4_all(t, dt);
 		t += dt;
 		
-
 		mainRender->applySurface(0,0,backgroundLayers[0]);
 
 		mainRender->applySurface(0,0,backgroundLayers[1]);
 
 
-		//draw pixels to surface
+		//parse objects	
 		parseObjectsToSurface();	
+		
+		//parse pixels
 		parseSelectPixToSurface();
+
+		//parse players
 		parsePlayersToSurface();
 
 		mainRender->applySurface(0,0,backgroundLayers[2]);
@@ -1002,253 +990,6 @@ void RuPPAT :: createPixElement(  int x, int y,
 		    pixelList_m.push_back(tmpPix);
 		 pthread_mutex_unlock(&pix_list_lock_2);
 }
-
-
-//-----------------updateSelectPix--------
-//old ass function to update everypixels position
-//**this is now down in RK4_all
-void RuPPAT :: updateSelectPix()
-{
-     Uint32 NOW; 
-	int timerConst=9000303;
-	int size	, tmp_updated;
-	int tmp_color, tmp_xAccel, tmp_yAccel, tmp_xVel, tmp_yVel, tmp_yGacc, tmp_xGacc,
-	     tmp_Xtimer, tmp_Ytimer, tmp_dimFactor,tmp_dimTimer, x, y, tmp_accelLength;
-	bool tmp_updatedG;
-	//while(!done)
-	 //{
-	 NOW = SDL_GetTicks();
-
-	pthread_mutex_lock(&pix_list_lock_2);
-
-	//cout<<"locked"<<endl;
-	size = pixelList_m.size();
-	pthread_mutex_unlock(&pix_list_lock_2);
-
-	//#pragma omp parallel for private(tmp_color, tmp_xAccel, tmp_yAccel, tmp_xVel, tmp_yVel, tmp_Xtimer, tmp_Ytimer, tmp_dimFactor, x, y)
-    for(int i=0; i<size ;i++)
-      {
-
-	pthread_mutex_lock(&pix_list_lock_2);
-	tmp_updated = pixelList_m[i].updated;
-	pthread_mutex_unlock(&pix_list_lock_2);
-	
-	if(1)//pixelList[i].updated == 0)//this check is needed yet, but left anyway
-    	{
-	pthread_mutex_lock(&pix_list_lock_2);
-		
-	//cout<<"Saying hey from apply!!!"<<endl;
-	//cout<<"locked"<<endl;
-		//ASSIGN VALUES TO TEMP STORAGE
-		tmp_color  = pixelList_m[i].color;
-
-		x = pixelList_m[i].x;
-		y = pixelList_m[i].y;
-	
-		tmp_xAccel = pixelList_m[i].xAcc;
-		tmp_yAccel = pixelList_m[i].yAcc;
-
-		tmp_xVel = pixelList_m[i].xVel;
-		tmp_yVel = pixelList_m[i].yVel;
-
-		tmp_Xtimer = pixelList_m[i].Xtimer;
-		tmp_Ytimer = pixelList_m[i].Ytimer;
-		tmp_dimTimer = pixelList_m[i].dimTimer;
- 
-	
-		tmp_dimFactor = pixelList_m[i].dimFactor;
-
-		tmp_yGacc = pixelList_m[i].yGacc;
-		tmp_xGacc = pixelList_m[i].xGacc;
-
-		tmp_updatedG = pixelList_m[i].updatedG;
-
-		tmp_accelLength = pixelList_m[i].accelLength;
-//printf("\npos(%d,%d) acc(%d,%d) vel(%d,%d) dim:%d\n",x,y,tmp_xel,tmp_yAccel,tmp_xVel, tmp_yVel, pixelList[i].dimFactor);
-	pthread_mutex_unlock(&pix_list_lock_2);
-	//check that accel should be applied
-	
-// 	float time_restrictX=((NOW-tmp_Xtimer)/2.0);
-//	float time_restrictY=((NOW-tmp_Ytimer)/2.0);
-	if(tmp_accelLength > 0)
-   	   {
-		//add accels to velocity components
-		tmp_xVel = tmp_xVel + tmp_xAccel; //tried and true
-		tmp_yVel = tmp_yVel + tmp_yAccel;
-	
-		//EXPERIMENTAL TIME BASED MOVEMENT
-
-		
-		
-		//decrement accelLength	
-		tmp_accelLength--;
-	
-		//if accelLength is now zero, go ahead
-		//and rest the accel to zero	
-		if(tmp_accelLength ==0)
-		{
-			tmp_xAccel = 0;
-			tmp_yAccel = 0;
-			tmp_accelLength = -1;
-		}
-	   }
-
-		if(tmp_accelLength ==-1)
-		{
-			tmp_xAccel = 0;
-			tmp_yAccel = 0;
-		}
-
-	//apply grav accel
-	if(tmp_updatedG)
-	  {
-		tmp_xVel +=tmp_xGacc;
-		tmp_yVel +=tmp_yGacc;
-		
-		tmp_updatedG = false;
-	  }
-
-pthread_mutex_lock(&pix_list_lock_2);
-	integrate(pixelList_m[i], SDL_GetTicks()/1000.0, .20, 100000.0, 512, 384);
-
-//	int newX = x;
-//	int newY = y;
-
-	int newX = pixelList_m[i].x;
-	int newY = pixelList_m[i].y;
-
-	tmp_xVel = pixelList_m[i].xVel;
-	tmp_yVel = pixelList_m[i].yVel;
-
-	tmp_xAccel = pixelList_m[i].xAcc;
-
-	//re-init g-accel
-//	tmp_xGacc=0;
-//	tmp_yGacc=0;
-
-	//finally, init new location
-//	int newX = x + tmp_xVel;
-//	int newY = y + tmp_yVel;
-
-
-	//dimming section
-	if(tmp_dimFactor && (NOW - tmp_dimTimer)>100)
-	{
-		tmp_dimTimer = NOW;
-
-		int tmpR = (tmp_color & 0xFF0000)>>16;
-		int tmpG = (tmp_color & 0x00FF00)>>8;
-		int tmpB = (tmp_color & 0x0000FF);
-	
-		if(tmpR < tmp_dimFactor)
-			{tmpR=0;}
-			else
-			{tmpR-=tmp_dimFactor;}
-
-		if(tmpG < tmp_dimFactor)
-			{tmpG=0;}
-			else
-			{tmpG-=tmp_dimFactor;}
-
-		if(tmpB < tmp_dimFactor)
-			{tmpB=0;}
-			else
-			{tmpB-=tmp_dimFactor;}
-
-		tmp_color = (tmpR<<16) | (tmpG<<8) | tmpB;
-	}
-
-//GET PIXEL LOCK AGAIN
-pthread_mutex_lock(&pix_list_lock_2);
-	//if (nearly) blacked out, set deleteMe for deletion later
-	if(tmp_color<10)
-	  {
-		pixelList_m[i].deleteMe=true;		
-	  }
-	/*
-	//if y and x have not changed, reassign recalced stuff and be done
-	else if(newX ==x && newY==y)
-	  {
-	//	pixelList_m[i].xVel=tmp_xVel;
-	//	pixelList_m[i].yVel=tmp_yVel;
-		pixelList_m[i].updated=1;
-		pixelList_m[i].color = tmp_color;
-		pixelList_m[i].dimTimer = tmp_dimTimer;
-		pixelList_m[i].xGacc = 0;
-		pixelList_m[i].yGacc = 0;
-		pixelList_m[i].updatedG=tmp_updatedG;
-	  }
-
-	
-	//if new location is different, reassign pixel_desc structs
-	else if(newX!=x || newY!=y )
-	   {*/
-		// THESE REVERSE VELOCITY IF THE EDGE OF SCREEN IS REACHED
-		if(newX<=0)
-			{newX=1;tmp_xVel=tmp_xVel*(-1);}
-
-		if(newX>=WIDTH)
-			{newX=WIDTH-1;tmp_xVel=tmp_xVel*(-1);}
-
-		if(newY<=0)
-			{newY=1;tmp_yVel=tmp_yVel*(-1);}
-
-		if(newY>=HEIGHT)
-			{newY=HEIGHT-1;tmp_yVel=tmp_yVel*(-1);}	
-		
-		//posistion is finalized, set color
-		pixelList_m[i].color = tmp_color;
-		
-		//set position	
-		pixelList_m[i].x = newX;
-		pixelList_m[i].y = newY;
-
-		//set velocity
-		pixelList_m[i].xVel = tmp_xVel;
-		pixelList_m[i].yVel = tmp_yVel;
-		
-		//its been updated
-		pixelList_m[i].updated = 1;
-
-	     
-		pixelList_m[i].accelLength = tmp_accelLength;
-	//	pixelList_m[i].xAcc = tmp_xAccel;
-	//	pixelList_m[i].yAcc = tmp_yAccel;
-		pixelList_m[i].xGacc = tmp_xGacc;
-		pixelList_m[i].yGacc = tmp_yGacc;
-
-		pixelList_m[i].dimTimer = tmp_dimTimer;
-
-		pixelList_m[i].updatedG=tmp_updatedG;
-
-//	printf("ID[%d]:old->:(%d,%d) vel:(%d,%d)\nnew->:(%d,%d) vel:(%d,%d) dim:%d\n\n",
-//pixelList[i].ID,x,y,pixelList[i].xVel,pixelList[i].yVel, newX,newY,tmp_xVel,tmp_yVel,pixelList[i].dimFactor);
-	   
-	  // }//ends last else if
- pthread_mutex_unlock(&pix_list_lock_2);
-        }//ends primary if (under top for)
-	
-   }//ends main for(i) loop
-pthread_mutex_lock(&pix_list_lock_2);
-
-//cout<<"locked"<<endl;
-  //remove pixelList elements that have deleteMe set
-  for(int k=0;k<pixelList_m.size();k++)
-	{
-	if(pixelList_m[k].deleteMe)
-	  {
-		pixelList_m.erase(pixelList_m.begin()+k);
-		k--;//compensate for the resize
-	  }
-	}
-
-
-  //reset each elements updated memeber  
-
-pthread_mutex_unlock(&pix_list_lock_2);
- //}//end main while
-}//end entire function
-
 
 
 
