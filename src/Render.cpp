@@ -138,11 +138,8 @@ void Render::applySurface(int x, int y, SDL_Surface* source)
 	offset.w = mainScreen->w;
 	offset.h = mainScreen->h;
 	
-//if (SDL_MUSTLOCK(mainScreen)) 
-//	SDL_LockSurface(mainScreen);	
 
 	//finally blit the source onto main at (x,y) on main
 	SDL_BlitSurface(source,&offset,mainScreen,NULL);
-//if( SDL_MUSTLOCK(mainScreen) )
-//        SDL_UnlockSurface(mainScreen);
+
 }

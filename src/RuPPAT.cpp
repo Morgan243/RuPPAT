@@ -84,7 +84,7 @@ RuPPAT :: RuPPAT(int width,int height,int bpp, unsigned int flags,
 	{
 	SDL_Surface *tempBkg, * tempBkgOpt;
 
-		tempBkg = IMG_Load((char *)background_img_paths[0].c_str());
+		tempBkg = IMG_Load((char *)background_img_paths[i].c_str());
 
 		tempBkgOpt = SDL_DisplayFormatAlpha(tempBkg);
 
@@ -820,12 +820,15 @@ void * select = &sel;
 
 		mainRender->applySurface(0,0,backgroundLayers[0]);
 
+		mainRender->applySurface(0,0,backgroundLayers[1]);
+
 
 		//draw pixels to surface
 		parseObjectsToSurface();	
 		parseSelectPixToSurface();
 		parsePlayersToSurface();
 
+		mainRender->applySurface(0,0,backgroundLayers[2]);
 
 	
 	mainRender->OnRender();

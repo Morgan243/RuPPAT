@@ -15,9 +15,10 @@ Game :: Game()
 //-----CONSTRUCTOR 2!!
 Game :: Game(int WIDTH_cl, int HEIGHT_cl)
 {
-	string bkg_paths[]={"bkg_1_1080.png"};
+//	string bkg_paths[]={"bkg_1_1080.png"};
+string bkg_paths[]={"bkg_one_1080.png","bkg_two_1080.png","bkg_three_1080.png"};
 	engine = new RuPPAT(WIDTH_cl, HEIGHT_cl, BPP, SDL_HWSURFACE | SDL_DOUBLEBUF,
-		bkg_paths,1);
+		bkg_paths,3);
 	done = false;
 
 	//players.push_back(new Player("red_ship.png",360, 0));	
