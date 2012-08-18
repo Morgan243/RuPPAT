@@ -59,7 +59,6 @@ using namespace std;
 RuPPAT :: RuPPAT(int width,int height,int bpp, unsigned int flags,
 		string background_img_paths[], int num_bks)
 {
-	
 	//init all the locks--ERROR CHECK too 
 	if(pthread_rwlock_init(&pix_rw_lock, NULL))
 		{cout<<"ERROR initializing pixel rw lock: "<<endl;}
@@ -101,7 +100,6 @@ RuPPAT :: RuPPAT(int width,int height,int bpp, unsigned int flags,
 
 	//set grav constant
 	gravitationalConstant=22;
-
 }
 
 
@@ -191,11 +189,9 @@ void RuPPAT :: parseObjectsToSurface()
 	
 			objectList[i]->sprite.updateSprite();
 			mainRender->putSprite(x,y,objectList[i]->getSprite());
-
 		}
 
    pthread_rwlock_unlock(&object_rw_lock);
-
 
 }
 
@@ -211,7 +207,6 @@ void RuPPAT :: setUpdateOnSelectPix(int set)
 	{
 		pixelList_m[i].updated = set;
 	}
-
 }
 
 
@@ -338,38 +333,28 @@ int RuPPAT :: addObject(string spritePath, int x, int y, int mass, float rotatio
 {
 	int size;
 
-		pthread_rwlock_wrlock(&object_rw_lock);
-			//objectList.push_back(new Object(spritePath, x, y, mass));
+	pthread_rwlock_wrlock(&object_rw_lock);
 
-	objectList.push_back(new Object(spritePath, x, y, mass,
-					360,0,xVel,yVel ));
-			objectList.back()->sprite.setRotationRate(rotationRate);
+		objectList.push_back(new Object(spritePath, x, y, mass,
+							360,0,xVel,yVel ));
+		objectList.back()->sprite.setRotationRate(rotationRate);
 
-		pthread_rwlock_unlock(&object_rw_lock);
+	pthread_rwlock_unlock(&object_rw_lock);
 
-		
 	return size;
 }
 
 Entity_desc RuPPAT :: RK4_entity(Entity_desc ent)
 {
-
 	const Uint32 NOW = SDL_GetTicks(); 
 	float newX, newY, tmp_xVel, tmp_yVel;
 
 	Mass_desc temp_object;	
 
-	//get size of mass
-//	pthread_rwlock_rdlock(&mass_rw_lock);
-//	 int mass_size = pMassList.size();	
-//	pthread_rwlock_unlock(&mass_rw_lock);
 
 	pthread_rwlock_rdlock(&object_rw_lock);
 	 int object_size = objectList.size();	
 	pthread_rwlock_unlock(&object_rw_lock);
-
-
-
 
 
 	const int timerConst = 1;
@@ -416,12 +401,13 @@ Entity_desc RuPPAT :: RK4_entity(Entity_desc ent)
 			temp_e.y = newY;
 
 	}//end massLIst for[j]
-return temp_e;
+	return temp_e;
 }
 
 
 void RuPPAT :: RK4_all(float t, float dt)
 {
+//{{{
 	const Uint32 NOW = SDL_GetTicks(); 
 	float newX, newY, tmp_xVel, tmp_yVel;
 
@@ -701,11 +687,10 @@ void RuPPAT :: RK4_all(float t, float dt)
 
 
 	      }//end pixelList for[i]
-
-
-
   }//end else mass_size is zero
 }
+//}}}
+
 
 //-----------runDemos-------
 //just puts pixels with different attributes
@@ -718,8 +703,8 @@ void RuPPAT :: runDemos(void *selection)
 	char *select = (char*)selection;
 	cout<<"Selection is: "<<*select<<endl;
 
-//Create our temporary pixel
-Pixel_desc t_pix;
+	//Create our temporary pixel
+	Pixel_desc t_pix;
 
 	t_pix.color=0xff00ff;
 	t_pix.xAcc = 0;
@@ -816,13 +801,10 @@ Pixel_desc t_pix;
 		
 			//t_pix.dimFactor = 9+rand()%30;
 			createPixElement(&t_pix);	
-		
 		}
 
 	    break;
 	   }
-	 
-
  }
 
 }//END <runDemos>
@@ -904,9 +886,9 @@ bool *DONE = (bool*)mainDone;
 
 
 
-cout<<"SELECTION: "<<selection<<"\t OPTION: "<<option<<endl;
+	cout<<"SELECTION: "<<selection<<"\t OPTION: "<<option<<endl;
 
-char select;
+	char select;
 	
 	//set the demo selection
 	if(selection == "gwell")select='g';
@@ -932,7 +914,7 @@ char select;
 	//launch thread into rk4 parse
 	pthread_create(&rk4_th, NULL, RK4_parse_helper, RK_args);
 
-void *sel = &select;
+	void *sel = &select;
 
 
 
