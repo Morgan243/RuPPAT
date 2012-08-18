@@ -54,6 +54,7 @@ class Object
 	protected:
 
 		Entity_desc descriptor;
+		Sprite sprite_;
 		SDL_Surface *sprite;	
 };
 #endif

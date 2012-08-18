@@ -4,6 +4,7 @@
 
 
 Object :: Object(string sprite_path, int start_x, int start_y, int start_mass)
+:sprite_(sprite_path,360,0)
 {//{{{
 	//load the sprite from sprite_path
 	SDL_Surface *tempSprite, *tempSpriteOpt;

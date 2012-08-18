@@ -24,6 +24,7 @@ pthread_rwlock_t  pix_rw_lock,
 int WIDTH, HEIGHT;
 
 using namespace std;
+	bool done;//if this goes true, all threads stop, engine stops
 
 	//main window
 	Render* mainRender;
@@ -827,6 +828,7 @@ void * select = &sel;
 	
 
 	  }
+	cout<<"Render thread ending!"<<endl;
 }//END <RK4_parse>
 
 

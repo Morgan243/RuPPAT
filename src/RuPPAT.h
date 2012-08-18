@@ -100,7 +100,7 @@ class RuPPAT
 
 	
 	
-	bool done;//if this goes false, all threads stop, engine stops
+
 	bool orbGrav;//is orbital gravity on?
 	int gravitationalConstant;
 	int IDbase;//value of next ID 
