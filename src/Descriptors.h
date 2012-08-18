@@ -15,8 +15,6 @@ struct Entity_desc
 	float xAcc, yAcc;//acceleration vector
 	int xGacc,yGacc; //grav acceleration
 	int mass;
-//	int spriteID; //base sprite (missle, ship, etc)
-//	int rotationID; //which rotation version of base
 
 	float maxAccel;
 	bool noDrawEffect;

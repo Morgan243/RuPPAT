@@ -1,12 +1,7 @@
 //Object is the base class for moveable Entities
-// 	an object doesnt necessarily have a sprite.
-// 	you must derive from object and compose a 
-// 	class with the Sprite class in it
 //
-// 	Thus, Object can be used for invisible masses
-// 	and other effects
 //
-//This is a parent class
+//This is a parent class but is useable for basics 
 
 #include "SDL/SDL.h"
 #include "SDL/SDL_gfxPrimitives.h"
@@ -33,6 +28,10 @@ explicit Object(string sprite_path, int start_x, int start_y, int start_mass);
 
 explicit Object(string sprite_path, int start_x, int start_y, int start_mass,
 			int num_rotations, int starting_angle);
+
+explicit Object(string sprite_path, int start_x, int start_y, int start_mass,
+			int num_rotations, int starting_angle,
+				 float xVel, float yVel);
 		~Object();
 
 		//for compatability, gets a mass desc out of Entity_desc
@@ -53,11 +52,13 @@ explicit Object(string sprite_path, int start_x, int start_y, int start_mass,
 
 		void accelForward();	
 		void accelBackward();
+
+		void setDescriptor(Entity_desc new_desc);
+
 		Sprite sprite;
 
 	protected:
 
 		Entity_desc descriptor;
-		//SDL_Surface *sprite;	
 };
 #endif

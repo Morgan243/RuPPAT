@@ -58,7 +58,8 @@ class RuPPAT
 
 	int addEntity(Entity_desc new_ent);
 
-	int addObject(string spritePath, int x, int y, int mass);
+int addObject(string spritePath, int x, int y, int mass, float rotationRate,
+		float xVel, float yVel);
 
 	Entity_desc RK4_entity(Entity_desc ent);
 

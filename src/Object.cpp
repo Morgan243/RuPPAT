@@ -28,11 +28,36 @@ Object::Object(string sprite_path, int start_x, int start_y, int start_mass,
 	descriptor.mass = start_mass;
 }
 
+Object::Object(string sprite_path, int start_x, int start_y, int start_mass,
+			int num_rotations, int starting_angle,
+				 float xVel, float yVel)
+:sprite(sprite_path,num_rotations,starting_angle)
+{
+	//set x and y
+	descriptor.x = (float)start_x;
+	descriptor.y = (float)start_y;
+
+	descriptor.xVel=xVel;
+	descriptor.yVel=yVel;
+	//set mass
+	descriptor.mass = start_mass;
+}
+
+
 Object :: ~Object()
 {
 
 }
 
+void Object::setDescriptor(Entity_desc new_desc)
+{
+	descriptor = new_desc;
+}
+
+Entity_desc Object::getDescriptor()
+{
+	return descriptor;
+}
 
 Mass_desc Object :: getDesc()
 {
@@ -42,6 +67,7 @@ Mass_desc Object :: getDesc()
 	mass.yLoc = descriptor.y;
 	return mass; 
 }
+
 
 
 

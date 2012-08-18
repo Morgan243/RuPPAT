@@ -47,10 +47,12 @@ Sprite::~Sprite()
 
 }
 
-void Sprite::setRotationRate(int rotRate)
+
+void Sprite::setRotationRate(float rotRate)
 {
 	rotationRate = rotRate;
 }
+
 
 float Sprite::getRotationRate()
 {

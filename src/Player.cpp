@@ -102,7 +102,7 @@ Player :: ~Player()
 
 }
 
-void Player :: setRotation_rate(int rotRate)
+void Player :: setRotation_rate(float rotRate)
 {
 	//rotationRate = rotRate;
 	sprite.setRotationRate(rotRate);

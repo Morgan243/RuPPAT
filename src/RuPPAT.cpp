@@ -333,17 +333,18 @@ int RuPPAT :: addEntity(Entity_desc new_ent)
 }
 
 
-int RuPPAT :: addObject(string spritePath, int x, int y, int mass)
+int RuPPAT :: addObject(string spritePath, int x, int y, int mass, float rotationRate,
+				float xVel, float yVel)
 {
 	int size;
 
 		pthread_rwlock_wrlock(&object_rw_lock);
-			objectList.push_back(new Object(spritePath, x, y, mass));
+			//objectList.push_back(new Object(spritePath, x, y, mass));
 
-			objectList.back()->sprite.incrementRotationRate();
-			objectList.back()->sprite.incrementRotationRate();
-			objectList.back()->sprite.incrementRotationRate();
-			objectList.back()->sprite.incrementRotationRate();
+	objectList.push_back(new Object(spritePath, x, y, mass,
+					360,0,xVel,yVel ));
+			objectList.back()->sprite.setRotationRate(rotationRate);
+
 		pthread_rwlock_unlock(&object_rw_lock);
 
 		
@@ -414,11 +415,6 @@ Entity_desc RuPPAT :: RK4_entity(Entity_desc ent)
 			temp_e.x = newX;
 			temp_e.y = newY;
 
-	
-
-
-
-	    
 	}//end massLIst for[j]
 return temp_e;
 }
@@ -451,7 +447,8 @@ void RuPPAT :: RK4_all(float t, float dt)
 
 
 	const int timerConst = 1;
-	
+
+//if there are mass objects	
  if(mass_size)
   {
    for(int j = 0; j<mass_size;j++)
@@ -466,11 +463,12 @@ void RuPPAT :: RK4_all(float t, float dt)
 	  for(int i=0; i<player_size ;i++)
 	      {
 
-
+		//get the descriptor for the player
 		pthread_rwlock_rdlock(&player_rw_lock);
 			temp_ent = players[i]->getDescriptor();
 		pthread_rwlock_unlock(&player_rw_lock);
 
+		//integrate to get velocity and locations
 	integrate_ent(temp_ent,t, dt,
 			temp_mass.mass, temp_mass.xLoc, temp_mass.yLoc);
 
@@ -480,7 +478,7 @@ void RuPPAT :: RK4_all(float t, float dt)
 		tmp_xVel = temp_ent.xVel;
 		tmp_yVel = temp_ent.yVel;
 
-
+			//make sure the new location is within bounds
 			if(newX<=0)
 				{newX=1;tmp_xVel=tmp_xVel*(-1);}
 
@@ -555,9 +553,55 @@ void RuPPAT :: RK4_all(float t, float dt)
 			}
 	pthread_rwlock_unlock(&pix_rw_lock);
 
-
-
 	      }//end pixelList for[i]
+	
+	//go through other objects 
+	  for(int i=0; i<mass_size; i++)
+		{
+		if(i!=j)//dont apply grav to self!
+			{
+		pthread_rwlock_rdlock(&object_rw_lock);
+			temp_ent = objectList[i]->getDescriptor();
+		pthread_rwlock_unlock(&object_rw_lock);
+
+		//integrate to get velocity and locations
+	integrate_ent(temp_ent,t, dt,
+			temp_mass.mass, temp_mass.xLoc, temp_mass.yLoc);
+
+		newX = temp_ent.x;
+		newY = temp_ent.y;
+
+		tmp_xVel = temp_ent.xVel;
+		tmp_yVel = temp_ent.yVel;
+
+			//make sure the new location is within bounds
+			if(newX<=0)
+				{newX=1;tmp_xVel=tmp_xVel*(-1);}
+
+			if(newX>=WIDTH)
+				{newX=WIDTH-1;tmp_xVel=tmp_xVel*(-1);}
+
+			if(newY<=0)
+				{newY=1;tmp_yVel=tmp_yVel*(-1);}
+
+			if(newY>=HEIGHT)
+				{newY=HEIGHT-1;tmp_yVel=tmp_yVel*(-1);}	
+
+
+
+			temp_ent.xVel = tmp_xVel;
+			temp_ent.yVel = tmp_yVel;
+			temp_ent.x = newX;
+			temp_ent.y = newY;
+
+		pthread_rwlock_wrlock(&player_rw_lock);
+			objectList[i]->setDescriptor(temp_ent);
+		pthread_rwlock_unlock(&player_rw_lock);
+			}
+
+
+		}
+ 
 	}//end massLIst for[j]
    }//end if mass_size not 0
  else//no masses!
@@ -696,11 +740,11 @@ Pixel_desc t_pix;
 	   {
 			t_pix.color = rand()%0xffffff;
 		int count = 0;
-			t_pix.x = 747;
-			t_pix.yVel = 78;
+			t_pix.x = 797;
+			t_pix.yVel = 68;
 			t_pix.xAcc = 0;
 			t_pix.dimFactor = 1000;
-		while(count<175 && !done)
+		while(count<125 && !done)
 		{  
 
 			t_pix.y = 584;

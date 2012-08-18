@@ -28,7 +28,7 @@ class Player : public Object
 					float maxaccel, int startX, int startY);
 		~Player();
 
-		void setRotation_rate(int rotRate);
+		void setRotation_rate(float rotRate);
 
 		float getRotation_rate();
 

@@ -28,8 +28,8 @@ string bkg_paths[]={"bkg_one_1080.png","bkg_two_1080.png","bkg_three_1080.png"};
 	//engine->addPlayer("white_rocket.png", 360, 0, 1, 400, 200);
 //engine->addObject("red_planet.png", (int)(WIDTH_cl/2), (int)(HEIGHT_cl/2), 100000);
 	
-engine->addObject("red_planet.png",844 , 560, 100000);
-
+engine->addObject("red_planet.png",844 , 560, 100000,1.0,0.0,0.0);
+engine->addObject("asteroid_large_1.png",600,400,100, -.1, 20.0,49.0);
 }
 
 

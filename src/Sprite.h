@@ -20,7 +20,7 @@ class Sprite
 				int numRotations, int startingAngle);
 		~Sprite();
 
-		void setRotationRate(int rotRate);
+		void setRotationRate(float rotRate);
 
 		float getRotationRate();
 
