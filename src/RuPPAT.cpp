@@ -851,14 +851,17 @@ void * select = &sel;
 	//keep looping until program end
 	while(!done)
 	  {
-
+		//calculate new positions and velocities
 		RK4_all(t, dt);
+
+		//increment time
 		t += dt;
-		
+	
+		//blit bottom layer	
 		mainRender->applySurface(0,0,backgroundLayers[0]);
 
+		//blit middle layer
 		mainRender->applySurface(0,0,backgroundLayers[1]);
-
 
 		//parse objects	
 		parseObjectsToSurface();	
@@ -869,14 +872,15 @@ void * select = &sel;
 		//parse players
 		parsePlayersToSurface();
 
+		//blit top layer
 		mainRender->applySurface(0,0,backgroundLayers[2]);
 
-	
-	mainRender->OnRender();
+		//render the updated surface	
+		mainRender->OnRender();
 	
 	if(nextTick > SDL_GetTicks())SDL_Delay(nextTick - SDL_GetTicks());
 	
-	nextTick = SDL_GetTicks() + interval;
+		nextTick = SDL_GetTicks() + interval;
 	
 
 	  }
@@ -895,19 +899,10 @@ void RuPPAT :: runPPAT(bool *mainDone, Event_desc &mainEvents
 {
 bool *DONE = (bool*)mainDone;
 
-//initPixLock();
-//pthread_t computePhys_th; //does the number crunching for baisc physics
-//pthread_t applyPhys_th;//constantly applies the numbers crunched by computPhys_th
-//pthread_t demo_th;
-pthread_t rk4_th;
+	//declare the main compute and render thread
+	pthread_t rk4_th;
 
-//pthread_mutex_init(&pix_list_lock_2,NULL);
 
-//launch computePhys thread into *calcGravFromPointsOnSelect()*
-//pthread_create(&computePhys_th, NULL, pointsOnSelect_helper, this);
-
-//launch applyPhys thread into updateSelectPix
-//pthread_create(&applyPhys_th, NULL, updateSelectPix_helper, this );
 
 cout<<"SELECTION: "<<selection<<"\t OPTION: "<<option<<endl;
 
@@ -919,22 +914,7 @@ char select;
 	else if(selection == "boxin")select = 'r';
 	else select='r';
 
-	//add any initial point masses pMassList or pixels here to pixelList
-	Mass_desc tmp_mass = *(new Mass_desc);
-		tmp_mass.xLoc = 612;
-		tmp_mass.yLoc = 384;
-		tmp_mass.mass = 400000;
 
-	//atomically push mass to vector of masses
-//	pthread_rwlock_wrlock(&mass_rw_lock);
-//		pMassList.push_back(tmp_mass);
-//	pthread_rwlock_unlock(&mass_rw_lock);
-
-		tmp_mass.xLoc = 312;
-		tmp_mass.yLoc = 284;
-		tmp_mass.mass = 10000;
-
-//		pMassList.push_back(tmp_mass);
 
 
 	//prepare helper struct (NOT USED?)
@@ -943,20 +923,21 @@ char select;
 	demo.character = &select;
 		void* args = &demo;
 
+	//prepare args for main compute and render thread
 	RK4_parse_helper_arg RK_help;
 	//RK_help.backg=bkg;
 	RK_help.context=this;
 	void* RK_args = &RK_help;
+
+	//launch thread into rk4 parse
 	pthread_create(&rk4_th, NULL, RK4_parse_helper, RK_args);
-	//pthread_create(&demo_th,NULL, runDemos_helper,args);
 
 void *sel = &select;
 
-	//go ahead and run demo on launch
-	runDemos(sel);
 
-int FPS=1000;
-unsigned int keyT1, keyT2;
+
+	int FPS=1000;
+	unsigned int keyT1, keyT2;
 
 	int game_rate = 120;
 	int interval = 1000/game_rate;
@@ -969,7 +950,10 @@ unsigned int keyT1, keyT2;
 		//a while since it was last pressed
 		if(mainEvents.space && keyT1>60)
 			{
+			//reset the key tick count
 			keyT1 = 0;
+
+			//output
 			cout<<"SPACE PRESSED!!!"<<endl;	
 
 			//then run demo->place pixels w/ attr
@@ -978,9 +962,9 @@ unsigned int keyT1, keyT2;
 		//increment keypress counter
 		keyT1++;
 
+		//sleep thread, keeps CPU usage down
 		if(nextTick > SDL_GetTicks())SDL_Delay(nextTick - SDL_GetTicks());
-	
-	nextTick = SDL_GetTicks() + interval;	
+			nextTick = SDL_GetTicks() + interval;	
 
 	}//END while
 
@@ -1062,39 +1046,35 @@ void RuPPAT :: putSprite(int x, int y, SDL_Surface *sprite)
 //for handling player control
 void RuPPAT :: accelPlayer(int p_ID, bool isForward)
 {
+	//declare the base pixel used for exhaust
+	Pixel_desc t_pix;
+
+	//setAccelVectors needs write lock, get exhaust as well
 	pthread_rwlock_wrlock(&player_rw_lock);
 		players[p_ID]->setAccelVectors(isForward);
+		players[p_ID]->getXY_exhaust(t_pix.xVel, t_pix.yVel);
 	pthread_rwlock_unlock(&player_rw_lock);
 
-	Pixel_desc t_pix;
+		//color start red
 		t_pix.color=0xaf0000;
 		t_pix.xAcc = 0;
 		t_pix.yAcc = 0;
 		t_pix.accelLength = 2;
-		t_pix.dimFactor = 10;
+		t_pix.dimFactor = 4;
 
 		t_pix.dimTimer = 0;
-		t_pix.Xtimer =t_pix.Ytimer =0;// SDL_GetTicks();
+		t_pix.Xtimer =t_pix.Ytimer =0;
 
 		t_pix.deleteMe = false;
 
 		t_pix.updated = 0;
 
-
-	pthread_rwlock_wrlock(&player_rw_lock);
-
-
-		players[p_ID]->setAccelVectors(isForward);
-	
-	//	t_pix.yVel = -1*(players[p_ID]->getYvel());
-	//	t_pix.xVel = -1*(players[p_ID]->getXvel());
-		players[p_ID]->getXY_exhaust(t_pix.xVel, t_pix.yVel);
-
-	pthread_rwlock_unlock(&player_rw_lock);
 	
 	float origXvel=t_pix.xVel, origYvel=t_pix.yVel;
 		cout<<origXvel<<"  "<<origYvel<<endl;	
-	for(int i =0; i< 30; i++)
+	
+	//create 10 pixels with slight random variation
+	for(int i =0; i< 10; i++)
 	{	
 		t_pix.color += 0x000300;
 		t_pix.xVel =(origXvel*60)+rand()%20 -rand()%20;
@@ -1161,19 +1141,19 @@ void RuPPAT :: turnPlayerToCoord(int p_ID, int x, int y, int rate)
 	//1st coordinate
 	if( (x_diff > 0) && (y_diff > 0))
 	{
-	deg_playerToPoint = (180.0/3.141)*atan((float)y_diff/(float)x_diff);
+	 deg_playerToPoint = (180.0/3.141)*atan((float)y_diff/(float)x_diff);
 	}
 	else if( (x_diff < 0) && (y_diff > 0))
 	{
-	deg_playerToPoint = 180.0 + ((180.0/3.141)*atan((float)y_diff/(float)x_diff));
+	 deg_playerToPoint = 180.0 + ((180.0/3.141)*atan((float)y_diff/(float)x_diff));
 	}
 	else if( (x_diff < 0) && (y_diff < 0))
 	{
-	deg_playerToPoint = 180.0 + ((180.0/3.141)*atan((float)y_diff/(float)x_diff));
+	 deg_playerToPoint = 180.0 + ((180.0/3.141)*atan((float)y_diff/(float)x_diff));
 	}
 	else if( (x_diff > 0) && (y_diff<0))
 	{
-	deg_playerToPoint = 360.0 + ((180.0/3.141)*atan((float)y_diff/(float)x_diff));
+	 deg_playerToPoint = 360.0 + ((180.0/3.141)*atan((float)y_diff/(float)x_diff));
 	}
 
 
@@ -1267,7 +1247,7 @@ tempErrDiff =  angle_diff*.1 - tempErrDiff; //angle_diff - tempErrDiff;
 	//		y_diff = y - players[p_ID]->getY();
 	
 		pthread_rwlock_unlock(&player_rw_lock);
-printf("exiting!\n");
+
 }
 
 
