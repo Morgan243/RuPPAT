@@ -24,6 +24,11 @@ pthread_rwlock_t  pix_rw_lock,
 int WIDTH, HEIGHT;
 
 using namespace std;
+
+	//These globals would be better placed as fields in the RuPPAT class
+	//but my implementation of pthreads+OO results in undefined behavior
+	//so until i figure out a better way, globals will have to do
+
 	bool done;//if this goes true, all threads stop, engine stops
 
 	//main window
@@ -42,10 +47,6 @@ using namespace std;
 	vector<Player *> players;//independent sprite that controlled by AI or human
 
 	vector<Object *> objectList;
-
-	//unused as of now
-//	vector<Mass_desc> pMassList;
-
 
 
 	queue<Pixel_desc> toRender;
@@ -187,7 +188,8 @@ void RuPPAT :: parseObjectsToSurface()
 		{
 			x = objectList[i]->getX();
 			y = objectList[i]->getY();	
-
+	
+			objectList[i]->sprite.updateSprite();
 			mainRender->putSprite(x,y,objectList[i]->getSprite());
 
 		}
@@ -337,8 +339,14 @@ int RuPPAT :: addObject(string spritePath, int x, int y, int mass)
 
 		pthread_rwlock_wrlock(&object_rw_lock);
 			objectList.push_back(new Object(spritePath, x, y, mass));
+
+			objectList.back()->sprite.incrementRotationRate();
+			objectList.back()->sprite.incrementRotationRate();
+			objectList.back()->sprite.incrementRotationRate();
+			objectList.back()->sprite.incrementRotationRate();
 		pthread_rwlock_unlock(&object_rw_lock);
 
+		
 	return size;
 }
 

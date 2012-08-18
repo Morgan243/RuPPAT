@@ -29,7 +29,10 @@ class Object
 {
 	public:
 
-	explicit Object(string sprite_path, int start_x, int start_y, int start_mass);
+explicit Object(string sprite_path, int start_x, int start_y, int start_mass);
+
+explicit Object(string sprite_path, int start_x, int start_y, int start_mass,
+			int num_rotations, int starting_angle);
 		~Object();
 
 		//for compatability, gets a mass desc out of Entity_desc
@@ -50,11 +53,11 @@ class Object
 
 		void accelForward();	
 		void accelBackward();
+		Sprite sprite;
 
 	protected:
 
 		Entity_desc descriptor;
-		Sprite sprite_;
-		SDL_Surface *sprite;	
+		//SDL_Surface *sprite;	
 };
 #endif

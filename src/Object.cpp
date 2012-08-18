@@ -4,16 +4,8 @@
 
 
 Object :: Object(string sprite_path, int start_x, int start_y, int start_mass)
-:sprite_(sprite_path,360,0)
+:sprite(sprite_path,360,0)
 {//{{{
-	//load the sprite from sprite_path
-	SDL_Surface *tempSprite, *tempSpriteOpt;
-
-		tempSprite = IMG_Load((char *)sprite_path.c_str());
-	
-		tempSpriteOpt = SDL_DisplayFormatAlpha(tempSprite);
-
-		sprite = tempSpriteOpt;
 
 	//set x and y
 	descriptor.x = (float)start_x;
@@ -23,6 +15,18 @@ Object :: Object(string sprite_path, int start_x, int start_y, int start_mass)
 	descriptor.mass = start_mass;
 		
 }//}}}
+
+Object::Object(string sprite_path, int start_x, int start_y, int start_mass,
+			int num_rotations, int starting_angle)
+:sprite(sprite_path,num_rotations,starting_angle)
+{
+	//set x and y
+	descriptor.x = (float)start_x;
+	descriptor.y = (float)start_y;
+
+	//set mass
+	descriptor.mass = start_mass;
+}
 
 Object :: ~Object()
 {
@@ -43,7 +47,7 @@ Mass_desc Object :: getDesc()
 
 SDL_Surface * Object :: getSprite()
 {
-	return sprite;
+	return sprite.getSprite();
 }
 
 
