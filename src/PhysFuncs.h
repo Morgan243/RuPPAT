@@ -21,9 +21,7 @@ struct Derivative
 
 float getDistance(float x1, float y1, float x2, float y2)
 {
-//printf("sqrt((%d - %d)^2 + (%d - %d)^2)",x2,x1,y2,y1);
-
-return ( sqrt( ((x2-x1)*(x2-x1)) + ((y2-y1)*(y2-y1))  ) );
+	return ( sqrt( ((x2-x1)*(x2-x1)) + ((y2-y1)*(y2-y1))  ) );
 }
 
 
@@ -31,9 +29,7 @@ return ( sqrt( ((x2-x1)*(x2-x1)) + ((y2-y1)*(y2-y1))  ) );
 float G_acceleration (const Pixel_desc &state, Derivative &output, float t,
 			const float objMass, const float objX, const float objY)
 {
-//	const float objX = 512;
-//	const float objY = 384;
-//	const float objMass = 100000.0;
+
 	const float gravConst = 10;
 
 	float distance = (float)getDistance(objX, objY, state.x, state.y);
@@ -59,7 +55,6 @@ float G_acceleration (const Pixel_desc &state, Derivative &output, float t,
 		if(distance!=0)// && distance>21 && distance < (objMass*2))
 			 gAccTotal = (objMass*gravConst)/(distance*distance);
 
-	//std::cout<<"total accel = "<<gAccTotal<<std::endl;
 
 			output.ddx = gAccTotal * sin(theta);
 			output.ddy = gAccTotal * cos(theta);
@@ -70,7 +65,7 @@ float G_acceleration (const Pixel_desc &state, Derivative &output, float t,
 }
 
 Derivative evaluate(Pixel_desc &initial,float t, float dt,const Derivative &d,
-				const float objMass, const float point_x, const float point_y)
+			const float objMass, const float point_x, const float point_y)
 {
 	Pixel_desc state;
 	
@@ -88,12 +83,10 @@ Derivative evaluate(Pixel_desc &initial,float t, float dt,const Derivative &d,
 	//we already know the new velocity
 	output.dx = state.xVel;
 	output.dy = state.yVel;
-//std::cout<<"internal acc "<< d.ddx<<","<<d.ddy<<std::endl;
 
 	//calculate the new accelerations
-	 G_acceleration(state, output, t + dt, objMass, point_x, point_y);
+	G_acceleration(state, output, t + dt, objMass, point_x, point_y);
 	 
-
 return output;
 }
 
@@ -116,18 +109,15 @@ void integrate (Pixel_desc &state, float t, float dt,
          float dydt = 1.0f/6.0f * (a.dy + 2.0f*(b.dy + c.dy) + d.dy);
 
 
-          float ddxdt = 1.0f/6.0f * (a.ddx + 2.0f*(b.ddx + c.ddx) + d.ddx);
-          float ddydt = 1.0f/6.0f * (a.ddy + 2.0f*(b.ddy + c.ddy) + d.ddy);
+         float ddxdt = 1.0f/6.0f * (a.ddx + 2.0f*(b.ddx + c.ddx) + d.ddx);
+         float ddydt = 1.0f/6.0f * (a.ddy + 2.0f*(b.ddy + c.ddy) + d.ddy);
 
 
-//std::cout<<"dydt:"<<dydt<<"  ddydt:"<<ddydt<<std::endl;
 	state.x = state.x + dxdt*dt;
 	state.y = state.y + dydt*dt;
 
 	state.xVel = state.xVel + ddxdt*dt;
 	state.yVel = state.yVel + ddydt*dt;
-//std::cout<<"xVel:"<<state.xVel<<" yVel :"<<state.yVel<<std::endl;
-
 }
 
 
@@ -137,9 +127,6 @@ void integrate (Pixel_desc &state, float t, float dt,
 float G_acceleration_ent (const Entity_desc &state, Derivative &output, float t,
 			const float objMass, const float objX, const float objY)
 {
-//	const float objX = 512;
-//	const float objY = 384;
-//	const float objMass = 100000.0;
 	const float gravConst = 10;
 
 	float distance = (float)getDistance(objX, objY, state.x, state.y);
@@ -165,7 +152,6 @@ float G_acceleration_ent (const Entity_desc &state, Derivative &output, float t,
 		if(distance!=0)// && distance>21 && distance < (objMass*2))
 			 gAccTotal = (objMass*gravConst)/(distance*distance);
 
-	//std::cout<<"total accel = "<<gAccTotal<<std::endl;
 
 			output.ddx = gAccTotal * sin(theta);
 			output.ddy = gAccTotal * cos(theta);
@@ -194,7 +180,6 @@ Derivative evaluate_ent(Entity_desc &initial,float t, float dt,const Derivative 
 	//we already know the new velocity
 	output.dx = state.xVel;
 	output.dy = state.yVel;
-//std::cout<<"internal acc "<< d.ddx<<","<<d.ddy<<std::endl;
 
 	//calculate the new accelerations
 	 G_acceleration_ent(state, output, t + dt, objMass, point_x, point_y);
@@ -222,18 +207,15 @@ void integrate_ent (Entity_desc &state, float t, float dt,
          float dydt = 1.0f/6.0f * (a.dy + 2.0f*(b.dy + c.dy) + d.dy);
 
 
-          float ddxdt = 1.0f/6.0f * (a.ddx + 2.0f*(b.ddx + c.ddx) + d.ddx);
-          float ddydt = 1.0f/6.0f * (a.ddy + 2.0f*(b.ddy + c.ddy) + d.ddy);
+         float ddxdt = 1.0f/6.0f * (a.ddx + 2.0f*(b.ddx + c.ddx) + d.ddx);
+         float ddydt = 1.0f/6.0f * (a.ddy + 2.0f*(b.ddy + c.ddy) + d.ddy);
 
 
-//std::cout<<"dydt:"<<dydt<<"  ddydt:"<<ddydt<<std::endl;
 	state.x = state.x + dxdt*dt;
 	state.y = state.y + dydt*dt;
 
 	state.xVel = state.xVel + ddxdt*dt;
 	state.yVel = state.yVel + ddydt*dt;
-//std::cout<<"xVel:"<<state.xVel<<" yVel :"<<state.yVel<<std::endl;
-
 }
 
 #endif

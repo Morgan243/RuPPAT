@@ -60,17 +60,6 @@ Entity_desc Object::getDescriptor()
 {
 	return descriptor;
 }
-//
-////legacy, should be removed soon
-//Mass_desc Object :: getDesc()
-//{
-//	Mass_desc mass;
-//	mass.mass = descriptor.mass;
-//	mass.xLoc = descriptor.x;
-//	mass.yLoc = descriptor.y;
-//	return mass; 
-//}
-//
 
 SDL_Surface * Object :: getSprite()
 {

@@ -40,7 +40,6 @@ public:
 				int accLength,
 				int dimFactor, int mass  );
 
-
 	
 	void parseSelectPixToSurface();
 
@@ -52,29 +51,14 @@ public:
 
 		
 	void run(string selection, string option);	
+
 	float runDemos(string selection, string option1, string option2,
 		        int x1, int y1, int x2, int y2, int x3, int y3);
+
 	void handleEvents(Event_desc &mainEvents);
 
 	void rotateSpriteToCoor(int p_ID, int x, int y, int turnRate);
 
-
-//	void setGravAcc(int x, int y, int gXaccel, int gYaccel);
-
-//	void addGravAcc(int x, int y, int gXaccel, int gYaccel);
-
-
-
-//	void calcGravFromObject( int objX, int objY, int objMass);
-
-
-//	void calcGravFromSelectObject();
-	
-//	void calcGravFromPointOnSelect(int pX, int pY, int pMass);
-//	void calcGravFromEdgeOnSelect(char edge, int pMass);//t, b, l, r
-//	void calcGravFromSelect();
-
-	
 private:
 	SDL_Event event;	
 

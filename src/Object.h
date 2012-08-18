@@ -34,8 +34,6 @@ explicit Object(string sprite_path, int start_x, int start_y, int start_mass,
 				 float xVel, float yVel);
 		~Object();
 
-		//for compatability, gets a mass desc out of Entity_desc
-		Mass_desc getDesc();
 		Entity_desc getDescriptor();
 
 		SDL_Surface *getSprite();

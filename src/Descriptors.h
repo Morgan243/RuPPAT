@@ -61,25 +61,14 @@ struct Pixel_desc
 	bool deleteMe;
 };
 
-struct Mass_desc
-{
-	int mass;
 
-	int xLoc;
-	int yLoc;
-
-//	SDL_Surface *mass_sprite;
-
-};
-
-
-struct Grav_desc
-{	
-	int x, y;
-	
-	int gXacc;
-	int gYacc;
-
-};
+//struct Grav_desc
+//{	
+//	int x, y;
+//	
+//	int gXacc;
+//	int gYacc;
+//
+//};
 
 #endif

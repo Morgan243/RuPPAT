@@ -4,8 +4,6 @@
 #include "SDL/SDL_image.h"
 #include "Descriptors.h"
 #include "Render.h"
-//#include "Player.h"
-//#include "PhysFuncs.h"
 #include <vector>
 #include <queue>
 #include <iostream>
@@ -13,14 +11,8 @@
 #define RuPPAT_H
 
 
-//#define WIDTH 1024
-//#define HEIGHT 768
 #define BPP 32
 
-
-
-
-	void *testThread(void *args);
 
 using namespace std;
 
@@ -58,8 +50,8 @@ class RuPPAT
 
 	int addEntity(Entity_desc new_ent);
 
-int addObject(string spritePath, int x, int y, int mass, float rotationRate,
-		float xVel, float yVel);
+	int addObject(string spritePath, int x, int y, int mass, float rotationRate,
+				float xVel, float yVel);
 
 	Entity_desc RK4_entity(Entity_desc ent);
 
@@ -99,10 +91,7 @@ int addObject(string spritePath, int x, int y, int mass, float rotationRate,
 		Uint32 lastTime;
 		Uint32 deltaTime;
 
-	
-	
 
-	bool orbGrav;//is orbital gravity on?
 	int gravitationalConstant;
 	int IDbase;//value of next ID 
 

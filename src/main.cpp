@@ -149,15 +149,11 @@ int handleInput(int argc,char *argv[])
 		}
 
 
-
-
 		if(strcmp(argv[i],"-threads")==0)
 		{
 		//	THREADS=atoi(argv[i+1]);
 
 		}		
-
 	}
-
 	return k;
 }
