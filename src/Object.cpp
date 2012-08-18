@@ -37,8 +37,10 @@ Object::Object(string sprite_path, int start_x, int start_y, int start_mass,
 	descriptor.x = (float)start_x;
 	descriptor.y = (float)start_y;
 
+	//initial velocities
 	descriptor.xVel=xVel;
 	descriptor.yVel=yVel;
+
 	//set mass
 	descriptor.mass = start_mass;
 }
@@ -58,18 +60,17 @@ Entity_desc Object::getDescriptor()
 {
 	return descriptor;
 }
-
-Mass_desc Object :: getDesc()
-{
-	Mass_desc mass;
-	mass.mass = descriptor.mass;
-	mass.xLoc = descriptor.x;
-	mass.yLoc = descriptor.y;
-	return mass; 
-}
-
-
-
+//
+////legacy, should be removed soon
+//Mass_desc Object :: getDesc()
+//{
+//	Mass_desc mass;
+//	mass.mass = descriptor.mass;
+//	mass.xLoc = descriptor.x;
+//	mass.yLoc = descriptor.y;
+//	return mass; 
+//}
+//
 
 SDL_Surface * Object :: getSprite()
 {
@@ -109,14 +110,3 @@ float Object :: getYacc()
 
 }
 
-
-//void Object :: accelForward()
-//{
-//
-//
-//}
-//
-//void Object :: accelBackward()
-//{
-//
-//}

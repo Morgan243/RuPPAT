@@ -349,7 +349,7 @@ Entity_desc RuPPAT :: RK4_entity(Entity_desc ent)
 	const Uint32 NOW = SDL_GetTicks(); 
 	float newX, newY, tmp_xVel, tmp_yVel;
 
-	Mass_desc temp_object;	
+	//Mass_desc temp_object;	
 
 
 	pthread_rwlock_rdlock(&object_rw_lock);
@@ -358,21 +358,24 @@ Entity_desc RuPPAT :: RK4_entity(Entity_desc ent)
 
 
 	const int timerConst = 1;
+
 	Entity_desc temp_e = ent;
+	Entity_desc mass_e;
 	Pixel_desc temp_p;
+
    for(int j = 0; j<object_size;j++)
 	{
 
 	//get mass
 	pthread_rwlock_rdlock(&object_rw_lock);
-		temp_object = objectList[j]->getDesc();	
+		mass_e = objectList[j]->getDescriptor();	
 	pthread_rwlock_unlock(&object_rw_lock);
 
 
 
 
 		integrate_ent(temp_e, 0.0, 0.001,
-			temp_object.mass, temp_object.xLoc, temp_object.yLoc);
+			mass_e.mass, mass_e.x, mass_e.y);
 
 		newX = temp_e.x;
 		newY = temp_e.y;
@@ -411,9 +414,10 @@ void RuPPAT :: RK4_all(float t, float dt)
 	const Uint32 NOW = SDL_GetTicks(); 
 	float newX, newY, tmp_xVel, tmp_yVel;
 
-	Mass_desc temp_mass;	
+	//Mass_desc temp_mass;	
 	Pixel_desc temp_p;
 	Entity_desc temp_ent;
+	Entity_desc mass_e;
 
 	//get the size of the player list
 	pthread_rwlock_rdlock(&player_rw_lock);
@@ -442,7 +446,7 @@ void RuPPAT :: RK4_all(float t, float dt)
 
 	//get mass
 	pthread_rwlock_rdlock(&object_rw_lock);
-		temp_mass = objectList[j]->getDesc();	
+		mass_e = objectList[j]->getDescriptor();	
 	pthread_rwlock_unlock(&object_rw_lock);
 
 
@@ -456,7 +460,7 @@ void RuPPAT :: RK4_all(float t, float dt)
 
 		//integrate to get velocity and locations
 	integrate_ent(temp_ent,t, dt,
-			temp_mass.mass, temp_mass.xLoc, temp_mass.yLoc);
+			mass_e.mass, mass_e.x, mass_e.y);
 
 		newX = temp_ent.x;
 		newY = temp_ent.y;
@@ -501,7 +505,7 @@ void RuPPAT :: RK4_all(float t, float dt)
 
 
 		integrate(temp_p, t, dt,
-			temp_mass.mass, temp_mass.xLoc, temp_mass.yLoc);
+			mass_e.mass, mass_e.x, mass_e.y);
 
 		newX = temp_p.x;
 		newY = temp_p.y;
@@ -552,7 +556,7 @@ void RuPPAT :: RK4_all(float t, float dt)
 
 		//integrate to get velocity and locations
 	integrate_ent(temp_ent,t, dt,
-			temp_mass.mass, temp_mass.xLoc, temp_mass.yLoc);
+			mass_e.mass, mass_e.x, mass_e.y);
 
 		newX = temp_ent.x;
 		newY = temp_ent.y;
