@@ -102,7 +102,6 @@ Uint32 *pixmem32;
   
     pixmem32 = (Uint32*) mainScreen->pixels  + y + x;
     *pixmem32 = colour;
-
 }
 
 
@@ -135,5 +134,4 @@ void Render::applySurface(int x, int y, SDL_Surface* source)
 	
 	//finally blit the source onto main at (x,y) on main
 	SDL_BlitSurface(source,&offset,mainScreen,NULL);
-
 }

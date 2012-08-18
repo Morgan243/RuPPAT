@@ -9,37 +9,32 @@
 
 class Render
 {
+	public:
+		Render(int width, int height, int BPP, Uint32 flags);
+		~Render();
 
-public:
+		void setMainScreen(int color);
 
-	Render(int width, int height, int BPP, Uint32 flags);
-	~Render();
+		void OnRender();
+		
+		Uint32 getPixel(int x, int y, int screenID);
 
-	void setMainScreen(int color);
+		void putPixel(int x, int y, int color, int screenID);
+		
+		void putSprite(int x, int y, Entity_desc* entityDetails);
 
-	void OnRender();
-	
-	Uint32 getPixel(int x, int y, int screenID);
+		void putSprite(int x, int y, SDL_Surface* sprite);
 
-	void putPixel(int x, int y, int color, int screenID);
-	
-	void putSprite(int x, int y, Entity_desc* entityDetails);
+		void putPixel2(int x, int y, Uint8 r, Uint8 g, Uint8 b);
 
-	void putSprite(int x, int y, SDL_Surface* sprite);
-
-	void putPixel2(int x, int y, Uint8 r, Uint8 g, Uint8 b);
-
-	void applySurface(int x, int y, SDL_Surface* source);	
-	
-	SDL_Surface* mainScreen;
-private:
-	
-	
-
-	int mainWidth;
-	int mainHeight;
-	int  mainBPP;
-	Uint32 mainFlags;
+		void applySurface(int x, int y, SDL_Surface* source);	
+		
+		SDL_Surface* mainScreen;
+	private:
+		int mainWidth;
+		int mainHeight;
+		int  mainBPP;
+		Uint32 mainFlags;
 };
 
 #endif
