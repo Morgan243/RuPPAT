@@ -104,75 +104,61 @@ Player :: ~Player()
 
 void Player :: setRotation_rate(float rotRate)
 {
-	//rotationRate = rotRate;
 	sprite.setRotationRate(rotRate);
 }
 
 float Player :: getRotation_rate()
 {
-	//return rotationRate;
 	return sprite.getRotationRate();
 }
 
 void Player :: incrementRotation_rate()
 {
-	//rotationRate += 0.01;
 	sprite.incrementRotationRate();
 }
 
 void Player :: decrementRotation_rate()
 {
-	//rotationRate -= 0.01;
 	sprite.decrementRotationRate();
 
 }
 
 void Player :: updateSprite()
 {
-//	currentAngle_index_f += rotationRate;
-//	if(currentAngle_index_f >=360.0)currentAngle_index_f=0.0;
-//	if(currentAngle_index_f < 0.0) currentAngle_index_f = 359.0;
 	sprite.updateSprite();
 }
 
 float Player :: getAngle()
 {
-	//return (float)currentAngle_index_f*DEGREE_INCREMENT;
 	return sprite.getAngle();
 }
 
 void Player :: setAngle_index(int angleIndex)
 {
-	//currentAngle_index = angleIndex;
 	sprite.setAngleIndex(angleIndex);
 }
 
 
 void Player :: incrementAngle_index()
 {
-	//currentAngle_index++;
 	sprite.incrementAngleIndex();
 }
 
 
 void Player :: decrementAngle_index()
 {
-	//currentAngle_index--;
 	sprite.decrementAngleIndex();
 }
 
 
 SDL_Surface *Player :: getSprite()
 {
-	//int tmp_angle = (int) currentAngle_index_f;
-	//return rotations[tmp_angle];
 	return sprite.getSprite();
 }
 
 
 SDL_Surface *Player :: getSprite(int angle)
 {
-	//return rotations[angle];
 	return sprite.getSprite(angle);
 }
 
@@ -243,7 +229,6 @@ void Player :: setAccelVectors(bool forward)
 		else if(heading == 0)
 			{
 			descriptor.xVel += descriptor.maxAccel;
-			//cout<<"Acceled at ZERO! "<<descriptor.xAcc<<endl;
 			}
 
 
@@ -288,7 +273,6 @@ void Player :: setAccelVectors(bool forward)
 		else if(heading == 0)
 			{
 			descriptor.xVel -= descriptor.maxAccel;
-			//cout<<"Acceled at ZERO! "<<descriptor.xAcc<<endl;
 			}
 
 	}
@@ -297,7 +281,6 @@ void Player :: setAccelVectors(bool forward)
 
 void Player :: getXY_exhaust(float &xVel, float &yVel)
 {
-//	float heading = DEGREE_INCREMENT * currentAngle_index_f;
 	xVel=exhaustX;
 	yVel=exhaustY;
 }
