@@ -571,16 +571,16 @@ void RuPPAT :: RK4_all(float t, float dt)
 			other_obj_e = objectList[i]->getDescriptor();
 		pthread_rwlock_unlock(&object_rw_lock);
 
-		if(false)//mass_e.ID!=other_obj_e.ID)//dont apply grav to self!
+		if(mass_e.ID!=other_obj_e.ID)//dont apply grav to self!
 			{
 
 	//cout<<"i = "<<i<<" and j = "<<j<<endl;
 		//integrate to get velocity and locations
 	//if( !(other_obj_e.x==mass_e.x || other_obj_e.y==mass_e.y))
-cout<<"mass_e: "<<mass_e.x<<","<<mass_e.y<<" with mass = "<<mass_e.mass<<" ID="<<mass_e.ID<<endl;
-cout<<"other_obj_e: "<<other_obj_e.x<<","<<other_obj_e.y<<" with mass = "<<other_obj_e.mass<<" ID="<<other_obj_e.ID<<endl;
+//cout<<"mass_e: "<<mass_e.x<<","<<mass_e.y<<" with mass = "<<mass_e.mass<<" ID="<<mass_e.ID<<endl;
+//cout<<"other_obj_e: "<<other_obj_e.x<<","<<other_obj_e.y<<" with mass = "<<other_obj_e.mass<<" ID="<<other_obj_e.ID<<endl;
 
-cout<<"applying!\n"<<endl;
+//cout<<"applying!\n"<<endl;
 	integrate_ent(other_obj_e,t, dt,
 			mass_e.mass, mass_e.x, mass_e.y);
 

@@ -8,7 +8,8 @@ using namespace std;
 Game :: Game()
 {
 	string bkg_paths[]={""};
-	engine = new RuPPAT(1024, 768, BPP, SDL_HWSURFACE | SDL_DOUBLEBUF,
+	engine = new RuPPAT(1024, 768, BPP,
+				 SDL_HWSURFACE | SDL_DOUBLEBUF,
 					 bkg_paths,0);
 	done = false;
 }
@@ -20,14 +21,22 @@ Game :: Game(int WIDTH_cl, int HEIGHT_cl)
 				"bkg_two_1080.png",
 					"bkg_three_1080.png"};
 
-	engine = new RuPPAT(WIDTH_cl, HEIGHT_cl, BPP, SDL_HWSURFACE | SDL_DOUBLEBUF,
-		bkg_paths,3);
+	engine = new RuPPAT(WIDTH_cl, HEIGHT_cl, BPP, 
+				SDL_HWSURFACE | SDL_DOUBLEBUF,
+					bkg_paths,3);
 	done = false;
 
-engine->addPlayer("red_ship.png", 360, 0, 1, 400, 200,"red_ship_HC.png");
+	engine->addPlayer("red_ship.png",
+				 360, 0, 1, 400, 200,
+					"red_ship_HC.png");
 	
-engine->addObject("red_planet.png",844 , 560, 100000,1.0,0.0,0.0,"red_planet_HC.png");
-engine->addObject("asteroid_large_1.png",600,400,100, -.1, 20.0,49.0,"asteroid_large_1_HC.png");
+	engine->addObject("red_planet.png",
+				844 , 560, 100000,1.0,0.0,0.0,
+					"red_planet_HC.png");
+
+	engine->addObject("asteroid_large_1.png"
+				,600,400,100, -.1, 20.0,49.0,
+					"asteroid_large_1_HC.png");
 
 //engine->addObject("asteroid_large_1.png",600,400,100, -.1, 20.0,49.0,"");
 }
@@ -102,8 +111,9 @@ void Game :: run(string selection, string option)
 }
 
 
-//This function is the only place that the mainEvent Event_desc can be written/altered
-//all other threads only poll for values relevent to them
+//This function is the only place that the mainEvent Event_desc
+//can be written/altered all other threads only poll for values 
+//relevent to them
 void Game :: handleEvents(Event_desc &mainEvents)
 {
 	//keep working while events exist
@@ -229,10 +239,12 @@ void Game :: handleEvents(Event_desc &mainEvents)
 		//	HANDLE LONG PRESSES
 		if(k_lCTRL)
 			{
-				//mouse button one is pressed, store location of mouse in two ints
-				if(SDL_BUTTON(1)&SDL_GetMouseState(&mouse_x, &mouse_y))
+			//mouse button one is pressed, store location of mouse 
+			//in two ints
+			if(SDL_BUTTON(1)&SDL_GetMouseState(&mouse_x, &mouse_y))
 				{
-				engine->turnPlayerToCoord(0, mouse_x, mouse_y, defaultTurnAmnt);
+				engine->turnPlayerToCoord(0, mouse_x, mouse_y,
+								 defaultTurnAmnt);
 
 					//check if its time to accelerate
 					if(up_count>key_count_limit)
@@ -245,9 +257,10 @@ void Game :: handleEvents(Event_desc &mainEvents)
 						up_count++;
 						}
 				}
-				else
-				//otherwise, left click is pressed, so just turn the player
-				engine->turnPlayerToCoord(0, mouse_x, mouse_y, defaultTurnAmnt);
+			else
+				//otherwise, left click is pressed, turn the player
+				engine->turnPlayerToCoord(0, mouse_x, mouse_y,
+								 defaultTurnAmnt);
 
 			}
 
