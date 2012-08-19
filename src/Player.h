@@ -26,6 +26,9 @@ class Player : public Object
 
 		explicit Player(string sprite_path, int num_rotations, int startingAngle,
 					float maxaccel, int startX, int startY);
+
+		explicit Player(string sprite_path, int num_rotations, int startingAngle,
+					float maxaccel, int startX, int startY, string HC_path);
 		~Player();
 
 		void setRotation_rate(float rotRate);

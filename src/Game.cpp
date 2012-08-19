@@ -24,10 +24,12 @@ Game :: Game(int WIDTH_cl, int HEIGHT_cl)
 		bkg_paths,3);
 	done = false;
 
-	engine->addPlayer("red_ship.png", 360, 0, 1, 400, 200);
+engine->addPlayer("red_ship.png", 360, 0, 1, 400, 200,"red_ship_HC.png");
 	
-	engine->addObject("red_planet.png",844 , 560, 100000,1.0,0.0,0.0);
-	engine->addObject("asteroid_large_1.png",600,400,100, -.1, 20.0,49.0);
+engine->addObject("red_planet.png",844 , 560, 100000,1.0,0.0,0.0,"red_planet_HC.png");
+engine->addObject("asteroid_large_1.png",600,400,100, -.1, 20.0,49.0,"asteroid_large_1_HC.png");
+
+//engine->addObject("asteroid_large_1.png",600,400,100, -.1, 20.0,49.0,"");
 }
 
 

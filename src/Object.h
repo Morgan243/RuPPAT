@@ -31,7 +31,11 @@ explicit Object(string sprite_path, int start_x, int start_y, int start_mass,
 
 explicit Object(string sprite_path, int start_x, int start_y, int start_mass,
 			int num_rotations, int starting_angle,
-				 float xVel, float yVel);
+				 float xVel, float yVel, string HB_path);
+
+//explicit Object(string sprite_path, int start_x, int start_y, int start_mass,
+//			int num_rotations, int starting_angle,
+//				 float xVel, float yVel, string HB_path);
 		~Object();
 
 		Entity_desc getDescriptor();
@@ -39,6 +43,8 @@ explicit Object(string sprite_path, int start_x, int start_y, int start_mass,
 		SDL_Surface *getSprite();
 
 
+
+		void setID(int id);
 		int getX();
 		int getY();
 
@@ -53,8 +59,15 @@ explicit Object(string sprite_path, int start_x, int start_y, int start_mass,
 
 		void setDescriptor(Entity_desc new_desc);
 
-		Sprite sprite;
+		void buildHitBoxes_fromSprite();
 
+		void buildHitBoxes_fromLayer(SDL_Surface* hitBoxLayout);
+
+		bool checkHits(float &xVel, float &yVel, Entity_desc &check_ent);
+
+		Sprite sprite, hitCircleSprite;
+
+		
 	protected:
 
 		Entity_desc descriptor;

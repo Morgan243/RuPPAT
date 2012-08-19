@@ -21,6 +21,7 @@ struct Derivative
 
 float getDistance(float x1, float y1, float x2, float y2)
 {
+//std::cout<<"\t\tdistance Calc: x2="<<x2<<" x1="<<x1<<" y2="<<y2<<" y1="<<y1<<std::endl;
 	return ( sqrt( ((x2-x1)*(x2-x1)) + ((y2-y1)*(y2-y1))  ) );
 }
 
@@ -151,8 +152,8 @@ float G_acceleration_ent (const Entity_desc &state, Derivative &output, float t,
 
 		if(distance!=0)// && distance>21 && distance < (objMass*2))
 			 gAccTotal = (objMass*gravConst)/(distance*distance);
-
-
+//std::cout<<"\t\t\tMass="<<objMass<<" gravConst="<<gravConst<<" distance="<<distance<<std::endl;
+//std::cout<<"\t\t\t\tgAccelTotal = "<<gAccTotal<<std::endl;
 			output.ddx = gAccTotal * sin(theta);
 			output.ddy = gAccTotal * cos(theta);
 
@@ -165,7 +166,8 @@ Derivative evaluate_ent(Entity_desc &initial,float t, float dt,const Derivative 
 				const float objMass, const float point_x, const float point_y)
 {
 	Entity_desc state;
-	
+//std::cout<<"\tIntitial State: "<<initial.x<<","<<initial.y<<" mass="<<initial.mass<<std::endl;	
+//std::cout<<"\tDerivative: dx="<<d.dx<<" dy="<<d.dy<<" dt="<<dt<<std::endl;	
 	//calc new positions
 	state.x = initial.x + d.dx * dt; 
 	state.y = initial.y + d.dy * dt; 
@@ -181,6 +183,7 @@ Derivative evaluate_ent(Entity_desc &initial,float t, float dt,const Derivative 
 	output.dx = state.xVel;
 	output.dy = state.yVel;
 
+//std::cout<<"\tPass State: "<<state.x<<","<<state.y<<" mass="<<state.mass<<std::endl;	
 	//calculate the new accelerations
 	 G_acceleration_ent(state, output, t + dt, objMass, point_x, point_y);
 	 
@@ -197,7 +200,7 @@ void integrate_ent (Entity_desc &state, float t, float dt,
 
 	init.ddx = state.xAcc;
 	init.ddy = state.yAcc;
-
+//std::cout<<"Top Level: objMass="<<objMass<<" X="<<point_x<<" Y="<<point_y<<" Acting on "<<state.x<<","<<state.y<<"mass="<<state.mass<<std::endl;
 	Derivative a = evaluate_ent( state, t, 0.0f, init, objMass, point_x, point_y);
 	Derivative b = evaluate_ent( state, t, dt* 0.5f, a, objMass, point_x, point_y);
 	Derivative c = evaluate_ent( state, t, dt*0.5f, b, objMass, point_x, point_y);

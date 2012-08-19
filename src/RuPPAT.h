@@ -46,12 +46,12 @@ class RuPPAT
 	int applyDimming(Pixel_desc &pix_t);
 
 	int addPlayer(string spritePath, int numRotations, int startingAngle, 
-			float maxAccel, int x, int y);
+			float maxAccel, int x, int y, string HC_path);
 
 	int addEntity(Entity_desc new_ent);
 
 	int addObject(string spritePath, int x, int y, int mass, float rotationRate,
-				float xVel, float yVel);
+				float xVel, float yVel, string HB_path);
 
 	Entity_desc RK4_entity(Entity_desc ent);
 
@@ -92,7 +92,7 @@ class RuPPAT
 		Uint32 deltaTime;
 
 
-	int gravitationalConstant;
+
 	int IDbase;//value of next ID 
 
 };

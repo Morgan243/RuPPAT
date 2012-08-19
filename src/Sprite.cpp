@@ -1,5 +1,10 @@
 #include "Sprite.h"
 
+Sprite::Sprite()
+{
+
+}
+
 Sprite :: Sprite(string path_to_sprite)
 {
 	SDL_Surface *tempSprite, *tempSpriteOpt;
@@ -33,11 +38,15 @@ Sprite::Sprite(string path_to_sprite,int numRotations, int startingAngle)
 
 		tempSpriteOpt = SDL_DisplayFormatAlpha(tempSprite);
 
+		if(!i)
+			sprite_surf = tempSpriteOpt;
+
 		rotations.push_back(rotozoomSurface(tempSpriteOpt,
 							i*degreeIncrement,
 							1.0,0));	
 
 	}
+
 
 
 }
@@ -100,6 +109,10 @@ void Sprite::decrementAngleIndex()
 {
 	currentAngleIndex--;
 }
+SDL_Surface* Sprite::getBaseSprite()
+{
+	return sprite_surf;
+}
 
 SDL_Surface* Sprite::getSprite()
 {
@@ -110,4 +123,16 @@ SDL_Surface* Sprite::getSprite()
 SDL_Surface* Sprite::getSprite(int angle)
 {
 	return rotations[angle];
+}
+
+Uint32 Sprite::getPixel(int x, int y)
+{
+	Uint32 *pixels = (Uint32 *)sprite_surf->pixels;
+	return pixels[ (y * sprite_surf->w) + x];
+}
+
+void Sprite::getDimensions(int &w, int &h)
+{
+	w = sprite_surf->w;
+	h = sprite_surf->h;
 }

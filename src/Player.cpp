@@ -40,8 +40,6 @@ Player :: Player(string sprite_path, int num_rotations, int startingAngle)
 	descriptor.yVel = 0;
 	descriptor.xAcc = 0;
 	descriptor.yAcc = 0;
-	descriptor.xGacc = 0;
-	descriptor.yGacc = 0;
 	descriptor.maxAccel = 1;
 	descriptor.mass=1000;
 	descriptor.noDrawEffect = false;
@@ -87,8 +85,50 @@ Player :: Player(string sprite_path, int num_rotations, int startingAngle,
 	descriptor.yVel = 0;
 	descriptor.xAcc = 0;
 	descriptor.yAcc = 0;
-	descriptor.xGacc = 0;
-	descriptor.yGacc = 0;
+	descriptor.maxAccel = maxaccel;
+	descriptor.noDrawEffect = false;
+
+}
+//}}}
+
+//Constructor with more options
+Player :: Player(string sprite_path, int num_rotations, int startingAngle,
+		float maxaccel, int startX, int startY, string HC_path) 
+		: Object(sprite_path,startX,startY,1000, 360,0,0,0,HC_path),
+		 sprite(sprite_path, num_rotations,startingAngle)
+//{{{
+{
+	currentAngle_index = startingAngle;	
+
+	currentAngle_index_f = startingAngle;	
+
+	rotationRate = 0.0;
+
+	rotationalErrorAccum = 0.0;
+
+	lastErr = 0.0;
+
+	DEGREE_INCREMENT = 360.0/num_rotations;
+	
+	SDL_Surface *tempSprite, *tempSpriteOpt;
+
+  for(int i = 0; i< num_rotations;i++)
+	{
+		tempSprite = IMG_Load((char *)sprite_path.c_str());
+	
+		tempSpriteOpt = SDL_DisplayFormatAlpha(tempSprite);
+
+		rotations.push_back(rotozoomSurface(tempSpriteOpt, 
+							i*DEGREE_INCREMENT,
+							 1.0, 0));
+	}
+
+	descriptor.x = startX;
+	descriptor.y = startY;
+	descriptor.xVel = 0;
+	descriptor.yVel = 0;
+	descriptor.xAcc = 0;
+	descriptor.yAcc = 0;
 	descriptor.maxAccel = maxaccel;
 	descriptor.noDrawEffect = false;
 

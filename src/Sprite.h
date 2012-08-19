@@ -15,6 +15,7 @@ using namespace std;
 class Sprite
 {
 	public:
+		explicit Sprite();
 		explicit Sprite(string path_to_sprite);
 		explicit Sprite(string path_to_sprite,
 				int numRotations, int startingAngle);
@@ -38,9 +39,15 @@ class Sprite
 
 		void decrementAngleIndex();
 
+		SDL_Surface * getBaseSprite();
+
 		SDL_Surface * getSprite();
 
 		SDL_Surface * getSprite(int angle);
+
+		Uint32 getPixel(int x, int y);
+
+		void getDimensions(int &w, int &h);
 
 		float lastErr;
 		float rotationalErrorAccum;

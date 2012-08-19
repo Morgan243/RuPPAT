@@ -30,7 +30,7 @@ using namespace std;
 	//so until i figure out a better way, globals will have to do
 
 	bool done;//if this goes true, all threads stop, engine stops
-
+	int gravitationalConstant;
 	//main window
 	Render* mainRender;
 
@@ -300,13 +300,13 @@ int RuPPAT :: applyDimming(Pixel_desc &pix_t)
 
 
 int RuPPAT :: addPlayer(string spritePath, int numRotations, int startingAngle,
-			float maxAccel, int x, int y)
+			float maxAccel, int x, int y, string HC_path)
 {
 	int size;
 
 		pthread_rwlock_wrlock(&player_rw_lock);	
 			players.push_back(new Player(spritePath, numRotations, startingAngle,
-						maxAccel, x, y));
+						maxAccel, x, y, HC_path));
 			size = players.size()-1;
 
 		pthread_rwlock_unlock(&player_rw_lock);
@@ -329,14 +329,27 @@ int RuPPAT :: addEntity(Entity_desc new_ent)
 
 
 int RuPPAT :: addObject(string spritePath, int x, int y, int mass, float rotationRate,
-				float xVel, float yVel)
+				float xVel, float yVel, string HB_path)
 {
 	int size;
 
 	pthread_rwlock_wrlock(&object_rw_lock);
 
+		if(HB_path == "")
+		{
+			objectList.push_back(new Object(spritePath, x, y, mass,
+							360,0,xVel,yVel, HB_path ));
+			cout<<spritePath<<" doesnt have HB!"<<endl;
+		}			
+		else
+		{
 		objectList.push_back(new Object(spritePath, x, y, mass,
-							360,0,xVel,yVel ));
+							360,0,xVel,yVel, HB_path ));
+	
+		cout<<spritePath<<" DOES have HB!"<<endl;
+		}
+
+		objectList.back()->setID(this->IDbase++);
 		objectList.back()->sprite.setRotationRate(rotationRate);
 
 	pthread_rwlock_unlock(&object_rw_lock);
@@ -415,9 +428,8 @@ void RuPPAT :: RK4_all(float t, float dt)
 	float newX, newY, tmp_xVel, tmp_yVel;
 
 	//Mass_desc temp_mass;	
-	Pixel_desc temp_p;
-	Entity_desc temp_ent;
-	Entity_desc mass_e;
+	Pixel_desc pix_desc;
+	Entity_desc player_e, mass_e, other_obj_e;
 
 	//get the size of the player list
 	pthread_rwlock_rdlock(&player_rw_lock);
@@ -451,22 +463,22 @@ void RuPPAT :: RK4_all(float t, float dt)
 
 
 	  for(int i=0; i<player_size ;i++)
-	      {
+	      {//{{{
 
 		//get the descriptor for the player
 		pthread_rwlock_rdlock(&player_rw_lock);
-			temp_ent = players[i]->getDescriptor();
+			player_e = players[i]->getDescriptor();
 		pthread_rwlock_unlock(&player_rw_lock);
 
 		//integrate to get velocity and locations
-	integrate_ent(temp_ent,t, dt,
+	integrate_ent(player_e,t, dt,
 			mass_e.mass, mass_e.x, mass_e.y);
 
-		newX = temp_ent.x;
-		newY = temp_ent.y;
+		newX = player_e.x;
+		newY = player_e.y;
 
-		tmp_xVel = temp_ent.xVel;
-		tmp_yVel = temp_ent.yVel;
+		tmp_xVel = player_e.xVel;
+		tmp_yVel = player_e.yVel;
 
 			//make sure the new location is within bounds
 			if(newX<=0)
@@ -483,35 +495,40 @@ void RuPPAT :: RK4_all(float t, float dt)
 
 
 
-			temp_ent.xVel = tmp_xVel;
-			temp_ent.yVel = tmp_yVel;
-			temp_ent.x = newX;
-			temp_ent.y = newY;
+			player_e.xVel = tmp_xVel;
+			player_e.yVel = tmp_yVel;
+			player_e.x = newX;
+			player_e.y = newY;
 
+
+
+		
 		pthread_rwlock_wrlock(&player_rw_lock);
-			players[i]->setDescriptor(temp_ent);
+			if(players[i]->checkHits(player_e.xVel,player_e.yVel,mass_e))
+				cout<<"COLLISION!!"<<endl;
+			players[i]->setDescriptor(player_e);
 		pthread_rwlock_unlock(&player_rw_lock);
 
 	      }
-
+		//}}}
 
 
 	  for(int i=0; i<pixel_size ;i++)
 	      {
-
+	//{{{
 	pthread_rwlock_rdlock(&pix_rw_lock);
-		temp_p = pixelList_m[i];
+		pix_desc = pixelList_m[i];
 	pthread_rwlock_unlock(&pix_rw_lock);	
 
 
-		integrate(temp_p, t, dt,
+		integrate(pix_desc, t, dt,
 			mass_e.mass, mass_e.x, mass_e.y);
 
-		newX = temp_p.x;
-		newY = temp_p.y;
+		newX = pix_desc.x;
+		newY = pix_desc.y;
 
-		tmp_xVel = temp_p.xVel;
-		tmp_yVel = temp_p.yVel;
+		tmp_xVel = pix_desc.xVel;
+		tmp_yVel = pix_desc.yVel;
 
 
 			if(newX<=0)
@@ -528,13 +545,13 @@ void RuPPAT :: RK4_all(float t, float dt)
 
 
 
-			temp_p.xVel = tmp_xVel;
-			temp_p.yVel = tmp_yVel;
-			temp_p.x = newX;
-			temp_p.y = newY;
+			pix_desc.xVel = tmp_xVel;
+			pix_desc.yVel = tmp_yVel;
+			pix_desc.x = newX;
+			pix_desc.y = newY;
 
 	pthread_rwlock_wrlock(&pix_rw_lock);
-		pixelList_m[i] = temp_p;
+		pixelList_m[i] = pix_desc;
 		if(pixelList_m[i].dimFactor){applyDimming(pixelList_m[i]);}
 		if(pixelList_m[i].deleteMe)
 			{
@@ -544,25 +561,34 @@ void RuPPAT :: RK4_all(float t, float dt)
 	pthread_rwlock_unlock(&pix_rw_lock);
 
 	      }//end pixelList for[i]
-	
+	//}}}	
+
 	//go through other objects 
 	  for(int i=0; i<mass_size; i++)
 		{
-		if(i!=j)//dont apply grav to self!
-			{
+		//{{{
 		pthread_rwlock_rdlock(&object_rw_lock);
-			temp_ent = objectList[i]->getDescriptor();
+			other_obj_e = objectList[i]->getDescriptor();
 		pthread_rwlock_unlock(&object_rw_lock);
 
+		if(false)//mass_e.ID!=other_obj_e.ID)//dont apply grav to self!
+			{
+
+	//cout<<"i = "<<i<<" and j = "<<j<<endl;
 		//integrate to get velocity and locations
-	integrate_ent(temp_ent,t, dt,
+	//if( !(other_obj_e.x==mass_e.x || other_obj_e.y==mass_e.y))
+cout<<"mass_e: "<<mass_e.x<<","<<mass_e.y<<" with mass = "<<mass_e.mass<<" ID="<<mass_e.ID<<endl;
+cout<<"other_obj_e: "<<other_obj_e.x<<","<<other_obj_e.y<<" with mass = "<<other_obj_e.mass<<" ID="<<other_obj_e.ID<<endl;
+
+cout<<"applying!\n"<<endl;
+	integrate_ent(other_obj_e,t, dt,
 			mass_e.mass, mass_e.x, mass_e.y);
 
-		newX = temp_ent.x;
-		newY = temp_ent.y;
+		newX = other_obj_e.x;
+		newY = other_obj_e.y;
 
-		tmp_xVel = temp_ent.xVel;
-		tmp_yVel = temp_ent.yVel;
+		tmp_xVel = other_obj_e.xVel;
+		tmp_yVel = other_obj_e.yVel;
 
 			//make sure the new location is within bounds
 			if(newX<=0)
@@ -579,19 +605,17 @@ void RuPPAT :: RK4_all(float t, float dt)
 
 
 
-			temp_ent.xVel = tmp_xVel;
-			temp_ent.yVel = tmp_yVel;
-			temp_ent.x = newX;
-			temp_ent.y = newY;
+			other_obj_e.xVel = tmp_xVel;
+			other_obj_e.yVel = tmp_yVel;
+			other_obj_e.x = newX;
+			other_obj_e.y = newY;
 
 		pthread_rwlock_wrlock(&player_rw_lock);
-			objectList[i]->setDescriptor(temp_ent);
+			objectList[i]->setDescriptor(other_obj_e);
 		pthread_rwlock_unlock(&player_rw_lock);
 			}
-
-
 		}
- 
+		//}}} 
 	}//end massLIst for[j]
    }//end if mass_size not 0
  else//no masses!
@@ -601,17 +625,17 @@ void RuPPAT :: RK4_all(float t, float dt)
 
 
 		pthread_rwlock_rdlock(&player_rw_lock);
-			temp_ent = players[i]->getDescriptor();
+			player_e = players[i]->getDescriptor();
 		pthread_rwlock_unlock(&player_rw_lock);
 
-	integrate_ent(temp_ent,t, dt,
+	integrate_ent(player_e,t, dt,
 			0, 0, 0);
 
-		newX = temp_ent.x;
-		newY = temp_ent.y;
+		newX = player_e.x;
+		newY = player_e.y;
 
-		tmp_xVel = temp_ent.xVel;
-		tmp_yVel = temp_ent.yVel;
+		tmp_xVel = player_e.xVel;
+		tmp_yVel = player_e.yVel;
 
 
 			if(newX<=0)
@@ -628,13 +652,13 @@ void RuPPAT :: RK4_all(float t, float dt)
 
 
 
-			temp_ent.xVel = tmp_xVel;
-			temp_ent.yVel = tmp_yVel;
-			temp_ent.x = newX;
-			temp_ent.y = newY;
+			player_e.xVel = tmp_xVel;
+			player_e.yVel = tmp_yVel;
+			player_e.x = newX;
+			player_e.y = newY;
 
 		pthread_rwlock_wrlock(&player_rw_lock);
-			players[i]->setDescriptor(temp_ent);
+			players[i]->setDescriptor(player_e);
 		pthread_rwlock_unlock(&player_rw_lock);
 
 	      }
@@ -645,18 +669,18 @@ void RuPPAT :: RK4_all(float t, float dt)
 	      {
 
 	pthread_rwlock_rdlock(&pix_rw_lock);
-		temp_p = pixelList_m[i];
+		pix_desc = pixelList_m[i];
 	pthread_rwlock_unlock(&pix_rw_lock);	
 
 
-		integrate(temp_p, t, dt,
+		integrate(pix_desc, t, dt,
 			0, 0, 0);
 
-		newX = temp_p.x;
-		newY = temp_p.y;
+		newX = pix_desc.x;
+		newY = pix_desc.y;
 
-		tmp_xVel = temp_p.xVel;
-		tmp_yVel = temp_p.yVel;
+		tmp_xVel = pix_desc.xVel;
+		tmp_yVel = pix_desc.yVel;
 
 
 			if(newX<=0)
@@ -673,13 +697,13 @@ void RuPPAT :: RK4_all(float t, float dt)
 
 
 
-			temp_p.xVel = tmp_xVel;
-			temp_p.yVel = tmp_yVel;
-			temp_p.x = newX;
-			temp_p.y = newY;
+			pix_desc.xVel = tmp_xVel;
+			pix_desc.yVel = tmp_yVel;
+			pix_desc.x = newX;
+			pix_desc.y = newY;
 
 	pthread_rwlock_wrlock(&pix_rw_lock);
-		pixelList_m[i] = temp_p;
+		pixelList_m[i] = pix_desc;
 		if(pixelList_m[i].dimFactor){applyDimming(pixelList_m[i]);}
 		if(pixelList_m[i].deleteMe)
 			{
@@ -701,6 +725,7 @@ void RuPPAT :: RK4_all(float t, float dt)
 //depending on the selection argument
 void RuPPAT :: runDemos(void *selection)
 {
+//{{{
 	float theta;
 	int xPos=300, yPos=300, radius=4;	
 	int xCent=400, yCent=400;
@@ -812,7 +837,7 @@ void RuPPAT :: runDemos(void *selection)
  }
 
 }//END <runDemos>
-
+//}}}
 
 //-------------RK4_parse-----------
 //keeps running RK4_all (determines movement

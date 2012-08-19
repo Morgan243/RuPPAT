@@ -1,3 +1,5 @@
+#include <vector>
+#include "SDL/SDL.h"
 #ifndef __DESC_H
 #define __DESC_H
 
@@ -6,6 +8,11 @@
 #define BACKWARD 2
 #define FORWARD 3
 
+struct Circle_desc
+{
+	int x,y;
+	unsigned int r;
+};
 struct Entity_desc
 {
 	float x;
@@ -13,12 +20,13 @@ struct Entity_desc
 
 	float xVel, yVel;//velocity vector
 	float xAcc, yAcc;//acceleration vector
-	int xGacc,yGacc; //grav acceleration
+//	int xGacc,yGacc; //grav acceleration
 	int mass;
-
+	int ID;
 	float maxAccel;
 	bool noDrawEffect;
-
+	
+	std::vector<Circle_desc> hitCircles;
 };
 
 struct Event_desc
@@ -60,15 +68,5 @@ struct Pixel_desc
 
 	bool deleteMe;
 };
-
-
-//struct Grav_desc
-//{	
-//	int x, y;
-//	
-//	int gXacc;
-//	int gYacc;
-//
-//};
 
 #endif
