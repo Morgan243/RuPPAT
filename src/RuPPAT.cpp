@@ -31,6 +31,8 @@ using namespace std;
 //{{{
 	bool done;//if this goes true, all threads stop, engine stops
 	int gravitationalConstant;
+	int baseID = 0;
+	Uint32 thisTime;
 	//main window
 	Render* mainRender;
 
@@ -46,6 +48,10 @@ using namespace std;
 
 	vector<Player *> players;//independent sprite that controlled by AI or human
 
+	//the objectList will become the primary list of all on screen
+	//moveable sprites. Entities/sprites moveable by gravity and 
+	//rotateable, i.e not static. As objects are added to the
+	//other lists, the base form Object will be sliced into this list.
 	vector<Object *> objectList;
 
 
@@ -168,7 +174,7 @@ void RuPPAT :: parseSelectPixToSurface()
 void RuPPAT :: parsePlayersToSurface()
 {
 //{{{
-   pthread_rwlock_rdlock(&player_rw_lock);
+   pthread_rwlock_wrlock(&object_rw_lock);
 
 	int x, y, i, j, color, size=players.size(), screenID=0;
 
@@ -184,7 +190,7 @@ void RuPPAT :: parsePlayersToSurface()
 		mainRender->putSprite(x,y, players[i]->getSprite());
 		}
 
-   pthread_rwlock_unlock(&player_rw_lock);
+   pthread_rwlock_unlock(&object_rw_lock);
 //}}}
 }
 
@@ -323,13 +329,20 @@ int RuPPAT :: addPlayer(string spritePath, int numRotations, int startingAngle,
 {
 //{{{
 	int size;
+		Player *new_player= 
+			new Player(spritePath, numRotations, startingAngle,
+						maxAccel, x, y, HC_path);
 
-		pthread_rwlock_wrlock(&player_rw_lock);	
-			players.push_back(new Player(spritePath, numRotations, startingAngle,
-						maxAccel, x, y, HC_path));
+		Object *new_object = &(*new_player);
+			new_object->setID(baseID++);
+
+
+		pthread_rwlock_wrlock(&object_rw_lock);
+			players.push_back(new_player);
 			size = players.size()-1;
-
-		pthread_rwlock_unlock(&player_rw_lock);
+		
+			objectList.push_back(new_object);
+		pthread_rwlock_unlock(&object_rw_lock);
 
 	return size;
 //}}}
@@ -362,88 +375,23 @@ int RuPPAT :: addObject(string spritePath, int x, int y, int mass, float rotatio
 		if(HB_path == "")
 		{
 			objectList.push_back(new Object(spritePath, x, y, mass,
-							360,0,xVel,yVel, HB_path ));
+						360,0,xVel,yVel, HB_path));
 			cout<<spritePath<<" doesnt have HB!"<<endl;
 		}			
 		else
 		{
 		objectList.push_back(new Object(spritePath, x, y, mass,
-							360,0,xVel,yVel, HB_path ));
+						360,0,xVel,yVel, HB_path ));
 	
 		cout<<spritePath<<" DOES have HB!"<<endl;
 		}
 
-		objectList.back()->setID(this->IDbase++);
+		objectList.back()->setID(baseID++);
 		objectList.back()->sprite.setRotationRate(rotationRate);
 
 	pthread_rwlock_unlock(&object_rw_lock);
 
 	return size;
-//}}}
-}
-
-Entity_desc RuPPAT :: RK4_entity(Entity_desc ent)
-{
-//{{{
-	const Uint32 NOW = SDL_GetTicks(); 
-	float newX, newY, tmp_xVel, tmp_yVel;
-
-	//Mass_desc temp_object;	
-
-
-	pthread_rwlock_rdlock(&object_rw_lock);
-	 int object_size = objectList.size();	
-	pthread_rwlock_unlock(&object_rw_lock);
-
-
-	const int timerConst = 1;
-
-	Entity_desc temp_e = ent;
-	Entity_desc mass_e;
-	Pixel_desc temp_p;
-
-   for(int j = 0; j<object_size;j++)
-	{
-
-	//get mass
-	pthread_rwlock_rdlock(&object_rw_lock);
-		mass_e = objectList[j]->getDescriptor();	
-	pthread_rwlock_unlock(&object_rw_lock);
-
-
-
-
-		integrate_ent(temp_e, 0.0, 0.001,
-			mass_e.mass, mass_e.x, mass_e.y);
-
-		newX = temp_e.x;
-		newY = temp_e.y;
-
-		tmp_xVel = temp_e.xVel;
-		tmp_yVel = temp_e.yVel;
-
-
-			if(newX<=0)
-				{newX=1;tmp_xVel=tmp_xVel*(-1);}
-
-			if(newX>=WIDTH)
-				{newX=WIDTH-1;tmp_xVel=tmp_xVel*(-1);}
-
-			if(newY<=0)
-				{newY=1;tmp_yVel=tmp_yVel*(-1);}
-
-			if(newY>=HEIGHT)
-				{newY=HEIGHT-1;tmp_yVel=tmp_yVel*(-1);}	
-
-
-
-			temp_e.xVel = tmp_xVel;
-			temp_e.yVel = tmp_yVel;
-			temp_e.x = newX;
-			temp_e.y = newY;
-
-	}//end massLIst for[j]
-	return temp_e;
 //}}}
 }
 
@@ -582,8 +530,8 @@ void RuPPAT :: RK4_all(float t, float dt)
 		if(pixelList_m[i].dimFactor){applyDimming(pixelList_m[i]);}
 		if(pixelList_m[i].deleteMe)
 			{
-			handleDelete(i);
-			pixel_size = pixelList_m.size();
+				handleDelete(i);
+				pixel_size = pixelList_m.size();
 			}
 	pthread_rwlock_unlock(&pix_rw_lock);
 
@@ -781,11 +729,11 @@ void RuPPAT :: runDemos(void *selection)
 	   {
 			t_pix.color = rand()%0xffffff;
 		int count = 0;
-			t_pix.x = 797;
-			t_pix.yVel = 68;
+			t_pix.x = 800;
+			t_pix.yVel = 80;
 			t_pix.xAcc = 0;
 			t_pix.dimFactor = 1000;
-		while(count<125 && !done)
+		while(count<50 && !done)
 		{  
 
 			t_pix.y = 584;
@@ -795,6 +743,7 @@ void RuPPAT :: runDemos(void *selection)
 			createPixElement(&t_pix);	
 			t_pix.y = t_pix.y +rand()%19 - rand()%16;
 			createPixElement(&t_pix);	
+			t_pix.yVel-=.3;
 		count++;
 		}
 	    break;
@@ -866,6 +815,150 @@ void RuPPAT :: runDemos(void *selection)
 }//END <runDemos>
 //}}}
 
+//-------------RK4--------------
+// 	A new implementation of the
+// RK4_all functionality. By using object
+// slicing, the Runge Kutta calculations
+// can be made more generic 
+void RuPPAT::RK4(float t, float dt)
+{
+//{{{
+	//some temporary variables
+	float new_x=111, new_y=111, new_xVel=0, new_yVel=0;
+
+	//how many Objects are there to deal with
+	pthread_rwlock_rdlock(&object_rw_lock);
+	 int num_objects = objectList.size();
+	pthread_rwlock_unlock(&object_rw_lock);
+
+	//how many Pixels are there to deal with
+	pthread_rwlock_rdlock(&pix_rw_lock);
+	 int num_pixels = pixelList_m.size();
+	pthread_rwlock_unlock(&pix_rw_lock);
+
+	Entity_desc obj_desc_prim, obj_desc_sec;
+	Pixel_desc pix_desc;
+
+ //go through object list, apply gravity 
+ //to other objects and pixels
+ for(int i = 0; i<num_objects;i++)
+ {
+	//get the descriptor from this object
+	pthread_rwlock_rdlock(&object_rw_lock);
+		obj_desc_prim = objectList[i]->getDescriptor();
+	pthread_rwlock_unlock(&object_rw_lock);
+
+	//go through the object list to apply grav to other objects
+	for(int j = 0; j<num_objects; j++)
+	{
+	  //make sure not to apply the grav to objects self
+	  if(i!=j)
+	   {
+
+		pthread_rwlock_rdlock(&object_rw_lock);
+			obj_desc_sec = objectList[j]->getDescriptor();
+		pthread_rwlock_unlock(&object_rw_lock);
+
+	   if(obj_desc_prim.ID != obj_desc_sec.ID)
+		{
+
+		//Runge Kutta integrator
+		integrate_ent(obj_desc_sec, t, dt, 
+			obj_desc_prim.mass, obj_desc_prim.x, obj_desc_prim.y);
+
+		
+		//the following checks that the objects new location
+		//is not outside the boundry of the game. This should
+		//be replaced with function calls or object methods, as
+		//there will be many situations in which this will need
+		//to be handled differently.
+		new_x = obj_desc_sec.x;
+		new_y = obj_desc_sec.y;
+		
+		new_xVel = obj_desc_sec.xVel;
+		new_yVel = obj_desc_sec.yVel;
+			
+			//make sure the new location is within bounds
+			if(new_x<=0)
+				{new_x=1;new_xVel=new_xVel*(-1);}
+
+			if(new_x>=WIDTH)
+				{new_x=WIDTH-1;new_xVel=new_xVel*(-1);}
+
+			if(new_y<=0)
+				{new_y=1;new_yVel=new_yVel*(-1);}
+
+			if(new_y>=HEIGHT)
+				{new_y=HEIGHT-1;new_yVel=new_yVel*(-1);}	
+
+
+			obj_desc_sec.xVel = new_xVel;
+			obj_desc_sec.yVel = new_yVel;
+			obj_desc_sec.x = new_x;
+			obj_desc_sec.y = new_y;
+
+		//at this point, all the velocities and locations should
+		//be updated and valid, we can go ahead and set the descriptor
+
+		pthread_rwlock_wrlock(&object_rw_lock);
+			objectList[j]->setDescriptor(obj_desc_sec);
+		pthread_rwlock_unlock(&object_rw_lock);
+		}
+	   }
+	}
+	//next, go through the pixel structs 
+	for(int j = 0; j<num_pixels; j++)
+	{
+		pthread_rwlock_rdlock(&pix_rw_lock);
+			pix_desc = pixelList_m[j];
+		pthread_rwlock_unlock(&pix_rw_lock);	
+
+
+		integrate(pix_desc, t, dt,
+			obj_desc_prim.mass, obj_desc_prim.x, obj_desc_prim.y);
+
+		new_x = pix_desc.x;
+		new_y = pix_desc.y;
+
+		new_xVel = pix_desc.xVel;
+		new_yVel = pix_desc.yVel;
+
+
+			//make sure the new location is within bounds
+			if(new_x<=0)
+				{new_x=1;new_xVel=new_xVel*(-1);}
+
+			if(new_x>=WIDTH)
+				{new_x=WIDTH-1;new_xVel=new_xVel*(-1);}
+
+			if(new_y<=0)
+				{new_y=1;new_yVel=new_yVel*(-1);}
+
+			if(new_y>=HEIGHT)
+				{new_y=HEIGHT-1;new_yVel=new_yVel*(-1);}	
+
+			pix_desc.xVel = new_xVel;
+			pix_desc.yVel = new_yVel;	
+			pix_desc.x = new_x;
+			pix_desc.y = new_y;
+			
+		pthread_rwlock_wrlock(&pix_rw_lock);
+			pixelList_m[j] = pix_desc;
+			if(pixelList_m[j].dimFactor){applyDimming(pixelList_m[j]);}
+			if(pixelList_m[j].deleteMe)
+				{
+					handleDelete(j);
+					num_pixels = pixelList_m.size();
+				}
+		pthread_rwlock_unlock(&pix_rw_lock);
+
+	}
+	
+ }
+//}}}
+}
+
+
 //-------------RK4_parse-----------
 //keeps running RK4_all (determines movement
 //based on acceleration and such on all
@@ -879,7 +972,7 @@ T1=SDL_GetTicks();
 float t = 0.0;
 float dt = 0.004;
 
-int engine_rate = 180;
+int engine_rate = 120;
 int interval = 1000/engine_rate;
 int nextTick = SDL_GetTicks() + interval;
 
@@ -891,7 +984,8 @@ void * select = &sel;
 	while(!done)
 	  {
 		//calculate new positions and velocities
-		RK4_all(t, dt);
+		//RK4_all(t, dt);
+	
 
 		//increment time
 		t += dt;
@@ -921,6 +1015,8 @@ void * select = &sel;
 	
 		nextTick = SDL_GetTicks() + interval;
 	
+
+		RK4(t,dt);		
 
 	  }
 	cout<<"Render thread ending!"<<endl;
@@ -1057,7 +1153,7 @@ void RuPPAT :: createPixElement(  int x, int y,
 		tmpPix.Ytimer = thisTime;
 
 		tmpPix.deleteMe = false;
-		tmpPix.ID=IDbase++;
+		tmpPix.ID=baseID++;
 
 		//set accellength:number of times to apply this accel to vel
 		tmpPix.accelLength = accLength;
@@ -1067,9 +1163,9 @@ void RuPPAT :: createPixElement(  int x, int y,
 		tmpPix.dimFactor = dimFactor;
 
 		 //finally, push tmp to vector
-		 pthread_mutex_lock(&pix_list_lock_2);
+		 pthread_rwlock_wrlock(&pix_rw_lock);
 		    pixelList_m.push_back(tmpPix);
-		 pthread_mutex_unlock(&pix_list_lock_2);
+		 pthread_rwlock_unlock(&pix_rw_lock);
 //}}}
 }
 
@@ -1094,10 +1190,10 @@ void RuPPAT :: accelPlayer(int p_ID, bool isForward)
 	Pixel_desc t_pix;
 
 	//setAccelVectors needs write lock, get exhaust as well
-	pthread_rwlock_wrlock(&player_rw_lock);
+	pthread_rwlock_wrlock(&object_rw_lock);
 		players[p_ID]->setAccelVectors(isForward);
 		players[p_ID]->getXY_exhaust(t_pix.xVel, t_pix.yVel);
-	pthread_rwlock_unlock(&player_rw_lock);
+	pthread_rwlock_unlock(&object_rw_lock);
 
 		//color start red
 		t_pix.color=0xaf0000;
@@ -1140,15 +1236,15 @@ void RuPPAT :: turnPlayer(int p_ID, bool isLeft, int numTurns)
 		if(isLeft)
 		{
 			
-			pthread_rwlock_wrlock(&player_rw_lock);
+			pthread_rwlock_wrlock(&object_rw_lock);
 				players[p_ID]->incrementRotation_rate();
-			pthread_rwlock_unlock(&player_rw_lock);
+			pthread_rwlock_unlock(&object_rw_lock);
 		}
 		else
 		{
-			pthread_rwlock_wrlock(&player_rw_lock);
+			pthread_rwlock_wrlock(&object_rw_lock);
 				players[p_ID]->decrementRotation_rate();
-			pthread_rwlock_unlock(&player_rw_lock);
+			pthread_rwlock_unlock(&object_rw_lock);
 		}
 	}
 //}}}
@@ -1167,7 +1263,7 @@ void RuPPAT :: turnPlayerToCoord(int p_ID, int x, int y, int rate)
 	int x_diff = 0,  y_diff=0, rateLim = 3;
 
 		//get some values out of the player object	
-		pthread_rwlock_wrlock(&player_rw_lock);
+		pthread_rwlock_wrlock(&object_rw_lock);
 	
 			playerDegree = players[p_ID]->getAngle();
 	
@@ -1177,7 +1273,7 @@ void RuPPAT :: turnPlayerToCoord(int p_ID, int x, int y, int rate)
 			x_diff = x - players[p_ID]->getX();
 			y_diff = y - players[p_ID]->getY();
 	
-		pthread_rwlock_unlock(&player_rw_lock);
+		pthread_rwlock_unlock(&object_rw_lock);
 
 	//y is upside down compared to normal coordinate plane
 	y_diff *= -1;
@@ -1209,9 +1305,9 @@ printf("DIFFERENCE: %f\n", angle_diff);
 float dif_rate = 0.0;
 float pos_curr_rate = 0.0;
 
-	pthread_rwlock_wrlock(&player_rw_lock);
+	pthread_rwlock_wrlock(&object_rw_lock);
 		float curr_rate = players[p_ID]->getRotation_rate(); 
-	pthread_rwlock_unlock(&player_rw_lock);
+	pthread_rwlock_unlock(&object_rw_lock);
 
 tempErrDiff =  angle_diff*.1 - tempErrDiff; //angle_diff - tempErrDiff;
 
@@ -1274,14 +1370,14 @@ tempErrDiff =  angle_diff*.1 - tempErrDiff; //angle_diff - tempErrDiff;
 	else
 	{
 	//tempErrAccum = tempErrAccum*.1;
-		pthread_rwlock_wrlock(&player_rw_lock);
+		pthread_rwlock_wrlock(&object_rw_lock);
 
 		players[p_ID]->setRotation_rate(0);
 	
-		pthread_rwlock_unlock(&player_rw_lock);
+		pthread_rwlock_unlock(&object_rw_lock);
 
 	}
-		pthread_rwlock_wrlock(&player_rw_lock);
+		pthread_rwlock_wrlock(&object_rw_lock);
 	
 //			playerDegree = players[p_ID]->getAngle();
 	
@@ -1291,7 +1387,7 @@ tempErrDiff =  angle_diff*.1 - tempErrDiff; //angle_diff - tempErrDiff;
 	//		x_diff = x - players[p_ID]->getX();
 	//		y_diff = y - players[p_ID]->getY();
 	
-		pthread_rwlock_unlock(&player_rw_lock);
+		pthread_rwlock_unlock(&object_rw_lock);
 //}}}
 }
 

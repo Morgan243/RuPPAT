@@ -59,6 +59,8 @@ class RuPPAT
 
 	void runDemos(void *selection);
 
+	void RK4(float t, float dt);
+
 	void RK4_parse(SDL_Surface* background);
 
 	void runPPAT(bool *mainDone, Event_desc &mainEvents, 
@@ -87,13 +89,13 @@ class RuPPAT
 
 	private:
 
-		Uint32 thisTime;
-		Uint32 lastTime;
-		Uint32 deltaTime;
+	//	Uint32 thisTime;
+	//	Uint32 lastTime;
+	//	Uint32 deltaTime;
 
 
 
-	int IDbase;//value of next ID 
+//	int IDbase;//value of next ID 
 
 };
 

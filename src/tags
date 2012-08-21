@@ -13,7 +13,6 @@ Circle_desc::r	Descriptors.h	/^	unsigned int r;$/;"	m	struct:Circle_desc	access:
 Circle_desc::x	Descriptors.h	/^	int x,y;$/;"	m	struct:Circle_desc	access:public
 Circle_desc::y	Descriptors.h	/^	int x,y;$/;"	m	struct:Circle_desc	access:public
 D	teal_planet.png	/^	/;"	v
-DEGREE_INCREMENT	Player.h	/^		float DEGREE_INCREMENT;$/;"	m	class:Player	access:protected
 DONE	RuPPAT.cpp	/^bool *DONE = (bool*)mainDone;$/;"	l
 Derivative	PhysFuncs.h	/^struct Derivative$/;"	s
 Derivative::ddx	PhysFuncs.h	/^	float ddx;$/;"	m	struct:Derivative	access:public
@@ -91,35 +90,58 @@ ID	Descriptors.h	/^	int ID;$/;"	m	struct:Entity_desc	access:public
 ID	Descriptors.h	/^	int ID;\/\/identify the pixel, usefule for debugging$/;"	m	struct:Pixel_desc	access:public
 IDbase	RuPPAT.h	/^	int IDbase;\/\/value of next ID $/;"	m	class:RuPPAT	access:private
 LEFT	Descriptors.h	7;"	d
+Missile	Missile.cpp	/^Missile::Missile(string sprite_path, int num_rotations, int startingAngle, int mass,$/;"	f	class:Missile	signature:(string sprite_path, int num_rotations, int startingAngle, int mass, float maxaccel, int startX, int startY, float xVel, float yVel, string HC_path)
+Missile	Missile.h	/^		explicit Missile(string sprite_path, int num_rotations, int startingAngle, int mass,$/;"	p	class:Missile	access:public	signature:(string sprite_path, int num_rotations, int startingAngle, int mass, float maxaccel, int startX, int startY, float xVel, float yVel, string HC_path)
+Missile	Missile.h	/^class Missile : public Object$/;"	c	inherits:Object
+Missile::Missile	Missile.cpp	/^Missile::Missile(string sprite_path, int num_rotations, int startingAngle, int mass,$/;"	f	class:Missile	signature:(string sprite_path, int num_rotations, int startingAngle, int mass, float maxaccel, int startX, int startY, float xVel, float yVel, string HC_path)
+Missile::Missile	Missile.h	/^		explicit Missile(string sprite_path, int num_rotations, int startingAngle, int mass,$/;"	p	class:Missile	access:public	signature:(string sprite_path, int num_rotations, int startingAngle, int mass, float maxaccel, int startX, int startY, float xVel, float yVel, string HC_path)
+Missile::damage	Missile.h	/^		int damage;$/;"	m	class:Missile	access:protected
+Missile::~Missile	Missile.h	/^		~Missile();$/;"	p	class:Missile	access:public	signature:()
 NOW	RuPPAT.cpp	/^	const Uint32 NOW = SDL_GetTicks(); $/;"	l
 OBJECT_H	Object.h	19;"	d
 Object	Object.cpp	/^Object :: Object(string sprite_path, int start_x, int start_y, int start_mass)$/;"	f	class:Object	signature:(string sprite_path, int start_x, int start_y, int start_mass)
 Object	Object.cpp	/^Object::Object(string sprite_path, int start_x, int start_y, int start_mass,$/;"	f	class:Object	signature:(string sprite_path, int start_x, int start_y, int start_mass, int num_rotations, int starting_angle)
-Object	Object.cpp	/^Object::Object(string sprite_path, int start_x, int start_y, int start_mass,$/;"	f	class:Object	signature:(string sprite_path, int start_x, int start_y, int start_mass, int num_rotations, int starting_angle, float xVel, float yVel, string HB_path)
+Object	Object.cpp	/^Object::Object(string sprite_path, int start_x, int start_y, int start_mass,$/;"	f	class:Object	signature:(string sprite_path, int start_x, int start_y, int start_mass, int num_rotations, int starting_angle, float xVel, float yVel, string HC_path)
 Object	Object.h	/^class Object$/;"	c
 Object	Object.h	/^explicit Object(string sprite_path, int start_x, int start_y, int start_mass);$/;"	p	class:Object	access:public	signature:(string sprite_path, int start_x, int start_y, int start_mass)
 Object	Object.h	/^explicit Object(string sprite_path, int start_x, int start_y, int start_mass,$/;"	p	class:Object	access:public	signature:(string sprite_path, int start_x, int start_y, int start_mass, int num_rotations, int starting_angle)
-Object	Object.h	/^explicit Object(string sprite_path, int start_x, int start_y, int start_mass,$/;"	p	class:Object	access:public	signature:(string sprite_path, int start_x, int start_y, int start_mass, int num_rotations, int starting_angle, float xVel, float yVel, string HB_path)
+Object	Object.h	/^explicit Object(string sprite_path, int start_x, int start_y, int start_mass,$/;"	p	class:Object	access:public	signature:(string sprite_path, int start_x, int start_y, int start_mass, int num_rotations, int starting_angle, float xVel, float yVel, string HC_path)
 Object::Object	Object.cpp	/^Object :: Object(string sprite_path, int start_x, int start_y, int start_mass)$/;"	f	class:Object	signature:(string sprite_path, int start_x, int start_y, int start_mass)
 Object::Object	Object.cpp	/^Object::Object(string sprite_path, int start_x, int start_y, int start_mass,$/;"	f	class:Object	signature:(string sprite_path, int start_x, int start_y, int start_mass, int num_rotations, int starting_angle)
-Object::Object	Object.cpp	/^Object::Object(string sprite_path, int start_x, int start_y, int start_mass,$/;"	f	class:Object	signature:(string sprite_path, int start_x, int start_y, int start_mass, int num_rotations, int starting_angle, float xVel, float yVel, string HB_path)
+Object::Object	Object.cpp	/^Object::Object(string sprite_path, int start_x, int start_y, int start_mass,$/;"	f	class:Object	signature:(string sprite_path, int start_x, int start_y, int start_mass, int num_rotations, int starting_angle, float xVel, float yVel, string HC_path)
 Object::Object	Object.h	/^explicit Object(string sprite_path, int start_x, int start_y, int start_mass);$/;"	p	class:Object	access:public	signature:(string sprite_path, int start_x, int start_y, int start_mass)
 Object::Object	Object.h	/^explicit Object(string sprite_path, int start_x, int start_y, int start_mass,$/;"	p	class:Object	access:public	signature:(string sprite_path, int start_x, int start_y, int start_mass, int num_rotations, int starting_angle)
-Object::Object	Object.h	/^explicit Object(string sprite_path, int start_x, int start_y, int start_mass,$/;"	p	class:Object	access:public	signature:(string sprite_path, int start_x, int start_y, int start_mass, int num_rotations, int starting_angle, float xVel, float yVel, string HB_path)
+Object::Object	Object.h	/^explicit Object(string sprite_path, int start_x, int start_y, int start_mass,$/;"	p	class:Object	access:public	signature:(string sprite_path, int start_x, int start_y, int start_mass, int num_rotations, int starting_angle, float xVel, float yVel, string HC_path)
+Object::accelBackward	Object.cpp	/^void Object :: accelBackward()$/;"	f	class:Object	signature:()
 Object::accelBackward	Object.h	/^		void accelBackward();$/;"	p	class:Object	access:public	signature:()
+Object::accelForward	Object.cpp	/^void Object :: accelForward() $/;"	f	class:Object	signature:()
 Object::accelForward	Object.h	/^		void accelForward();	$/;"	p	class:Object	access:public	signature:()
 Object::buildHitBoxes_fromLayer	Object.cpp	/^void Object::buildHitBoxes_fromLayer(SDL_Surface *HB_surface)$/;"	f	class:Object	signature:(SDL_Surface *HB_surface)
 Object::buildHitBoxes_fromLayer	Object.h	/^		void buildHitBoxes_fromLayer(SDL_Surface* hitBoxLayout);$/;"	p	class:Object	access:public	signature:(SDL_Surface* hitBoxLayout)
 Object::buildHitBoxes_fromSprite	Object.h	/^		void buildHitBoxes_fromSprite();$/;"	p	class:Object	access:public	signature:()
 Object::checkHits	Object.cpp	/^bool Object::checkHits(float &xVel, float &yVel, Entity_desc &check_ent)$/;"	f	class:Object	signature:(float &xVel, float &yVel, Entity_desc &check_ent)
 Object::checkHits	Object.h	/^		bool checkHits(float &xVel, float &yVel, Entity_desc &check_ent);$/;"	p	class:Object	access:public	signature:(float &xVel, float &yVel, Entity_desc &check_ent)
+Object::decrementAngle_index	Object.cpp	/^void Object :: decrementAngle_index()$/;"	f	class:Object	signature:()
+Object::decrementAngle_index	Object.h	/^		void decrementAngle_index();$/;"	p	class:Object	access:public	signature:()
+Object::decrementRotation_rate	Object.cpp	/^void Object :: decrementRotation_rate()$/;"	f	class:Object	signature:()
+Object::decrementRotation_rate	Object.h	/^		void decrementRotation_rate();$/;"	p	class:Object	access:public	signature:()
 Object::descriptor	Object.h	/^		Entity_desc descriptor;$/;"	m	class:Object	access:protected
+Object::exhaustX	Object.h	/^		float exhaustX, exhaustY;$/;"	m	class:Object	access:protected
+Object::exhaustY	Object.h	/^		float exhaustX, exhaustY;$/;"	m	class:Object	access:protected
+Object::getAngle	Object.cpp	/^float Object :: getAngle()$/;"	f	class:Object	signature:()
+Object::getAngle	Object.h	/^		float getAngle();$/;"	p	class:Object	access:public	signature:()
 Object::getDescriptor	Object.cpp	/^Entity_desc Object::getDescriptor()$/;"	f	class:Object	signature:()
 Object::getDescriptor	Object.h	/^		Entity_desc getDescriptor();$/;"	p	class:Object	access:public	signature:()
-Object::getSprite	Object.cpp	/^SDL_Surface * Object :: getSprite()$/;"	f	class:Object	signature:()
+Object::getRotation_rate	Object.cpp	/^float Object :: getRotation_rate()$/;"	f	class:Object	signature:()
+Object::getRotation_rate	Object.h	/^		float getRotation_rate();$/;"	p	class:Object	access:public	signature:()
+Object::getSprite	Object.cpp	/^SDL_Surface *Object :: getSprite(int angle)$/;"	f	class:Object	signature:(int angle)
+Object::getSprite	Object.cpp	/^SDL_Surface* Object :: getSprite()$/;"	f	class:Object	signature:()
 Object::getSprite	Object.h	/^		SDL_Surface *getSprite();$/;"	p	class:Object	access:public	signature:()
+Object::getSprite	Object.h	/^		SDL_Surface *getSprite(int angle);$/;"	p	class:Object	access:public	signature:(int angle)
 Object::getX	Object.cpp	/^int Object :: getX()$/;"	f	class:Object	signature:()
 Object::getX	Object.h	/^		int getX();$/;"	p	class:Object	access:public	signature:()
+Object::getXY_exhaust	Object.cpp	/^void Object :: getXY_exhaust(float &xVel, float &yVel)$/;"	f	class:Object	signature:(float &xVel, float &yVel)
+Object::getXY_exhaust	Object.h	/^		void getXY_exhaust(float &xVel, float &yVel);$/;"	p	class:Object	access:public	signature:(float &xVel, float &yVel)
 Object::getXacc	Object.cpp	/^float Object :: getXacc()$/;"	f	class:Object	signature:()
 Object::getXacc	Object.h	/^		float getXacc();$/;"	p	class:Object	access:public	signature:()
 Object::getXvel	Object.cpp	/^float Object :: getXvel()$/;"	f	class:Object	signature:()
@@ -131,11 +153,25 @@ Object::getYacc	Object.h	/^		float getYacc();$/;"	p	class:Object	access:public	s
 Object::getYvel	Object.cpp	/^float Object :: getYvel()$/;"	f	class:Object	signature:()
 Object::getYvel	Object.h	/^		float getYvel();$/;"	p	class:Object	access:public	signature:()
 Object::hitCircleSprite	Object.h	/^		Sprite sprite, hitCircleSprite;$/;"	m	class:Object	access:public
+Object::incrementAngle_index	Object.cpp	/^void Object :: incrementAngle_index()$/;"	f	class:Object	signature:()
+Object::incrementAngle_index	Object.h	/^		void incrementAngle_index();$/;"	p	class:Object	access:public	signature:()
+Object::incrementRotation_rate	Object.cpp	/^void Object :: incrementRotation_rate()$/;"	f	class:Object	signature:()
+Object::incrementRotation_rate	Object.h	/^		void incrementRotation_rate();$/;"	p	class:Object	access:public	signature:()
+Object::lastErr	Object.h	/^		float lastErr;$/;"	m	class:Object	access:public
+Object::rotationalErrorAccum	Object.h	/^		float rotationalErrorAccum;$/;"	m	class:Object	access:public
+Object::setAccelVectors	Object.cpp	/^void Object :: setAccelVectors(bool forward)$/;"	f	class:Object	signature:(bool forward)
+Object::setAccelVectors	Object.h	/^		void setAccelVectors(bool forward);$/;"	p	class:Object	access:public	signature:(bool forward)
+Object::setAngle_index	Object.cpp	/^void Object :: setAngle_index(int angleIndex)$/;"	f	class:Object	signature:(int angleIndex)
+Object::setAngle_index	Object.h	/^		void setAngle_index(int angleIndex);$/;"	p	class:Object	access:public	signature:(int angleIndex)
 Object::setDescriptor	Object.cpp	/^void Object::setDescriptor(Entity_desc new_desc)$/;"	f	class:Object	signature:(Entity_desc new_desc)
 Object::setDescriptor	Object.h	/^		void setDescriptor(Entity_desc new_desc);$/;"	p	class:Object	access:public	signature:(Entity_desc new_desc)
 Object::setID	Object.cpp	/^void Object::setID(int id)$/;"	f	class:Object	signature:(int id)
 Object::setID	Object.h	/^		void setID(int id);$/;"	p	class:Object	access:public	signature:(int id)
+Object::setRotation_rate	Object.cpp	/^void Object :: setRotation_rate(float rotRate)$/;"	f	class:Object	signature:(float rotRate)
+Object::setRotation_rate	Object.h	/^		void setRotation_rate(float rotRate);$/;"	p	class:Object	access:public	signature:(float rotRate)
 Object::sprite	Object.h	/^		Sprite sprite, hitCircleSprite;$/;"	m	class:Object	access:public
+Object::updateSprite	Object.cpp	/^void Object :: updateSprite()$/;"	f	class:Object	signature:()
+Object::updateSprite	Object.h	/^		void updateSprite();$/;"	p	class:Object	access:public	signature:()
 Object::~Object	Object.cpp	/^Object :: ~Object()$/;"	f	class:Object	signature:()
 Object::~Object	Object.h	/^		~Object();$/;"	p	class:Object	access:public	signature:()
 OnRender	Render.cpp	/^void Render::OnRender()$/;"	f	class:Render	signature:()
@@ -169,60 +205,18 @@ Player	Player.h	/^		explicit Player(string sprite_path, int num_rotations, int s
 Player	Player.h	/^		explicit Player(string sprite_path, int num_rotations, int startingAngle,$/;"	p	class:Player	access:public	signature:(string sprite_path, int num_rotations, int startingAngle, float maxaccel, int startX, int startY)
 Player	Player.h	/^		explicit Player(string sprite_path, int num_rotations, int startingAngle,$/;"	p	class:Player	access:public	signature:(string sprite_path, int num_rotations, int startingAngle, float maxaccel, int startX, int startY, string HC_path)
 Player	Player.h	/^class Player : public Object$/;"	c	inherits:Object
-Player::DEGREE_INCREMENT	Player.h	/^		float DEGREE_INCREMENT;$/;"	m	class:Player	access:protected
 Player::Player	Player.cpp	/^Player :: Player(string sprite_path, int num_rotations, int startingAngle) $/;"	f	class:Player	signature:(string sprite_path, int num_rotations, int startingAngle)
 Player::Player	Player.cpp	/^Player :: Player(string sprite_path, int num_rotations, int startingAngle,$/;"	f	class:Player	signature:(string sprite_path, int num_rotations, int startingAngle, float maxaccel, int startX, int startY)
 Player::Player	Player.cpp	/^Player :: Player(string sprite_path, int num_rotations, int startingAngle,$/;"	f	class:Player	signature:(string sprite_path, int num_rotations, int startingAngle, float maxaccel, int startX, int startY, string HC_path)
 Player::Player	Player.h	/^		explicit Player(string sprite_path, int num_rotations, int startingAngle);$/;"	p	class:Player	access:public	signature:(string sprite_path, int num_rotations, int startingAngle)
 Player::Player	Player.h	/^		explicit Player(string sprite_path, int num_rotations, int startingAngle,$/;"	p	class:Player	access:public	signature:(string sprite_path, int num_rotations, int startingAngle, float maxaccel, int startX, int startY)
 Player::Player	Player.h	/^		explicit Player(string sprite_path, int num_rotations, int startingAngle,$/;"	p	class:Player	access:public	signature:(string sprite_path, int num_rotations, int startingAngle, float maxaccel, int startX, int startY, string HC_path)
-Player::accelBackward	Player.cpp	/^void Player :: accelBackward()$/;"	f	class:Player	signature:()
-Player::accelBackward	Player.h	/^		void accelBackward();$/;"	p	class:Player	access:public	signature:()
-Player::accelForward	Player.cpp	/^void Player :: accelForward() $/;"	f	class:Player	signature:()
-Player::accelForward	Player.h	/^		void accelForward();	$/;"	p	class:Player	access:public	signature:()
-Player::currentAngle_index	Player.h	/^		int currentAngle_index;$/;"	m	class:Player	access:protected
-Player::currentAngle_index_f	Player.h	/^		float currentAngle_index_f;$/;"	m	class:Player	access:protected
-Player::decrementAngle_index	Player.cpp	/^void Player :: decrementAngle_index()$/;"	f	class:Player	signature:()
-Player::decrementAngle_index	Player.h	/^		void decrementAngle_index();$/;"	p	class:Player	access:public	signature:()
-Player::decrementRotation_rate	Player.cpp	/^void Player :: decrementRotation_rate()$/;"	f	class:Player	signature:()
-Player::decrementRotation_rate	Player.h	/^		void decrementRotation_rate();$/;"	p	class:Player	access:public	signature:()
-Player::exhaustX	Player.h	/^		float exhaustX, exhaustY;$/;"	m	class:Player	access:protected
-Player::exhaustY	Player.h	/^		float exhaustX, exhaustY;$/;"	m	class:Player	access:protected
-Player::getAngle	Player.cpp	/^float Player :: getAngle()$/;"	f	class:Player	signature:()
-Player::getAngle	Player.h	/^		float getAngle();$/;"	p	class:Player	access:public	signature:()
-Player::getDescriptor	Player.cpp	/^Entity_desc Player :: getDescriptor()$/;"	f	class:Player	signature:()
-Player::getDescriptor	Player.h	/^		Entity_desc getDescriptor();$/;"	p	class:Player	access:public	signature:()
-Player::getRotation_rate	Player.cpp	/^float Player :: getRotation_rate()$/;"	f	class:Player	signature:()
-Player::getRotation_rate	Player.h	/^		float getRotation_rate();$/;"	p	class:Player	access:public	signature:()
-Player::getSprite	Player.cpp	/^SDL_Surface *Player :: getSprite()$/;"	f	class:Player	signature:()
-Player::getSprite	Player.cpp	/^SDL_Surface *Player :: getSprite(int angle)$/;"	f	class:Player	signature:(int angle)
-Player::getSprite	Player.h	/^		SDL_Surface * getSprite();$/;"	p	class:Player	access:public	signature:()
-Player::getSprite	Player.h	/^		SDL_Surface * getSprite(int angle);$/;"	p	class:Player	access:public	signature:(int angle)
-Player::getXY_exhaust	Player.cpp	/^void Player :: getXY_exhaust(float &xVel, float &yVel)$/;"	f	class:Player	signature:(float &xVel, float &yVel)
-Player::getXY_exhaust	Player.h	/^		void getXY_exhaust(float &xVel, float &yVel);$/;"	p	class:Player	access:public	signature:(float &xVel, float &yVel)
-Player::incrementAngle_index	Player.cpp	/^void Player :: incrementAngle_index()$/;"	f	class:Player	signature:()
-Player::incrementAngle_index	Player.h	/^		void incrementAngle_index();$/;"	p	class:Player	access:public	signature:()
-Player::incrementRotation_rate	Player.cpp	/^void Player :: incrementRotation_rate()$/;"	f	class:Player	signature:()
-Player::incrementRotation_rate	Player.h	/^		void incrementRotation_rate();$/;"	p	class:Player	access:public	signature:()
-Player::lastErr	Player.h	/^		float lastErr;$/;"	m	class:Player	access:public
-Player::rotationRate	Player.h	/^		float rotationRate;$/;"	m	class:Player	access:protected
-Player::rotationalErrorAccum	Player.h	/^		float rotationalErrorAccum;$/;"	m	class:Player	access:public
-Player::rotations	Player.h	/^		vector<SDL_Surface *> rotations;$/;"	m	class:Player	access:protected
-Player::setAccelVectors	Player.cpp	/^void Player :: setAccelVectors(bool forward)$/;"	f	class:Player	signature:(bool forward)
-Player::setAccelVectors	Player.h	/^		void setAccelVectors(bool forward);$/;"	p	class:Player	access:public	signature:(bool forward)
-Player::setAngle_index	Player.cpp	/^void Player :: setAngle_index(int angleIndex)$/;"	f	class:Player	signature:(int angleIndex)
-Player::setAngle_index	Player.h	/^		void setAngle_index(int angleIndex);$/;"	p	class:Player	access:public	signature:(int angleIndex)
-Player::setDescriptor	Player.cpp	/^void Player :: setDescriptor(Entity_desc new_desc)$/;"	f	class:Player	signature:(Entity_desc new_desc)
-Player::setDescriptor	Player.h	/^		void setDescriptor(Entity_desc new_desc);$/;"	p	class:Player	access:public	signature:(Entity_desc new_desc)
-Player::setRotation_rate	Player.cpp	/^void Player :: setRotation_rate(float rotRate)$/;"	f	class:Player	signature:(float rotRate)
-Player::setRotation_rate	Player.h	/^		void setRotation_rate(float rotRate);$/;"	p	class:Player	access:public	signature:(float rotRate)
-Player::sprite	Player.h	/^		Sprite sprite;$/;"	m	class:Player	access:protected
-Player::updateSprite	Player.cpp	/^void Player :: updateSprite()$/;"	f	class:Player	signature:()
-Player::updateSprite	Player.h	/^		void updateSprite();$/;"	p	class:Player	access:public	signature:()
 Player::~Player	Player.cpp	/^Player :: ~Player()$/;"	f	class:Player	signature:()
 Player::~Player	Player.h	/^		~Player();$/;"	p	class:Player	access:public	signature:()
 RENDER_H	Render.h	8;"	d
 RIGHT	Descriptors.h	8;"	d
+RK4	RuPPAT.cpp	/^void RuPPAT::RK4(float t, float dt)$/;"	f	class:RuPPAT	signature:(float t, float dt)
+RK4	RuPPAT.h	/^	void RK4(float t, float dt);$/;"	p	class:RuPPAT	access:public	signature:(float t, float dt)
 RK4_all	RuPPAT.cpp	/^void RuPPAT :: RK4_all(float t, float dt)$/;"	f	class:RuPPAT	signature:(float t, float dt)
 RK4_all	RuPPAT.h	/^	void RK4_all(float t, float dt);$/;"	p	class:RuPPAT	access:public	signature:(float t, float dt)
 RK4_entity	RuPPAT.cpp	/^Entity_desc RuPPAT :: RK4_entity(Entity_desc ent)$/;"	f	class:RuPPAT	signature:(Entity_desc ent)
@@ -266,6 +260,8 @@ RuPPAT	RuPPAT.cpp	/^RuPPAT :: RuPPAT(int width,int height,int bpp, unsigned int 
 RuPPAT	RuPPAT.h	/^		RuPPAT(int width,int height,int bpp, unsigned int flags,$/;"	p	class:RuPPAT	access:public	signature:(int width,int height,int bpp, unsigned int flags, string bkg_paths[], int num_bkgs)
 RuPPAT	RuPPAT.h	/^class RuPPAT$/;"	c
 RuPPAT::IDbase	RuPPAT.h	/^	int IDbase;\/\/value of next ID $/;"	m	class:RuPPAT	access:private
+RuPPAT::RK4	RuPPAT.cpp	/^void RuPPAT::RK4(float t, float dt)$/;"	f	class:RuPPAT	signature:(float t, float dt)
+RuPPAT::RK4	RuPPAT.h	/^	void RK4(float t, float dt);$/;"	p	class:RuPPAT	access:public	signature:(float t, float dt)
 RuPPAT::RK4_all	RuPPAT.cpp	/^void RuPPAT :: RK4_all(float t, float dt)$/;"	f	class:RuPPAT	signature:(float t, float dt)
 RuPPAT::RK4_all	RuPPAT.h	/^	void RK4_all(float t, float dt);$/;"	p	class:RuPPAT	access:public	signature:(float t, float dt)
 RuPPAT::RK4_entity	RuPPAT.cpp	/^Entity_desc RuPPAT :: RK4_entity(Entity_desc ent)$/;"	f	class:RuPPAT	signature:(Entity_desc ent)
@@ -391,16 +387,23 @@ WIDTH_cl	main.cpp	/^	int WIDTH_cl = 1024;$/;"	v
 Xtimer	Descriptors.h	/^	unsigned int Xtimer;\/\/used for time based movement$/;"	m	struct:Pixel_desc	access:public
 Ytimer	Descriptors.h	/^	unsigned int Ytimer;	$/;"	m	struct:Pixel_desc	access:public
 __DESC_H	Descriptors.h	5;"	d
+__GCC_ATOMIC_INT_LOCK_FREE	Descriptors.h.gch	/^/;"	v
+__GCC_ATOMIC_INT_LOCK_FREE	Game.h.gch	/^/;"	v
+__GCC_ATOMIC_INT_LOCK_FREE	Missile.h.gch	/^/;"	v
+__GCC_ATOMIC_INT_LOCK_FREE	Object.h.gch	/^/;"	v
+__GCC_ATOMIC_INT_LOCK_FREE	PhysFuncs.h.gch	/^/;"	v
+__GCC_ATOMIC_INT_LOCK_FREE	Player.h.gch	/^/;"	v
+__GCC_ATOMIC_INT_LOCK_FREE	Render.h.gch	/^/;"	v
+__GCC_ATOMIC_INT_LOCK_FREE	RuPPAT.h.gch	/^/;"	v
+__GCC_ATOMIC_INT_LOCK_FREE	Sprite.h.gch	/^/;"	v
 a	Descriptors.h	/^	bool w,a,s,d;$/;"	m	struct:Event_desc	access:public
 a	PhysFuncs.h	/^	Derivative a = evaluate( state, t, 0.0f, init, objMass, point_x, point_y);$/;"	l
 a	PhysFuncs.h	/^	Derivative a, b, c, d;$/;"	l
 a_count	Game.cpp	/^		w_count=0, s_count=0, a_count=0, d_count=0;$/;"	v
+accelBackward	Object.cpp	/^void Object :: accelBackward()$/;"	f	class:Object	signature:()
 accelBackward	Object.h	/^		void accelBackward();$/;"	p	class:Object	access:public	signature:()
-accelBackward	Player.cpp	/^void Player :: accelBackward()$/;"	f	class:Player	signature:()
-accelBackward	Player.h	/^		void accelBackward();$/;"	p	class:Player	access:public	signature:()
+accelForward	Object.cpp	/^void Object :: accelForward() $/;"	f	class:Object	signature:()
 accelForward	Object.h	/^		void accelForward();	$/;"	p	class:Object	access:public	signature:()
-accelForward	Player.cpp	/^void Player :: accelForward() $/;"	f	class:Player	signature:()
-accelForward	Player.h	/^		void accelForward();	$/;"	p	class:Player	access:public	signature:()
 accelLength	Descriptors.h	/^	int accelLength;\/\/how long to apply acceleration$/;"	m	struct:Pixel_desc	access:public
 accelPlayer	RuPPAT.cpp	/^void RuPPAT :: accelPlayer(int p_ID, bool isForward)$/;"	f	class:RuPPAT	signature:(int p_ID, bool isForward)
 accelPlayer	RuPPAT.h	/^	void accelPlayer(int p_ID, bool isForward);$/;"	p	class:RuPPAT	access:public	signature:(int p_ID, bool isForward)
@@ -445,6 +448,7 @@ color	Descriptors.h	/^	unsigned int color;\/\/color of pixel$/;"	m	struct:Pixel_
 color	RuPPAT.cpp	/^	int x, y, i, j, color, size=pixelList_m.size(), screenID=0;$/;"	l
 color	RuPPAT.cpp	/^	int x, y, i, j, color, size=players.size(), screenID=0;$/;"	l
 colour	Render.cpp	/^    Uint32 colour;  $/;"	l
+context	.RuPPAT.h.swp	/^/;"	v
 context	RuPPAT.h	/^			void *context;$/;"	m	struct:RK4_parse_helper_arg	access:public
 context	RuPPAT.h	/^			void *context;$/;"	m	struct:cPE_helper	access:public
 context	RuPPAT.h	/^			void *context;$/;"	m	struct:helper_char	access:public
@@ -461,28 +465,27 @@ createPixElement_helper	RuPPAT.h	/^	static void *createPixElement_helper(void *c
 curr_rate	RuPPAT.cpp	/^		float curr_rate = players[p_ID]->getRotation_rate(); $/;"	l
 currentAngleIndex	Sprite.h	/^		int currentAngleIndex;$/;"	m	class:Sprite	access:protected
 currentAngleIndex_f	Sprite.h	/^		float currentAngleIndex_f;$/;"	m	class:Sprite	access:protected
-currentAngle_index	Player.h	/^		int currentAngle_index;$/;"	m	class:Player	access:protected
-currentAngle_index_f	Player.h	/^		float currentAngle_index_f;$/;"	m	class:Player	access:protected
 current_color	RuPPAT.cpp	/^ int current_color = pix_t.color;$/;"	l
 d	Descriptors.h	/^	bool w,a,s,d;$/;"	m	struct:Event_desc	access:public
 d	PhysFuncs.h	/^	Derivative a, b, c, d;$/;"	l
 d	PhysFuncs.h	/^	Derivative d = evaluate( state, t, dt, c, objMass, point_x, point_y);$/;"	l
 d	RuPPAT.h	/^		bool *d = helper->mDone;$/;"	l
 d_count	Game.cpp	/^		w_count=0, s_count=0, a_count=0, d_count=0;$/;"	v
+damage	Missile.h	/^		int damage;$/;"	m	class:Missile	access:protected
 ddx	PhysFuncs.h	/^	float ddx;$/;"	m	struct:Derivative	access:public
 ddxdt	PhysFuncs.h	/^         float ddxdt = 1.0f\/6.0f * (a.ddx + 2.0f*(b.ddx + c.ddx) + d.ddx);$/;"	l
 ddy	PhysFuncs.h	/^	float ddy;$/;"	m	struct:Derivative	access:public
 ddydt	PhysFuncs.h	/^         float ddydt = 1.0f\/6.0f * (a.ddy + 2.0f*(b.ddy + c.ddy) + d.ddy);$/;"	l
-decrementAngleIndex	Player.cpp	/^	sprite.decrementAngleIndex();$/;"	p	file:	signature:()
+decrementAngleIndex	Object.cpp	/^	sprite.decrementAngleIndex();$/;"	p	file:	signature:()
 decrementAngleIndex	Sprite.cpp	/^void Sprite::decrementAngleIndex()$/;"	f	class:Sprite	signature:()
 decrementAngleIndex	Sprite.h	/^		void decrementAngleIndex();$/;"	p	class:Sprite	access:public	signature:()
-decrementAngle_index	Player.cpp	/^void Player :: decrementAngle_index()$/;"	f	class:Player	signature:()
-decrementAngle_index	Player.h	/^		void decrementAngle_index();$/;"	p	class:Player	access:public	signature:()
-decrementRotationRate	Player.cpp	/^	sprite.decrementRotationRate();$/;"	p	file:	signature:()
+decrementAngle_index	Object.cpp	/^void Object :: decrementAngle_index()$/;"	f	class:Object	signature:()
+decrementAngle_index	Object.h	/^		void decrementAngle_index();$/;"	p	class:Object	access:public	signature:()
+decrementRotationRate	Object.cpp	/^	sprite.decrementRotationRate();$/;"	p	file:	signature:()
 decrementRotationRate	Sprite.cpp	/^void Sprite::decrementRotationRate()$/;"	f	class:Sprite	signature:()
 decrementRotationRate	Sprite.h	/^		void decrementRotationRate();$/;"	p	class:Sprite	access:public	signature:()
-decrementRotation_rate	Player.cpp	/^void Player :: decrementRotation_rate()$/;"	f	class:Player	signature:()
-decrementRotation_rate	Player.h	/^		void decrementRotation_rate();$/;"	p	class:Player	access:public	signature:()
+decrementRotation_rate	Object.cpp	/^void Object :: decrementRotation_rate()$/;"	f	class:Object	signature:()
+decrementRotation_rate	Object.h	/^		void decrementRotation_rate();$/;"	p	class:Object	access:public	signature:()
 decrementRotation_rate	RuPPAT.cpp	/^				players[p_ID]->decrementRotation_rate();$/;"	p	file:	signature:()
 defaultTurnAmnt	Game.cpp	/^	 key_count_limit=0, defaultTurnAmnt=4, fastTurn=3,$/;"	v
 deg_playerToPoint	RuPPAT.cpp	/^	float playerDegree = 0.0,deg_playerToPoint = 0.0, $/;"	l
@@ -513,7 +516,7 @@ e	RuPPAT.h	/^		Event_desc *e = helper->mEvents;$/;"	l
 endl	Game.cpp	/^					cout<<"doneskies!!"<<endl;$/;"	l
 endl	Game.cpp	/^			cout<<"keydown!"<<endl;$/;"	l
 endl	Game.cpp	/^	cout<<"joining RuPPAT in GAME"<<endl;$/;"	l
-endl	Object.cpp	/^	cout<<"PATH:"<<HB_path<<endl;$/;"	l
+endl	Object.cpp	/^	cout<<"PATH:"<<HC_path<<endl;$/;"	l
 endl	PhysFuncs.h	/^		std::cout<<"Nan found!"<<std::endl;$/;"	m	class:std
 endl	RuPPAT.cpp	/^			cout<<"SPACE PRESSED!!!"<<endl;	$/;"	l
 endl	RuPPAT.cpp	/^			cout<<spritePath<<" doesnt have HB!"<<endl;$/;"	l
@@ -546,24 +549,22 @@ erase	RuPPAT.cpp	/^		pixelList_m.erase(pixelList_m.begin()+k);$/;"	p	file:	signa
 evaluate	PhysFuncs.h	/^Derivative evaluate(Pixel_desc &initial,float t, float dt,const Derivative &d,$/;"	f	signature:(Pixel_desc &initial,float t, float dt,const Derivative &d, const float objMass, const float point_x, const float point_y)
 evaluate_ent	PhysFuncs.h	/^Derivative evaluate_ent(Entity_desc &initial,float t, float dt,const Derivative &d,$/;"	f	signature:(Entity_desc &initial,float t, float dt,const Derivative &d, const float objMass, const float point_x, const float point_y)
 event	Game.h	/^	SDL_Event event;	$/;"	m	class:Game	access:private
-exhaustX	Player.h	/^		float exhaustX, exhaustY;$/;"	m	class:Player	access:protected
-exhaustY	Player.h	/^		float exhaustX, exhaustY;$/;"	m	class:Player	access:protected
+exhaustX	Object.h	/^		float exhaustX, exhaustY;$/;"	m	class:Object	access:protected
+exhaustY	Object.h	/^		float exhaustX, exhaustY;$/;"	m	class:Object	access:protected
 fastTurn	Game.cpp	/^	 key_count_limit=0, defaultTurnAmnt=4, fastTurn=3,$/;"	v
 format	tags	/^!_TAG_FILE_FORMAT	2	\/extended format; --format=1 will not append ;" to lines\/$/;"	v
 gAccTotal	PhysFuncs.h	/^	float theta, gAccTotal=0.0;$/;"	l
 game	main.cpp	/^Game *game;$/;"	v
 game_rate	Game.cpp	/^	int game_rate = 60;$/;"	l
 game_rate	RuPPAT.cpp	/^	int game_rate = 120;$/;"	l
-getAngle	Player.cpp	/^float Player :: getAngle()$/;"	f	class:Player	signature:()
-getAngle	Player.h	/^		float getAngle();$/;"	p	class:Player	access:public	signature:()
+getAngle	Object.cpp	/^float Object :: getAngle()$/;"	f	class:Object	signature:()
+getAngle	Object.h	/^		float getAngle();$/;"	p	class:Object	access:public	signature:()
 getAngle	Sprite.cpp	/^float Sprite::getAngle()$/;"	f	class:Sprite	signature:()
 getAngle	Sprite.h	/^		float getAngle();$/;"	p	class:Sprite	access:public	signature:()
 getBaseSprite	Sprite.cpp	/^SDL_Surface* Sprite::getBaseSprite()$/;"	f	class:Sprite	signature:()
 getBaseSprite	Sprite.h	/^		SDL_Surface * getBaseSprite();$/;"	p	class:Sprite	access:public	signature:()
 getDescriptor	Object.cpp	/^Entity_desc Object::getDescriptor()$/;"	f	class:Object	signature:()
 getDescriptor	Object.h	/^		Entity_desc getDescriptor();$/;"	p	class:Object	access:public	signature:()
-getDescriptor	Player.cpp	/^Entity_desc Player :: getDescriptor()$/;"	f	class:Player	signature:()
-getDescriptor	Player.h	/^		Entity_desc getDescriptor();$/;"	p	class:Player	access:public	signature:()
 getDimensions	Object.cpp	/^	hitCircleSprite.getDimensions(spriteWidth,spriteHeight);$/;"	p	file:	signature:(spriteWidth,spriteHeight)
 getDimensions	Sprite.cpp	/^void Sprite::getDimensions(int &w, int &h)$/;"	f	class:Sprite	signature:(int &w, int &h)
 getDimensions	Sprite.h	/^		void getDimensions(int &w, int &h);$/;"	p	class:Sprite	access:public	signature:(int &w, int &h)
@@ -574,22 +575,20 @@ getPixel	Sprite.cpp	/^Uint32 Sprite::getPixel(int x, int y)$/;"	f	class:Sprite	s
 getPixel	Sprite.h	/^		Uint32 getPixel(int x, int y);$/;"	p	class:Sprite	access:public	signature:(int x, int y)
 getRotationRate	Sprite.cpp	/^float Sprite::getRotationRate()$/;"	f	class:Sprite	signature:()
 getRotationRate	Sprite.h	/^		float getRotationRate();$/;"	p	class:Sprite	access:public	signature:()
-getRotation_rate	Player.cpp	/^float Player :: getRotation_rate()$/;"	f	class:Player	signature:()
-getRotation_rate	Player.h	/^		float getRotation_rate();$/;"	p	class:Player	access:public	signature:()
-getSprite	Object.cpp	/^SDL_Surface * Object :: getSprite()$/;"	f	class:Object	signature:()
+getRotation_rate	Object.cpp	/^float Object :: getRotation_rate()$/;"	f	class:Object	signature:()
+getRotation_rate	Object.h	/^		float getRotation_rate();$/;"	p	class:Object	access:public	signature:()
+getSprite	Object.cpp	/^SDL_Surface *Object :: getSprite(int angle)$/;"	f	class:Object	signature:(int angle)
+getSprite	Object.cpp	/^SDL_Surface* Object :: getSprite()$/;"	f	class:Object	signature:()
 getSprite	Object.h	/^		SDL_Surface *getSprite();$/;"	p	class:Object	access:public	signature:()
-getSprite	Player.cpp	/^SDL_Surface *Player :: getSprite()$/;"	f	class:Player	signature:()
-getSprite	Player.cpp	/^SDL_Surface *Player :: getSprite(int angle)$/;"	f	class:Player	signature:(int angle)
-getSprite	Player.h	/^		SDL_Surface * getSprite();$/;"	p	class:Player	access:public	signature:()
-getSprite	Player.h	/^		SDL_Surface * getSprite(int angle);$/;"	p	class:Player	access:public	signature:(int angle)
+getSprite	Object.h	/^		SDL_Surface *getSprite(int angle);$/;"	p	class:Object	access:public	signature:(int angle)
 getSprite	Sprite.cpp	/^SDL_Surface* Sprite::getSprite()$/;"	f	class:Sprite	signature:()
 getSprite	Sprite.cpp	/^SDL_Surface* Sprite::getSprite(int angle)$/;"	f	class:Sprite	signature:(int angle)
 getSprite	Sprite.h	/^		SDL_Surface * getSprite();$/;"	p	class:Sprite	access:public	signature:()
 getSprite	Sprite.h	/^		SDL_Surface * getSprite(int angle);$/;"	p	class:Sprite	access:public	signature:(int angle)
 getX	Object.cpp	/^int Object :: getX()$/;"	f	class:Object	signature:()
 getX	Object.h	/^		int getX();$/;"	p	class:Object	access:public	signature:()
-getXY_exhaust	Player.cpp	/^void Player :: getXY_exhaust(float &xVel, float &yVel)$/;"	f	class:Player	signature:(float &xVel, float &yVel)
-getXY_exhaust	Player.h	/^		void getXY_exhaust(float &xVel, float &yVel);$/;"	p	class:Player	access:public	signature:(float &xVel, float &yVel)
+getXY_exhaust	Object.cpp	/^void Object :: getXY_exhaust(float &xVel, float &yVel)$/;"	f	class:Object	signature:(float &xVel, float &yVel)
+getXY_exhaust	Object.h	/^		void getXY_exhaust(float &xVel, float &yVel);$/;"	p	class:Object	access:public	signature:(float &xVel, float &yVel)
 getXY_exhaust	RuPPAT.cpp	/^		players[p_ID]->getXY_exhaust(t_pix.xVel, t_pix.yVel);$/;"	p	file:	signature:(t_pix.xVel, t_pix.yVel)
 getXacc	Object.cpp	/^float Object :: getXacc()$/;"	f	class:Object	signature:()
 getXacc	Object.h	/^		float getXacc();$/;"	p	class:Object	access:public	signature:()
@@ -611,7 +610,8 @@ handleEvents	Game.cpp	/^void Game :: handleEvents(Event_desc &mainEvents)$/;"	f	
 handleEvents	Game.h	/^	void handleEvents(Event_desc &mainEvents);$/;"	p	class:Game	access:public	signature:(Event_desc &mainEvents)
 handleInput	main.cpp	/^int handleInput(int argc,char *argv[], RunOptions &cl_options)$/;"	f	signature:(int argc,char *argv[], RunOptions &cl_options)
 handleInput	main.cpp	/^int handleInput(int argc,char *argv[], RunOptions &cl_options);$/;"	p	file:	signature:(int argc,char *argv[], RunOptions &cl_options)
-heading	Player.cpp	/^		float heading = sprite.getAngle();$/;"	l
+heading	.Player.cpp.swp	/^/;"	v
+heading	Object.cpp	/^		float heading = sprite.getAngle();$/;"	l
 height	Descriptors.h	/^	int height;$/;"	m	struct:RunOptions	access:public
 helper	RuPPAT.h	/^		RK4_parse_helper_arg* helper = (RK4_parse_helper_arg*) helper_in;$/;"	l
 helper	RuPPAT.h	/^		cPE_helper *helper = (cPE_helper*) cpe_helper;$/;"	l
@@ -628,16 +628,17 @@ i	RuPPAT.cpp	/^	int x, y, i, j, color, size=players.size(), screenID=0;$/;"	l
 i	RuPPAT.cpp	/^	int x, y, i;$/;"	l
 i	main.cpp	/^	int i,j,k=0;$/;"	l
 imagePosition	Render.cpp	/^	SDL_Rect imagePosition;$/;"	l
-incrementAngleIndex	Player.cpp	/^	sprite.incrementAngleIndex();$/;"	p	file:	signature:()
+incrementAngleIndex	Object.cpp	/^	sprite.incrementAngleIndex();$/;"	p	file:	signature:()
 incrementAngleIndex	Sprite.cpp	/^void Sprite::incrementAngleIndex()$/;"	f	class:Sprite	signature:()
 incrementAngleIndex	Sprite.h	/^		void incrementAngleIndex();$/;"	p	class:Sprite	access:public	signature:()
-incrementAngle_index	Player.cpp	/^void Player :: incrementAngle_index()$/;"	f	class:Player	signature:()
-incrementAngle_index	Player.h	/^		void incrementAngle_index();$/;"	p	class:Player	access:public	signature:()
-incrementRotationRate	Player.cpp	/^	sprite.incrementRotationRate();$/;"	p	file:	signature:()
+incrementAngle_index	Object.cpp	/^void Object :: incrementAngle_index()$/;"	f	class:Object	signature:()
+incrementAngle_index	Object.h	/^		void incrementAngle_index();$/;"	p	class:Object	access:public	signature:()
+incrementRotationRate	.Player.cpp.swp	/^/;"	p	file:	signature:()
+incrementRotationRate	Object.cpp	/^	sprite.incrementRotationRate();$/;"	p	file:	signature:()
 incrementRotationRate	Sprite.cpp	/^void Sprite::incrementRotationRate()$/;"	f	class:Sprite	signature:()
 incrementRotationRate	Sprite.h	/^		void incrementRotationRate();$/;"	p	class:Sprite	access:public	signature:()
-incrementRotation_rate	Player.cpp	/^void Player :: incrementRotation_rate()$/;"	f	class:Player	signature:()
-incrementRotation_rate	Player.h	/^		void incrementRotation_rate();$/;"	p	class:Player	access:public	signature:()
+incrementRotation_rate	Object.cpp	/^void Object :: incrementRotation_rate()$/;"	f	class:Object	signature:()
+incrementRotation_rate	Object.h	/^		void incrementRotation_rate();$/;"	p	class:Object	access:public	signature:()
 incrementRotation_rate	RuPPAT.cpp	/^				players[p_ID]->incrementRotation_rate();$/;"	p	file:	signature:()
 init	PhysFuncs.h	/^	Derivative init;$/;"	l
 initEvent	Game.cpp	/^void Game :: initEvent(Event_desc &initMe)$/;"	f	class:Game	signature:(Event_desc &initMe)
@@ -662,13 +663,14 @@ k_lMOUSE	Game.cpp	/^	k_lCTRL=false, k_lMOUSE;$/;"	v
 keyT1	RuPPAT.cpp	/^	unsigned int keyT1, keyT2;$/;"	l
 keyT2	RuPPAT.cpp	/^	unsigned int keyT1, keyT2;$/;"	l
 key_count_limit	Game.cpp	/^	 key_count_limit=0, defaultTurnAmnt=4, fastTurn=3,$/;"	v
-lastErr	Player.h	/^		float lastErr;$/;"	m	class:Player	access:public
+lastErr	Object.h	/^		float lastErr;$/;"	m	class:Object	access:public
 lastErr	Sprite.h	/^		float lastErr;$/;"	m	class:Sprite	access:public
 lastTime	RuPPAT.h	/^		Uint32 lastTime;$/;"	m	class:RuPPAT	access:private
 left	Descriptors.h	/^	bool up,left,down,right;$/;"	m	struct:Event_desc	access:public
 leftCtrl	Descriptors.h	/^	bool rightCtrl, leftCtrl;$/;"	m	struct:Event_desc	access:public
 left_count	Game.cpp	/^int x, y, up_count, down_count, left_count, right_count,$/;"	v
 lineoffset	Render.cpp	/^	int lineoffset = y * (mainScreen->pitch \/ 4);$/;"	l
+mDone	.RuPPAT.h.swp	/^/;"	v	typeref:struct:bool
 mDone	RuPPAT.h	/^			bool *mDone;$/;"	m	struct:runPPAT_helperArgs	access:public
 mEvents	RuPPAT.h	/^			Event_desc *mEvents;$/;"	m	struct:runPPAT_helperArgs	access:public
 main	main.cpp	/^int main(int argc, char *argv[])$/;"	f	signature:(int argc, char *argv[])
@@ -688,6 +690,7 @@ mass_size	RuPPAT.cpp	/^	 int mass_size = objectList.size();	$/;"	l
 maxAccel	Descriptors.h	/^	float maxAccel;$/;"	m	struct:Entity_desc	access:public
 mouse_x	Game.cpp	/^int mouse_x, mouse_y;$/;"	v
 mouse_y	Game.cpp	/^int mouse_x, mouse_y;$/;"	v
+n	.Player.cpp.swp	/^/;"	v
 n	red_ship.png	/^ÒôΩÎısÁ¨œnﬁ¨;s∆ﬂ"¨*ŒVñ∫©c÷)ÕLp‰Tˇøoê·Hƒπ<1·º40m™ôXπèæÂhÏ§kªﬂsû‹ªuK˛vxÿøπ∂ˆ"p~øÛD⁄ÔT¸{eE˝˙“•Í ‹ú$)äÌU’¶f¯‹˛≥=®Q&NŸáâ/;"	v
 newX	RuPPAT.cpp	/^	float newX, newY, tmp_xVel, tmp_yVel;$/;"	l
 newY	RuPPAT.cpp	/^	float newX, newY, tmp_xVel, tmp_yVel;$/;"	l
@@ -695,6 +698,7 @@ nextTick	Game.cpp	/^	int nextTick = SDL_GetTicks() + interval;$/;"	l
 nextTick	RuPPAT.cpp	/^	int nextTick = SDL_GetTicks() + interval;$/;"	l
 nextTick	RuPPAT.cpp	/^int nextTick = SDL_GetTicks() + interval;$/;"	l
 noDrawEffect	Descriptors.h	/^	bool noDrawEffect;$/;"	m	struct:Entity_desc	access:public
+num_objects	RuPPAT.cpp	/^	 int num_objects = objectList.size();$/;"	l
 objectList	RuPPAT.cpp	/^	vector<Object *> objectList;$/;"	v
 object_rw_lock	RuPPAT.cpp	/^		  object_rw_lock;$/;"	v
 object_size	RuPPAT.cpp	/^	 int object_size = objectList.size();	$/;"	l
@@ -771,14 +775,10 @@ right_count	Game.cpp	/^int x, y, up_count, down_count, left_count, right_count,$
 rk4_th	RuPPAT.cpp	/^	pthread_t rk4_th;$/;"	l
 rotateSpriteToCoor	Game.cpp	/^void Game :: rotateSpriteToCoor(int p_ID, int x, int y, int rate)$/;"	f	class:Game	signature:(int p_ID, int x, int y, int rate)
 rotateSpriteToCoor	Game.h	/^	void rotateSpriteToCoor(int p_ID, int x, int y, int turnRate);$/;"	p	class:Game	access:public	signature:(int p_ID, int x, int y, int turnRate)
-rotationRate	Player.h	/^		float rotationRate;$/;"	m	class:Player	access:protected
 rotationRate	Sprite.h	/^		float rotationRate;$/;"	m	class:Sprite	access:protected
-rotationalErrorAccum	Player.h	/^		float rotationalErrorAccum;$/;"	m	class:Player	access:public
+rotationalErrorAccum	Object.h	/^		float rotationalErrorAccum;$/;"	m	class:Object	access:public
 rotationalErrorAccum	Sprite.h	/^		float rotationalErrorAccum;$/;"	m	class:Sprite	access:public
-rotations	Player.h	/^		vector<SDL_Surface *> rotations;$/;"	m	class:Player	access:protected
 rotations	Sprite.h	/^		vector<SDL_Surface *> rotations;	$/;"	m	class:Sprite	access:protected
-rotozoomSurface	Player.cpp	/^		rotations.push_back(rotozoomSurface(tempSpriteOpt, $/;"	p	file:	signature:(tempSpriteOpt, i*DEGREE_INCREMENT, 1.0, 0)
-rotozoomSurface	Player.cpp	/^		rotations.push_back(rotozoomSurface(tempSpriteOpt, $/;"	p	file:	signature:(tempSpriteOpt, i*DEGREE_INCREMENT, 1.0, 1)
 rotozoomSurface	Sprite.cpp	/^		rotations.push_back(rotozoomSurface(tempSpriteOpt,$/;"	p	file:	signature:(tempSpriteOpt, i*degreeIncrement, 1.0,0)
 run	Game.cpp	/^void Game :: run(string selection, string option)$/;"	f	class:Game	signature:(string selection, string option)
 run	Game.h	/^	void run(string selection, string option);	$/;"	p	class:Game	access:public	signature:(string selection, string option)
@@ -809,30 +809,29 @@ select	RuPPAT.cpp	/^	char select;$/;"	l
 select	RuPPAT.cpp	/^void * select = &sel;$/;"	l
 selection	Descriptors.h	/^	std::string selection;	$/;"	m	struct:RunOptions	access:public
 selection	RuPPAT.h	/^			string selection;$/;"	m	struct:runPPAT_helperArgs	access:public
-setAccelVectors	Player.cpp	/^void Player :: setAccelVectors(bool forward)$/;"	f	class:Player	signature:(bool forward)
-setAccelVectors	Player.h	/^		void setAccelVectors(bool forward);$/;"	p	class:Player	access:public	signature:(bool forward)
+setAccelVectors	Object.cpp	/^void Object :: setAccelVectors(bool forward)$/;"	f	class:Object	signature:(bool forward)
+setAccelVectors	Object.h	/^		void setAccelVectors(bool forward);$/;"	p	class:Object	access:public	signature:(bool forward)
 setAccelVectors	RuPPAT.cpp	/^		players[p_ID]->setAccelVectors(isForward);$/;"	p	file:	signature:(isForward)
-setAngleIndex	Player.cpp	/^	sprite.setAngleIndex(angleIndex);$/;"	p	file:	signature:(angleIndex)
+setAngleIndex	Object.cpp	/^	sprite.setAngleIndex(angleIndex);$/;"	p	file:	signature:(angleIndex)
 setAngleIndex	Sprite.cpp	/^void Sprite::setAngleIndex(int angleIndex)$/;"	f	class:Sprite	signature:(int angleIndex)
 setAngleIndex	Sprite.h	/^		void setAngleIndex(int angleIndex);$/;"	p	class:Sprite	access:public	signature:(int angleIndex)
-setAngle_index	Player.cpp	/^void Player :: setAngle_index(int angleIndex)$/;"	f	class:Player	signature:(int angleIndex)
-setAngle_index	Player.h	/^		void setAngle_index(int angleIndex);$/;"	p	class:Player	access:public	signature:(int angleIndex)
+setAngle_index	Object.cpp	/^void Object :: setAngle_index(int angleIndex)$/;"	f	class:Object	signature:(int angleIndex)
+setAngle_index	Object.h	/^		void setAngle_index(int angleIndex);$/;"	p	class:Object	access:public	signature:(int angleIndex)
 setDescriptor	Object.cpp	/^void Object::setDescriptor(Entity_desc new_desc)$/;"	f	class:Object	signature:(Entity_desc new_desc)
 setDescriptor	Object.h	/^		void setDescriptor(Entity_desc new_desc);$/;"	p	class:Object	access:public	signature:(Entity_desc new_desc)
-setDescriptor	Player.cpp	/^void Player :: setDescriptor(Entity_desc new_desc)$/;"	f	class:Player	signature:(Entity_desc new_desc)
-setDescriptor	Player.h	/^		void setDescriptor(Entity_desc new_desc);$/;"	p	class:Player	access:public	signature:(Entity_desc new_desc)
 setDescriptor	RuPPAT.cpp	/^			objectList[i]->setDescriptor(other_obj_e);$/;"	p	file:	signature:(other_obj_e)
 setDescriptor	RuPPAT.cpp	/^			players[i]->setDescriptor(player_e);$/;"	p	file:	signature:(player_e)
 setID	Object.cpp	/^void Object::setID(int id)$/;"	f	class:Object	signature:(int id)
 setID	Object.h	/^		void setID(int id);$/;"	p	class:Object	access:public	signature:(int id)
 setMainScreen	Render.cpp	/^void Render :: setMainScreen(int color)$/;"	f	class:Render	signature:(int color)
 setMainScreen	Render.h	/^		void setMainScreen(int color);$/;"	p	class:Render	access:public	signature:(int color)
-setRotationRate	Player.cpp	/^	sprite.setRotationRate(rotRate);$/;"	p	file:	signature:(rotRate)
+setRotationRate	.Player.cpp.swp	/^/;"	p	file:	signature:(rotRate)
+setRotationRate	Object.cpp	/^	sprite.setRotationRate(rotRate);$/;"	p	file:	signature:(rotRate)
 setRotationRate	RuPPAT.cpp	/^		objectList.back()->sprite.setRotationRate(rotationRate);$/;"	p	file:	signature:(rotationRate)
 setRotationRate	Sprite.cpp	/^void Sprite::setRotationRate(float rotRate)$/;"	f	class:Sprite	signature:(float rotRate)
 setRotationRate	Sprite.h	/^		void setRotationRate(float rotRate);$/;"	p	class:Sprite	access:public	signature:(float rotRate)
-setRotation_rate	Player.cpp	/^void Player :: setRotation_rate(float rotRate)$/;"	f	class:Player	signature:(float rotRate)
-setRotation_rate	Player.h	/^		void setRotation_rate(float rotRate);$/;"	p	class:Player	access:public	signature:(float rotRate)
+setRotation_rate	Object.cpp	/^void Object :: setRotation_rate(float rotRate)$/;"	f	class:Object	signature:(float rotRate)
+setRotation_rate	Object.h	/^		void setRotation_rate(float rotRate);$/;"	p	class:Object	access:public	signature:(float rotRate)
 setUpdateOnSelectPix	Game.h	/^	void setUpdateOnSelectPix(int set);$/;"	p	class:Game	access:public	signature:(int set)
 setUpdateOnSelectPix	RuPPAT.cpp	/^void RuPPAT :: setUpdateOnSelectPix(int set)$/;"	f	class:RuPPAT	signature:(int set)
 setUpdateOnSelectPix	RuPPAT.h	/^	void setUpdateOnSelectPix(int set);$/;"	p	class:RuPPAT	access:public	signature:(int set)
@@ -843,7 +842,6 @@ size	RuPPAT.cpp	/^	int x, y, i, j, color, size=players.size(), screenID=0;$/;"	l
 space	Descriptors.h	/^	bool space;$/;"	m	struct:Event_desc	access:public
 space	Game.h	/^	bool space;\/\/$/;"	m	class:Game	access:private
 sprite	Object.h	/^		Sprite sprite, hitCircleSprite;$/;"	m	class:Object	access:public
-sprite	Player.h	/^		Sprite sprite;$/;"	m	class:Player	access:protected
 spriteHeight	Object.cpp	/^	int spriteWidth, spriteHeight;$/;"	l
 spriteMape	Object.cpp	/^	Uint32 spriteMape[spriteWidth][spriteHeight];$/;"	l
 spriteWidth	Object.cpp	/^	int spriteWidth, spriteHeight;$/;"	l
@@ -859,9 +857,7 @@ tempBkg	RuPPAT.cpp	/^	SDL_Surface *tempBkg, * tempBkgOpt;$/;"	l
 tempBkgOpt	RuPPAT.cpp	/^	SDL_Surface *tempBkg, * tempBkgOpt;$/;"	l
 tempErrAccum	RuPPAT.cpp	/^		tempErrAccum, tempErrDiff, angleDifScale=.01;$/;"	l
 tempErrDiff	RuPPAT.cpp	/^		tempErrAccum, tempErrDiff, angleDifScale=.01;$/;"	l
-tempSprite	Player.cpp	/^	SDL_Surface *tempSprite, *tempSpriteOpt;$/;"	l
 tempSprite	Sprite.cpp	/^	SDL_Surface *tempSprite, *tempSpriteOpt;$/;"	l
-tempSpriteOpt	Player.cpp	/^	SDL_Surface *tempSprite, *tempSpriteOpt;$/;"	l
 tempSpriteOpt	Sprite.cpp	/^	SDL_Surface *tempSprite, *tempSpriteOpt;$/;"	l
 temp_circle	Object.cpp	/^	Circle_desc temp_circle;$/;"	l
 temp_e	RuPPAT.cpp	/^	Entity_desc temp_e = ent;$/;"	l
@@ -889,15 +885,16 @@ up	Descriptors.h	/^	bool up,left,down,right;$/;"	m	struct:Event_desc	access:publ
 up_count	Game.cpp	/^int x, y, up_count, down_count, left_count, right_count,$/;"	v
 updateSelectPix	Game.h	/^	void updateSelectPix();$/;"	p	class:Game	access:public	signature:()
 updateSelectPix	RuPPAT.h	/^	void updateSelectPix();$/;"	p	class:RuPPAT	access:public	signature:()
-updateSprite	Player.cpp	/^	sprite.updateSprite();$/;"	p	file:	signature:()
-updateSprite	Player.cpp	/^void Player :: updateSprite()$/;"	f	class:Player	signature:()
-updateSprite	Player.h	/^		void updateSprite();$/;"	p	class:Player	access:public	signature:()
+updateSprite	Object.cpp	/^	sprite.updateSprite();$/;"	p	file:	signature:()
+updateSprite	Object.cpp	/^void Object :: updateSprite()$/;"	f	class:Object	signature:()
+updateSprite	Object.h	/^		void updateSprite();$/;"	p	class:Object	access:public	signature:()
 updateSprite	RuPPAT.cpp	/^			objectList[i]->sprite.updateSprite();$/;"	p	file:	signature:()
 updateSprite	RuPPAT.cpp	/^		players[i]->updateSprite();$/;"	p	file:	signature:()
 updateSprite	Sprite.cpp	/^void Sprite::updateSprite()$/;"	f	class:Sprite	signature:()
 updateSprite	Sprite.h	/^		void updateSprite();$/;"	p	class:Sprite	access:public	signature:()
 updated	Descriptors.h	/^	int updated; \/\/indicate if the pixel has been manipulated already$/;"	m	struct:Pixel_desc	access:public
 updatedG	Descriptors.h	/^	bool updatedG;\/\/hsa gravity accel been added?$/;"	m	struct:Pixel_desc	access:public
+v	Game.h.gch	/^oøí/;"	v
 w	Descriptors.h	/^	bool w,a,s,d;$/;"	m	struct:Event_desc	access:public
 w_count	Game.cpp	/^		w_count=0, s_count=0, a_count=0, d_count=0;$/;"	v
 width	Descriptors.h	/^	int width;$/;"	m	struct:RunOptions	access:public
@@ -936,6 +933,7 @@ yVel	Descriptors.h	/^	float xVel, yVel;\/\/velocity vector$/;"	m	struct:Pixel_de
 y_diff	RuPPAT.cpp	/^	int x_diff = 0,  y_diff=0, rateLim = 3;$/;"	l
 ~Game	Game.cpp	/^Game ::~Game()$/;"	f	class:Game	signature:()
 ~Game	Game.h	/^	~Game();$/;"	p	class:Game	access:public	signature:()
+~Missile	Missile.h	/^		~Missile();$/;"	p	class:Missile	access:public	signature:()
 ~Object	Object.cpp	/^Object :: ~Object()$/;"	f	class:Object	signature:()
 ~Object	Object.h	/^		~Object();$/;"	p	class:Object	access:public	signature:()
 ~Player	Player.cpp	/^Player :: ~Player()$/;"	f	class:Player	signature:()
