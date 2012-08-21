@@ -15,6 +15,7 @@
 
 using namespace std;
 
+//depreciated way od doing options below
 //cli options, defaults set here
 	string selection = "gwell";
 	string option;
@@ -22,7 +23,7 @@ using namespace std;
 	//default resolution
 	int WIDTH_cl = 1024;
 	int HEIGHT_cl = 768;
-
+/////////////////////////////////
 
 //let X display know we are going to have multiple threads
 //working on the buffer
@@ -33,8 +34,7 @@ int x_o = XInitThreads();
 Game *game;
 
 //handle command line arguments
-int handleInput(int argc,char *argv[]);
-
+int handleInput(int argc,char *argv[], RunOptions &cl_options);
 
 
 /*\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
@@ -47,11 +47,42 @@ int main(int argc, char *argv[])
 	if(!x_o)
 		cout<<"ERROR WITH XINIT THREADS!"<<endl;
 
+	//init runtime option struct
+	RunOptions cmdLineOptions;
+
+		//set default resolution
+		cmdLineOptions.height = 768;
+		cmdLineOptions.width = 1024;
+
+		//set default background layer paths
+		cmdLineOptions.background_spritePaths[0]
+					="bkg_one_1080.png";
+		cmdLineOptions.background_spritePaths[1]
+					="bkg_two_1080.png";
+		cmdLineOptions.background_spritePaths[2]
+					="bkg_three_1080.png";
+
+		//set default player sprit attribute
+		cmdLineOptions.player_spritePath = "red_ship.png";
+		cmdLineOptions.player_HCpath = "red_ship_HC.png";
+
+		//load a few default objects
+		cmdLineOptions.objects_spritePath.push_back
+						("red_planet.png");
+		cmdLineOptions.objects_HCpath.push_back
+						("red_planet_HC.png");
+
+		cmdLineOptions.objects_spritePath.push_back
+						("asteroid_large_1.png");
+		cmdLineOptions.objects_HCpath.push_back
+						("asteroid_large_1_HC.png");
+	
 	//handle command line args, exit if -help used
-	if(handleInput(argc,argv)){return 0;}
+	if(handleInput(argc,argv,cmdLineOptions)){return 0;}
 
 	//construct a new game, this only initiates vars and such
-	game = new Game(WIDTH_cl, HEIGHT_cl);
+	//game = new Game(WIDTH_cl, HEIGHT_cl);
+	game = new Game(cmdLineOptions);
 	
 	//start up the game!!
 	game->run(selection, option);
@@ -60,7 +91,7 @@ int main(int argc, char *argv[])
 }
 
 //handleInput assigns global variables based on the comman line options selected
-int handleInput(int argc,char *argv[])
+int handleInput(int argc,char *argv[], RunOptions &cl_options)
 {
 	int i,j,k=0;
 	for(i=1;i<argc;i++)
@@ -86,16 +117,24 @@ int handleInput(int argc,char *argv[])
 
 		if(strcmp(argv[i],"-height")==0)
 		{
-			HEIGHT_cl=atoi(argv[i+1]);
-
+			//HEIGHT_cl=atoi(argv[i+1]);
+			cl_options.height = atoi(argv[i+1]);	
 		}	
 
 		if(strcmp(argv[i],"-width")==0)
 		{
-			WIDTH_cl=atoi(argv[i+1]);
+			//WIDTH_cl=atoi(argv[i+1]);
+			cl_options.width = atoi(argv[i+1]);	
 
 		}	
-
+	
+		if(strcmp(argv[i],"-background")==0)
+		{
+			cl_options.background_spritePaths[0]=(argv[i+1]);
+			cl_options.background_spritePaths[1]=(argv[i+2]);
+			cl_options.background_spritePaths[2]=(argv[i+3]);
+		}
+	
 		if(strcmp(argv[i],"-gwell")==0)
 		{	
 			selection = "gwell";

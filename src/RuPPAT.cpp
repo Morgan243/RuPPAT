@@ -504,8 +504,8 @@ void RuPPAT :: RK4_all(float t, float dt)
 
 		
 		pthread_rwlock_wrlock(&player_rw_lock);
-			if(players[i]->checkHits(player_e.xVel,player_e.yVel,mass_e))
-				cout<<"COLLISION!!"<<endl;
+//			if(players[i]->checkHits(player_e.xVel,player_e.yVel,mass_e))
+//				cout<<"COLLISION!!"<<endl;
 			players[i]->setDescriptor(player_e);
 		pthread_rwlock_unlock(&player_rw_lock);
 

@@ -150,6 +150,8 @@ bool Object::checkHits(float &xVel, float &yVel, Entity_desc &check_ent)
 		if(distance< (descriptor.hitCircles[0].r + check_ent.hitCircles[0].r))
 		{
 		//collision!
+			
+
 			xVel *= (-1);
 			yVel *= (-1);
 

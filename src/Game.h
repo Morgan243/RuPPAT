@@ -26,7 +26,10 @@ public:
 	//CONSTRUCTOR
 	Game();
 	Game(int WIDTH_cl, int HEIGHT_cl);
-	
+
+	Game(RunOptions options);	
+
+
 	//DECONSTRUCTOR
 	~Game();
 

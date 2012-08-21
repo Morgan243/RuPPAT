@@ -41,6 +41,27 @@ Game :: Game(int WIDTH_cl, int HEIGHT_cl)
 //engine->addObject("asteroid_large_1.png",600,400,100, -.1, 20.0,49.0,"");
 }
 
+Game::Game(RunOptions options)
+{
+	engine = new RuPPAT(options.width,options.height,BPP,
+				SDL_HWSURFACE | SDL_DOUBLEBUF,
+				options.background_spritePaths,3);
+
+	done = false;
+
+	engine->addPlayer(options.player_spritePath,
+				360,0,1,400,200,
+					options.player_HCpath);
+
+	engine->addObject(options.objects_spritePath[0],
+				844,560,100000,1.0,0.0,0.0,
+				options.objects_HCpath[0]);
+	
+	engine->addObject(options.objects_spritePath[1],
+				600,400,100,-.1,20.0,49.0,
+					options.objects_HCpath[1]);
+}
+
 
 //-----DECONSTRUCTOR
 Game ::~Game()
@@ -236,7 +257,7 @@ void Game :: handleEvents(Event_desc &mainEvents)
 	}
 
 
-		//	HANDLE LONG PRESSES
+		//HANDLE LONG PRESSES
 		if(k_lCTRL)
 			{
 			//mouse button one is pressed, store location of mouse 
@@ -258,7 +279,7 @@ void Game :: handleEvents(Event_desc &mainEvents)
 						}
 				}
 			else
-				//otherwise, left click is pressed, turn the player
+				//otherwise, left click isn't pressed, turn the player
 				engine->turnPlayerToCoord(0, mouse_x, mouse_y,
 								 defaultTurnAmnt);
 
