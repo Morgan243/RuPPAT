@@ -20,21 +20,25 @@ Object::Object(string sprite_path, int start_x, int start_y, int start_mass,
 			int num_rotations, int starting_angle)
 :sprite(sprite_path,num_rotations,starting_angle), hitCircleSprite()
 {
+//{{{
 	//set x and y
 	descriptor.x = (float)start_x;
 	descriptor.y = (float)start_y;
 
 	//set mass
 	descriptor.mass = start_mass;
+//}}}
 }
 
 Object::Object(string sprite_path, int start_x, int start_y, int start_mass,
 			int num_rotations, int starting_angle,
-				 float xVel, float yVel, string HB_path)
+				 float xVel, float yVel, string HC_path)
 :sprite(sprite_path,num_rotations,starting_angle), 
-	hitCircleSprite(HB_path)
+	hitCircleSprite(HC_path)
 {
-	cout<<"PATH:"<<HB_path<<endl;
+//{{{
+	cout<<"PATH:"<<HC_path<<endl;
+
 	//set x and y
 	descriptor.x = (float)start_x;
 	descriptor.y = (float)start_y;
@@ -48,6 +52,7 @@ Object::Object(string sprite_path, int start_x, int start_y, int start_mass,
 
 	//buildHitBoxes_fromSprite();
 	buildHitBoxes_fromLayer(hitCircleSprite.getBaseSprite());
+//}}}
 }
 
 void Object::setID(int id)
@@ -115,6 +120,7 @@ float Object :: getYacc()
 
 void Object::buildHitBoxes_fromLayer(SDL_Surface *HB_surface)
 {
+//{{{
 	int spriteWidth, spriteHeight;
 	hitCircleSprite.getDimensions(spriteWidth,spriteHeight);
 
@@ -137,12 +143,13 @@ void Object::buildHitBoxes_fromLayer(SDL_Surface *HB_surface)
 			}
 		}
 	}
-
+//}}}
 }
 
 //return true if collision detected, sets velocity values too
 bool Object::checkHits(float &xVel, float &yVel, Entity_desc &check_ent)
 {
+//{{{
 	int distance =( sqrt( ((descriptor.x-check_ent.x)*(descriptor.x-check_ent.x)) + ((descriptor.y-check_ent.y)*(descriptor.y-check_ent.y))  ) );
 	//if the entities are closer than the sum of the radiuses
 	if(descriptor.hitCircles.size() && check_ent.hitCircles.size())
@@ -167,5 +174,6 @@ bool Object::checkHits(float &xVel, float &yVel, Entity_desc &check_ent)
 			return false;
 		}
 	}
+//}}}
 }
 

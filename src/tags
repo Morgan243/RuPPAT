@@ -57,6 +57,7 @@ Game	Game.h	/^	Game();$/;"	p	class:Game	access:public	signature:()
 Game	Game.h	/^	Game(RunOptions options);	$/;"	p	class:Game	access:public	signature:(RunOptions options)
 Game	Game.h	/^	Game(int WIDTH_cl, int HEIGHT_cl);$/;"	p	class:Game	access:public	signature:(int WIDTH_cl, int HEIGHT_cl)
 Game	Game.h	/^class Game$/;"	c
+Game	tags	/^Game	Game.h	\/^	Game();$\/;"	p	class:Game	access:public	signature:()$/;"	p	file:	signature:()
 Game::Game	Game.cpp	/^Game :: Game()$/;"	f	class:Game	signature:()
 Game::Game	Game.cpp	/^Game :: Game(int WIDTH_cl, int HEIGHT_cl)$/;"	f	class:Game	signature:(int WIDTH_cl, int HEIGHT_cl)
 Game::Game	Game.cpp	/^Game::Game(RunOptions options)$/;"	f	class:Game	signature:(RunOptions options)
@@ -390,14 +391,6 @@ WIDTH_cl	main.cpp	/^	int WIDTH_cl = 1024;$/;"	v
 Xtimer	Descriptors.h	/^	unsigned int Xtimer;\/\/used for time based movement$/;"	m	struct:Pixel_desc	access:public
 Ytimer	Descriptors.h	/^	unsigned int Ytimer;	$/;"	m	struct:Pixel_desc	access:public
 __DESC_H	Descriptors.h	5;"	d
-__GCC_ATOMIC_INT_LOCK_FREE	Descriptors.h.gch	/^/;"	v
-__GCC_ATOMIC_INT_LOCK_FREE	Game.h.gch	/^/;"	v
-__GCC_ATOMIC_INT_LOCK_FREE	Object.h.gch	/^/;"	v
-__GCC_ATOMIC_INT_LOCK_FREE	PhysFuncs.h.gch	/^/;"	v
-__GCC_ATOMIC_INT_LOCK_FREE	Player.h.gch	/^/;"	v
-__GCC_ATOMIC_INT_LOCK_FREE	Render.h.gch	/^/;"	v
-__GCC_ATOMIC_INT_LOCK_FREE	RuPPAT.h.gch	/^/;"	v
-__GCC_ATOMIC_INT_LOCK_FREE	Sprite.h.gch	/^/;"	v
 a	Descriptors.h	/^	bool w,a,s,d;$/;"	m	struct:Event_desc	access:public
 a	PhysFuncs.h	/^	Derivative a = evaluate( state, t, 0.0f, init, objMass, point_x, point_y);$/;"	l
 a	PhysFuncs.h	/^	Derivative a, b, c, d;$/;"	l
@@ -413,8 +406,8 @@ accelPlayer	RuPPAT.cpp	/^void RuPPAT :: accelPlayer(int p_ID, bool isForward)$/;
 accelPlayer	RuPPAT.h	/^	void accelPlayer(int p_ID, bool isForward);$/;"	p	class:RuPPAT	access:public	signature:(int p_ID, bool isForward)
 addEntity	RuPPAT.cpp	/^int RuPPAT :: addEntity(Entity_desc new_ent)$/;"	f	class:RuPPAT	signature:(Entity_desc new_ent)
 addEntity	RuPPAT.h	/^	int addEntity(Entity_desc new_ent);$/;"	p	class:RuPPAT	access:public	signature:(Entity_desc new_ent)
-addObject	Game.cpp	/^	engine->addObject(options.objects_spritePath[0],$/;"	p	file:	signature:(options.objects_spritePath[0], 600,400,100,-.1,20.0,49.0, options.objects_HCpath[0])
 addObject	Game.cpp	/^	engine->addObject(options.objects_spritePath[0],$/;"	p	file:	signature:(options.objects_spritePath[0], 844,560,100000,1.0,0.0,0.0, options.objects_HCpath[0])
+addObject	Game.cpp	/^	engine->addObject(options.objects_spritePath[1],$/;"	p	file:	signature:(options.objects_spritePath[1], 600,400,100,-.1,20.0,49.0, options.objects_HCpath[1])
 addObject	RuPPAT.cpp	/^int RuPPAT :: addObject(string spritePath, int x, int y, int mass, float rotationRate,$/;"	f	class:RuPPAT	signature:(string spritePath, int x, int y, int mass, float rotationRate, float xVel, float yVel, string HB_path)
 addObject	RuPPAT.h	/^	int addObject(string spritePath, int x, int y, int mass, float rotationRate,$/;"	p	class:RuPPAT	access:public	signature:(string spritePath, int x, int y, int mass, float rotationRate, float xVel, float yVel, string HB_path)
 addPlayer	Game.cpp	/^	engine->addPlayer(options.player_spritePath,$/;"	p	file:	signature:(options.player_spritePath, 360,0,1,400,200, options.player_HCpath)
@@ -522,13 +515,13 @@ endl	Game.cpp	/^			cout<<"keydown!"<<endl;$/;"	l
 endl	Game.cpp	/^	cout<<"joining RuPPAT in GAME"<<endl;$/;"	l
 endl	Object.cpp	/^	cout<<"PATH:"<<HB_path<<endl;$/;"	l
 endl	PhysFuncs.h	/^		std::cout<<"Nan found!"<<std::endl;$/;"	m	class:std
-endl	RuPPAT.cpp	/^				cout<<"COLLISION!!"<<endl;$/;"	l
 endl	RuPPAT.cpp	/^			cout<<"SPACE PRESSED!!!"<<endl;	$/;"	l
 endl	RuPPAT.cpp	/^			cout<<spritePath<<" doesnt have HB!"<<endl;$/;"	l
 endl	RuPPAT.cpp	/^		cout<<origXvel<<"  "<<origYvel<<endl;	$/;"	l
 endl	RuPPAT.cpp	/^		cout<<spritePath<<" DOES have HB!"<<endl;$/;"	l
 endl	RuPPAT.cpp	/^		{cout<<"ERROR initializing entity rw lock: "<<endl;}$/;"	l
 endl	RuPPAT.cpp	/^		{cout<<"ERROR initializing mass rw lock: "<<endl;}$/;"	l
+endl	RuPPAT.cpp	/^		{cout<<"ERROR initializing object rw lock: "<<endl;}$/;"	l
 endl	RuPPAT.cpp	/^		{cout<<"ERROR initializing pix lock 2 lock: "<<endl;}$/;"	l
 endl	RuPPAT.cpp	/^		{cout<<"ERROR initializing pixel rw lock: "<<endl;}$/;"	l
 endl	RuPPAT.cpp	/^		{cout<<"ERROR initializing player rw lock: "<<endl;}$/;"	l
@@ -702,7 +695,6 @@ nextTick	Game.cpp	/^	int nextTick = SDL_GetTicks() + interval;$/;"	l
 nextTick	RuPPAT.cpp	/^	int nextTick = SDL_GetTicks() + interval;$/;"	l
 nextTick	RuPPAT.cpp	/^int nextTick = SDL_GetTicks() + interval;$/;"	l
 noDrawEffect	Descriptors.h	/^	bool noDrawEffect;$/;"	m	struct:Entity_desc	access:public
-o	PhysFuncs.h.gch	/^/;"	v
 objectList	RuPPAT.cpp	/^	vector<Object *> objectList;$/;"	v
 object_rw_lock	RuPPAT.cpp	/^		  object_rw_lock;$/;"	v
 object_size	RuPPAT.cpp	/^	 int object_size = objectList.size();	$/;"	l
@@ -754,11 +746,10 @@ push_back	RuPPAT.cpp	/^		    pixelList_m.push_back(tmpPix);$/;"	p	file:	signatur
 push_back	RuPPAT.cpp	/^		backgroundLayers.push_back(tempBkgOpt);	$/;"	p	file:	signature:(tempBkgOpt)
 push_back	RuPPAT.cpp	/^		objectList.push_back(new Object(spritePath, x, y, mass,$/;"	p	file:	signature:(new Object(spritePath, x, y, mass, 360,0,xVel,yVel, HB_path ))
 push_back	RuPPAT.cpp	/^  	pixelList_m.push_back(temp_pix);$/;"	p	file:	signature:(temp_pix)
-push_back	main.cpp	/^		cl_options.background_spritePaths.push_back(argv[i+1]);	$/;"	p	file:	signature:(argv[i+1])
 putPixel	Render.cpp	/^void Render :: putPixel(int x, int y, int color, int screenID)$/;"	f	class:Render	signature:(int x, int y, int color, int screenID)
 putPixel	Render.h	/^		void putPixel(int x, int y, int color, int screenID);$/;"	p	class:Render	access:public	signature:(int x, int y, int color, int screenID)
 putPixel	RuPPAT.cpp	/^		mainRender->putPixel(x,y,color,screenID);$/;"	p	file:	signature:(x,y,color,screenID)
-putPixel	RuPPAT.cpp	/^mainRender->putPixel(x,y, color, id);$/;"	p	file:	signature:(x,y, color, id)
+putPixel	RuPPAT.cpp	/^	mainRender->putPixel(x,y, color, id);$/;"	p	file:	signature:(x,y, color, id)
 putPixel	RuPPAT.cpp	/^void RuPPAT :: putPixel(int x, int y, unsigned int color, int id)$/;"	f	class:RuPPAT	signature:(int x, int y, unsigned int color, int id)
 putPixel	RuPPAT.h	/^	void putPixel(int x, int y, unsigned int color, int id);$/;"	p	class:RuPPAT	access:public	signature:(int x, int y, unsigned int color, int id)
 putPixel2	Render.cpp	/^void Render :: putPixel2(int x, int y, Uint8 r, Uint8 g, Uint8 b)$/;"	f	class:Render	signature:(int x, int y, Uint8 r, Uint8 g, Uint8 b)

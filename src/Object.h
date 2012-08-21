@@ -31,7 +31,7 @@ explicit Object(string sprite_path, int start_x, int start_y, int start_mass,
 
 explicit Object(string sprite_path, int start_x, int start_y, int start_mass,
 			int num_rotations, int starting_angle,
-				 float xVel, float yVel, string HB_path);
+				 float xVel, float yVel, string HC_path);
 
 //explicit Object(string sprite_path, int start_x, int start_y, int start_mass,
 //			int num_rotations, int starting_angle,

@@ -28,7 +28,7 @@ using namespace std;
 	//These globals would be better placed as fields in the RuPPAT class
 	//but my implementation of pthreads+OO results in undefined behavior
 	//so until i figure out a better way, globals will have to do
-
+//{{{
 	bool done;//if this goes true, all threads stop, engine stops
 	int gravitationalConstant;
 	//main window
@@ -50,7 +50,7 @@ using namespace std;
 
 
 	queue<Pixel_desc> toRender;
-	
+//}}}
 
 
 //------------CONSTRUCTOR--------
@@ -59,6 +59,7 @@ using namespace std;
 RuPPAT :: RuPPAT(int width,int height,int bpp, unsigned int flags,
 		string background_img_paths[], int num_bks)
 {
+//{{{
 	//init all the locks--ERROR CHECK too 
 	if(pthread_rwlock_init(&pix_rw_lock, NULL))
 		{cout<<"ERROR initializing pixel rw lock: "<<endl;}
@@ -74,8 +75,9 @@ RuPPAT :: RuPPAT(int width,int height,int bpp, unsigned int flags,
 
 	if(pthread_mutex_init(&pix_list_lock_2,NULL))
 		{cout<<"ERROR initializing pix lock 2 lock: "<<endl;}
-
-
+	
+	if(pthread_rwlock_init(&object_rw_lock,NULL))
+		{cout<<"ERROR initializing object rw lock: "<<endl;}
 
 	//start the render; opens up game window
 	mainRender = new Render(width, height, BPP, flags );
@@ -100,6 +102,7 @@ RuPPAT :: RuPPAT(int width,int height,int bpp, unsigned int flags,
 
 	//set grav constant
 	gravitationalConstant=22;
+//}}}
 }
 
 
@@ -107,11 +110,14 @@ RuPPAT :: RuPPAT(int width,int height,int bpp, unsigned int flags,
 //destroy the mutexes
 RuPPAT :: ~RuPPAT()
 {
+//{{{
 	pthread_mutex_destroy(&pix_list_lock_2);
 	pthread_rwlock_destroy(&pix_rw_lock);
 	pthread_rwlock_destroy(&mass_rw_lock);
 	pthread_rwlock_destroy(&ent_rw_lock);
 	pthread_rwlock_destroy(&player_rw_lock);
+	pthread_rwlock_destroy(&object_rw_lock);
+//}}}
 }
 
 
@@ -120,6 +126,7 @@ RuPPAT :: ~RuPPAT()
 //list
 void RuPPAT :: createPixElement(Pixel_desc *pixel )
 {	
+//{{{
   Pixel_desc temp_pix = *pixel;
 
    pthread_rwlock_wrlock(&pix_rw_lock);
@@ -127,6 +134,7 @@ void RuPPAT :: createPixElement(Pixel_desc *pixel )
   	pixelList_m.push_back(temp_pix);
 
    pthread_rwlock_unlock(&pix_rw_lock);
+//}}}
 }
 
 
@@ -135,6 +143,7 @@ void RuPPAT :: createPixElement(Pixel_desc *pixel )
 //places it to the surface
 void RuPPAT :: parseSelectPixToSurface()
 {
+//{{{
    pthread_rwlock_rdlock(&pix_rw_lock);
 
 	int x, y, i, j, color, size=pixelList_m.size(), screenID=0;
@@ -150,6 +159,7 @@ void RuPPAT :: parseSelectPixToSurface()
 		}
 
    pthread_rwlock_unlock(&pix_rw_lock);
+//}}}
 }
 
 //------------parsePlayersTo Surface--TS
@@ -157,6 +167,7 @@ void RuPPAT :: parseSelectPixToSurface()
 //and places them to the screen (at appropriate coords)
 void RuPPAT :: parsePlayersToSurface()
 {
+//{{{
    pthread_rwlock_rdlock(&player_rw_lock);
 
 	int x, y, i, j, color, size=players.size(), screenID=0;
@@ -174,10 +185,12 @@ void RuPPAT :: parsePlayersToSurface()
 		}
 
    pthread_rwlock_unlock(&player_rw_lock);
+//}}}
 }
 
 void RuPPAT :: parseObjectsToSurface()
 {
+//{{{
 	int x, y, i;
    pthread_rwlock_rdlock(&object_rw_lock);
 	int size=objectList.size();
@@ -190,9 +203,8 @@ void RuPPAT :: parseObjectsToSurface()
 			objectList[i]->sprite.updateSprite();
 			mainRender->putSprite(x,y,objectList[i]->getSprite());
 		}
-
    pthread_rwlock_unlock(&object_rw_lock);
-
+//}}}
 }
 
 
@@ -202,11 +214,13 @@ void RuPPAT :: parseObjectsToSurface()
 //in pixel lists updated memeber
 void RuPPAT :: setUpdateOnSelectPix(int set)
 {
+//{{{
 //#pragma omp parallel for
   for(int i=0 ; i<pixelList_m.size() ; i++)
 	{
 		pixelList_m[i].updated = set;
 	}
+//}}}
 }
 
 
@@ -218,6 +232,7 @@ void RuPPAT :: setUpdateOnSelectPix(int set)
 //with deleteMe set high
 void RuPPAT :: handleAllDeleteMe()
 {
+//{{{
   //remove pixelList elements that have deleteMe set
   pthread_rwlock_wrlock(&pix_rw_lock);
   for(int k=0;k<pixelList_m.size();k++)
@@ -229,6 +244,7 @@ void RuPPAT :: handleAllDeleteMe()
 	  }
 	}
   pthread_rwlock_unlock(&pix_rw_lock);
+//}}}
 }
 
 
@@ -237,12 +253,13 @@ void RuPPAT :: handleAllDeleteMe()
 //can do other things for delete later
 void RuPPAT :: handleDelete(int k)
 {
+//{{{
 	//CURRENTLY LOCKS OUTSIDE OF FUNCTION
 	//pthread_rwlock_wrlock(&pix_rw_lock);
 		pixelList_m.erase(pixelList_m.begin()+k);
 	//pthread_rwlock_unlock(&pix_rw_lock);
+//}}}
 }
-
 
 //------------applyDimming--------------NEED WORK
 //Pixels fade to black when they should be using
@@ -252,6 +269,7 @@ void RuPPAT :: handleDelete(int k)
 //dims a pixel struct, returns 1 if it is deleted do to dimming out
 int RuPPAT :: applyDimming(Pixel_desc &pix_t)
 {
+//{{{
  const int dim_scale = 1; //bring this up to increase max dim length
  int dimFactor = pix_t.dimFactor;
  int current_color = pix_t.color;
@@ -296,12 +314,14 @@ int RuPPAT :: applyDimming(Pixel_desc &pix_t)
 	//if the color is really dark, just remove the pixel
 	if(pix_t.color < 10)
 		{pix_t.deleteMe = true;}
-}//END <applyDimming>
+//}}}
+}
 
 
 int RuPPAT :: addPlayer(string spritePath, int numRotations, int startingAngle,
 			float maxAccel, int x, int y, string HC_path)
 {
+//{{{
 	int size;
 
 		pthread_rwlock_wrlock(&player_rw_lock);	
@@ -312,11 +332,13 @@ int RuPPAT :: addPlayer(string spritePath, int numRotations, int startingAngle,
 		pthread_rwlock_unlock(&player_rw_lock);
 
 	return size;
+//}}}
 }
 
 //returns entity ID
 int RuPPAT :: addEntity(Entity_desc new_ent)
 {
+//{{{
 	int size;
 
 		pthread_rwlock_wrlock(&ent_rw_lock);
@@ -325,12 +347,14 @@ int RuPPAT :: addEntity(Entity_desc new_ent)
 		pthread_rwlock_unlock(&ent_rw_lock);
 
 	return size;
+//}}}
 }
 
 
 int RuPPAT :: addObject(string spritePath, int x, int y, int mass, float rotationRate,
 				float xVel, float yVel, string HB_path)
 {
+//{{{
 	int size;
 
 	pthread_rwlock_wrlock(&object_rw_lock);
@@ -355,10 +379,12 @@ int RuPPAT :: addObject(string spritePath, int x, int y, int mass, float rotatio
 	pthread_rwlock_unlock(&object_rw_lock);
 
 	return size;
+//}}}
 }
 
 Entity_desc RuPPAT :: RK4_entity(Entity_desc ent)
 {
+//{{{
 	const Uint32 NOW = SDL_GetTicks(); 
 	float newX, newY, tmp_xVel, tmp_yVel;
 
@@ -418,6 +444,7 @@ Entity_desc RuPPAT :: RK4_entity(Entity_desc ent)
 
 	}//end massLIst for[j]
 	return temp_e;
+//}}}
 }
 
 
@@ -846,6 +873,7 @@ void RuPPAT :: runDemos(void *selection)
 //and rendering the pixels
 void RuPPAT :: RK4_parse(SDL_Surface* background)
 {
+//{{{
 Uint32 T1=0, T2=1000;
 T1=SDL_GetTicks(); 
 float t = 0.0;
@@ -896,6 +924,7 @@ void * select = &sel;
 
 	  }
 	cout<<"Render thread ending!"<<endl;
+//}}}
 }//END <RK4_parse>
 
 
@@ -908,6 +937,7 @@ void * select = &sel;
 void RuPPAT :: runPPAT(bool *mainDone, Event_desc &mainEvents
 			, string selection, string option)
 {
+//{{{
 bool *DONE = (bool*)mainDone;
 
 	//declare the main compute and render thread
@@ -984,6 +1014,7 @@ bool *DONE = (bool*)mainDone;
 
 	//join on RK4_parse thread
 	pthread_join(rk4_th, NULL);
+//}}}
 }
 
 
@@ -999,6 +1030,7 @@ void RuPPAT :: createPixElement(  int x, int y,
 				int dimFactor,
 				int mass )
 {	
+//{{{
 		//assign location
 		tmpPix.x=x;
 		tmpPix.y=y;
@@ -1034,29 +1066,30 @@ void RuPPAT :: createPixElement(  int x, int y,
 		//set dimfactor:higher=pixel fades away quicker
 		tmpPix.dimFactor = dimFactor;
 
-		    //finally, push tmp to vector
-		  pthread_mutex_lock(&pix_list_lock_2);
+		 //finally, push tmp to vector
+		 pthread_mutex_lock(&pix_list_lock_2);
 		    pixelList_m.push_back(tmpPix);
 		 pthread_mutex_unlock(&pix_list_lock_2);
+//}}}
 }
 
 
 
 void RuPPAT :: putPixel(int x, int y, unsigned int color, int id)
 {
-mainRender->putPixel(x,y, color, id);
+	mainRender->putPixel(x,y, color, id);
 }
 
 void RuPPAT :: putSprite(int x, int y, SDL_Surface *sprite)
 {
 	mainRender->putSprite(x, y,sprite);
-
 }
 
 //----these below should be replaced by a better system
 //for handling player control
 void RuPPAT :: accelPlayer(int p_ID, bool isForward)
 {
+//{{{
 	//declare the base pixel used for exhaust
 	Pixel_desc t_pix;
 
@@ -1096,11 +1129,12 @@ void RuPPAT :: accelPlayer(int p_ID, bool isForward)
 		t_pix.y +=origYvel*10;
 	createPixElement(&t_pix);
 	}
+//}}}
 }
 
 void RuPPAT :: turnPlayer(int p_ID, bool isLeft, int numTurns)
 {
-
+//{{{
 	while(numTurns-- > 0)
 	{
 		if(isLeft)
@@ -1117,7 +1151,7 @@ void RuPPAT :: turnPlayer(int p_ID, bool isLeft, int numTurns)
 			pthread_rwlock_unlock(&player_rw_lock);
 		}
 	}
-
+//}}}
 }
 
 //This function is intended to work like a PID loop (proportional, integral, derivative)
@@ -1127,7 +1161,7 @@ void RuPPAT :: turnPlayer(int p_ID, bool isLeft, int numTurns)
 // set point is a heading or vector alignment
 void RuPPAT :: turnPlayerToCoord(int p_ID, int x, int y, int rate)
 {
-
+//{{{
 	float playerDegree = 0.0,deg_playerToPoint = 0.0, 
 		tempErrAccum, tempErrDiff, angleDifScale=.01;
 	int x_diff = 0,  y_diff=0, rateLim = 3;
@@ -1258,7 +1292,7 @@ tempErrDiff =  angle_diff*.1 - tempErrDiff; //angle_diff - tempErrDiff;
 	//		y_diff = y - players[p_ID]->getY();
 	
 		pthread_rwlock_unlock(&player_rw_lock);
-
+//}}}
 }
 
 
