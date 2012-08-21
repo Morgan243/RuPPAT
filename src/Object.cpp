@@ -77,9 +77,65 @@ Entity_desc Object::getDescriptor()
 	return descriptor;
 }
 
-SDL_Surface * Object :: getSprite()
+
+void Object :: setRotation_rate(float rotRate)
+{
+	sprite.setRotationRate(rotRate);
+}
+
+float Object :: getRotation_rate()
+{
+	return sprite.getRotationRate();
+}
+
+void Object :: incrementRotation_rate()
+{
+	sprite.incrementRotationRate();
+}
+
+void Object :: decrementRotation_rate()
+{
+	sprite.decrementRotationRate();
+
+}
+
+void Object :: updateSprite()
+{
+	sprite.updateSprite();
+}
+
+float Object :: getAngle()
+{
+	return sprite.getAngle();
+}
+
+void Object :: setAngle_index(int angleIndex)
+{
+	sprite.setAngleIndex(angleIndex);
+}
+
+
+void Object :: incrementAngle_index()
+{
+	sprite.incrementAngleIndex();
+}
+
+
+void Object :: decrementAngle_index()
+{
+	sprite.decrementAngleIndex();
+}
+
+
+SDL_Surface* Object :: getSprite()
 {
 	return sprite.getSprite();
+}
+
+
+SDL_Surface *Object :: getSprite(int angle)
+{
+	return sprite.getSprite(angle);
 }
 
 
@@ -116,6 +172,117 @@ float Object :: getYacc()
 }
 //}}}
 
+void Object :: accelForward() 
+{
+	setAccelVectors(true);
+}
+
+void Object :: accelBackward()
+{
+	setAccelVectors(false);
+}
+
+void Object :: setAccelVectors(bool forward)
+{//{{{
+
+		float heading = sprite.getAngle();
+	if(forward)
+	{
+
+	
+		if(heading>0 && heading<90)
+			{
+			exhaustX=-1*descriptor.maxAccel*cos(heading*3.141/180);
+			exhaustY=(descriptor.maxAccel*sin(heading*3.141/180));
+
+
+			descriptor.xVel += descriptor.maxAccel*cos(heading*3.141/180);
+			descriptor.yVel +=-1*(descriptor.maxAccel*sin(heading*3.141/180));
+			}
+		else if(heading>90 && heading<180)
+			{
+			exhaustX=-1*descriptor.maxAccel*cos(heading*3.141/180);
+			exhaustY=(descriptor.maxAccel*sin(heading*3.141/180));
+
+			descriptor.xVel += descriptor.maxAccel*cos(heading*3.141/180);
+			descriptor.yVel += -1*(descriptor.maxAccel*sin(heading*3.141/180));
+			}
+		else if(heading>180 && heading<260)
+			{
+			exhaustX=-1*descriptor.maxAccel*cos(heading*3.141/180);
+			exhaustY=(descriptor.maxAccel*sin(heading*3.141/180));
+
+			descriptor.xVel += descriptor.maxAccel*cos(heading*3.141/180);
+			descriptor.yVel += -1*(descriptor.maxAccel*sin(heading*3.141/180));
+			}
+		else if(heading>260 && heading<360)
+			{
+			heading =360- heading;
+			exhaustX=-1*descriptor.maxAccel*cos(heading*3.141/180);
+			exhaustY=-1*(descriptor.maxAccel*sin(heading*3.141/180));
+
+			descriptor.xVel += (descriptor.maxAccel*cos(heading*3.141/180));
+			descriptor.yVel += (descriptor.maxAccel*sin(heading*3.141/180));
+			}
+
+		else if(heading == 0)
+			{
+			descriptor.xVel += descriptor.maxAccel;
+			}
+
+
+	}
+	else
+	{
+	
+		if(heading>0 && heading<90)
+			{
+			exhaustX=descriptor.maxAccel*cos(heading*3.141/180);
+			exhaustY=-1*(descriptor.maxAccel*sin(heading*3.141/180));
+
+			descriptor.xVel -= descriptor.maxAccel*cos(heading*3.141/180);
+			descriptor.yVel -=-1*(descriptor.maxAccel*sin(heading*3.141/180));
+			}
+		else if(heading>90 && heading<180)
+			{
+			exhaustX=descriptor.maxAccel*cos(heading*3.141/180);
+			exhaustY=-1*(descriptor.maxAccel*sin(heading*3.141/180));
+
+			descriptor.xVel -= descriptor.maxAccel*cos(heading*3.141/180);
+			descriptor.yVel -= -1*(descriptor.maxAccel*sin(heading*3.141/180));
+			}
+		else if(heading>180 && heading<260)
+			{
+			exhaustX=descriptor.maxAccel*cos(heading*3.141/180);
+			exhaustY=-1*(descriptor.maxAccel*sin(heading*3.141/180));
+
+			descriptor.xVel -= descriptor.maxAccel*cos(heading*3.141/180);
+			descriptor.yVel -= -1*(descriptor.maxAccel*sin(heading*3.141/180));
+			}
+		else if(heading>260 && heading<360)
+			{
+			heading =360- heading;
+			exhaustX=descriptor.maxAccel*cos(heading*3.141/180);
+			exhaustY=(descriptor.maxAccel*sin(heading*3.141/180));
+
+			descriptor.xVel -= (descriptor.maxAccel*cos(heading*3.141/180));
+			descriptor.yVel -= (descriptor.maxAccel*sin(heading*3.141/180));
+			}
+
+		else if(heading == 0)
+			{
+			descriptor.xVel -= descriptor.maxAccel;
+			}
+
+	}
+}
+//}}}
+
+void Object :: getXY_exhaust(float &xVel, float &yVel)
+{
+	xVel=exhaustX;
+	yVel=exhaustY;
+}
 
 
 void Object::buildHitBoxes_fromLayer(SDL_Surface *HB_surface)
