@@ -73,9 +73,9 @@ int main(int argc, char *argv[])
 						("red_planet_HC.png");
 
 		cmdLineOptions.objects_spritePath.push_back
-						("asteroid_large_1.png");
+						("asteroid_medium_1.png");
 		cmdLineOptions.objects_HCpath.push_back
-						("asteroid_large_1_HC.png");
+						("asteroid_medium_1_HC.png");
 	
 	//handle command line args, exit if -help used
 	if(handleInput(argc,argv,cmdLineOptions)){return 0;}
@@ -93,7 +93,7 @@ int main(int argc, char *argv[])
 //handleInput assigns global variables based on the comman line options selected
 int handleInput(int argc,char *argv[], RunOptions &cl_options)
 {
-	int i,j,k=0;
+	int i,j,k=0, num_objects = 0;
 	for(i=1;i<argc;i++)
 	{
 		
@@ -137,17 +137,29 @@ int handleInput(int argc,char *argv[], RunOptions &cl_options)
 
 		if(strcmp(argv[i],"-object")==0)
 		{
-			cl_options.objects_spritePath.pop_back();
-			cl_options.objects_spritePath.push_back
-							(argv[i+1]);
+		
+			if(num_objects<2)
+			{
+			cl_options.objects_spritePath[num_objects]=(argv[i+1]);
 
 			cout<<"CL arg: "<<argv[i+1]<<endl;
 
-			cl_options.objects_HCpath.pop_back();
-			cl_options.objects_HCpath.push_back
-							(argv[i+2]);
+			cl_options.objects_HCpath[num_objects] = (argv[i+2]);
 
 			cout<<"CL arg: "<<argv[i+2]<<endl;
+			}
+			else
+			{
+			cl_options.objects_spritePath.push_back(argv[i+1]);
+
+			cout<<"CL arg: "<<argv[i+1]<<endl;
+
+			cl_options.objects_HCpath.push_back(argv[i+2]);
+
+			cout<<"CL arg: "<<argv[i+2]<<endl;
+			}
+			num_objects++;
+			
 		}
 	
 		if(strcmp(argv[i],"-gwell")==0)

@@ -54,12 +54,19 @@ Game::Game(RunOptions options)
 					options.player_HCpath);
 
 	engine->addObject(options.objects_spritePath[0],
-				844,560,100000,1.0,0.0,0.0,
+				844,560,10000,1.0,-10.0,-20.0,
 				options.objects_HCpath[0]);
 	
 	engine->addObject(options.objects_spritePath[1],
-				700,500,100,-.1,20.0,49.0,
+				700,500,10000,-.1,20.0,49.0,
 					options.objects_HCpath[1]);
+
+	for(int i = 2; i< options.objects_spritePath.size();i++)
+	{
+	engine->addObject(options.objects_spritePath[i],
+			220+(i*120),300,10000,-4+i,i,i*10,
+				options.objects_HCpath[i]);
+	}	
 }
 
 

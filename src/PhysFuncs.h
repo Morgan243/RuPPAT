@@ -53,7 +53,7 @@ float G_acceleration (const Pixel_desc &state, Derivative &output, float t,
 		if((deltaX<0 && deltaY<0) || (deltaX>0 && deltaY<0))
 			 {theta *=(-1.0);}
 
-		if(distance!=0)// && distance>21 && distance < (objMass*2))
+		if(distance!=0 && distance>41 )
 			 gAccTotal = (objMass*gravConst)/(distance*distance);
 
 
