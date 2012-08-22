@@ -44,7 +44,7 @@ Game :: Game(int WIDTH_cl, int HEIGHT_cl)
 Game::Game(RunOptions options)
 {
 	engine = new RuPPAT(options.width,options.height,BPP,
-				SDL_HWSURFACE | SDL_DOUBLEBUF,
+					SDL_HWSURFACE | SDL_DOUBLEBUF,
 				options.background_spritePaths,3);
 
 	done = false;

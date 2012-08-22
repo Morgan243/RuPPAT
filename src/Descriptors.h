@@ -64,7 +64,7 @@ struct Pixel_desc
 	int ID;//identify the pixel, usefule for debugging
 
 	float x, y; //position
-	unsigned int color;//color of pixel
+	Uint32 color;//color of pixel
 	
 	int mass; //mass	
 

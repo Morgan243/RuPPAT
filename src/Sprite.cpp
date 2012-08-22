@@ -32,23 +32,19 @@ Sprite::Sprite(string path_to_sprite,int numRotations, int startingAngle)
 
 	SDL_Surface *tempSprite, *tempSpriteOpt;
 
+	tempSprite = IMG_Load((char *)path_to_sprite.c_str());
+
+	tempSpriteOpt = SDL_DisplayFormatAlpha(tempSprite);
+
+	sprite_surf = tempSpriteOpt;
+
+
 	for(int i = 0; i<numRotations;i++)
 	{
-		tempSprite = IMG_Load((char *)path_to_sprite.c_str());
-
-		tempSpriteOpt = SDL_DisplayFormatAlpha(tempSprite);
-
-		if(!i)
-			sprite_surf = tempSpriteOpt;
-
 		rotations.push_back(rotozoomSurface(tempSpriteOpt,
 							i*degreeIncrement,
 							1.0,0));	
-
 	}
-
-
-
 }
 
 Sprite::~Sprite()
@@ -109,6 +105,7 @@ void Sprite::decrementAngleIndex()
 {
 	currentAngleIndex--;
 }
+
 SDL_Surface* Sprite::getBaseSprite()
 {
 	return sprite_surf;
@@ -130,6 +127,40 @@ Uint32 Sprite::getPixel(int x, int y)
 	Uint32 *pixels = (Uint32 *)sprite_surf->pixels;
 	return pixels[ (y * sprite_surf->w) + x];
 }
+
+void Sprite::putPixel(int x, int y, Uint32 color, int screenID)
+{
+if (SDL_MUSTLOCK(sprite_surf)) 
+	SDL_LockSurface(sprite_surf);	
+
+//	unsigned int *ptr = (unsigned int*)mainScreen->pixels;
+//	int lineoffset = y * (mainScreen->pitch / 4);
+//	
+//
+//	int point = lineoffset + x;	
+//
+//	//prevent placeing pixel outside of screens bounds
+//	if((point < mainHeight*mainWidth) && (point>=0))
+//		ptr[point] = color;
+
+Uint8 r, g, b, a; 
+// This will probably warn you about addressing locals 
+ SDL_GetRGBA(color, sprite_surf->format, &r, &g, &b, &a); 
+
+ // Now give it transparent pixels 
+ color = SDL_MapRGBA(sprite_surf->format, r, g, b, SDL_ALPHA_TRANSPARENT); 
+
+
+    int bpp = sprite_surf->format->BytesPerPixel;
+    /* Here p is the address to the pixel we want to set */
+    Uint8 *p = (Uint8 *)sprite_surf->pixels + y * sprite_surf->pitch + x * bpp;
+	
+	*(Uint32 *)p = color;
+
+if( SDL_MUSTLOCK(sprite_surf) )
+        SDL_UnlockSurface(sprite_surf);
+}
+
 
 void Sprite::getDimensions(int &w, int &h)
 {

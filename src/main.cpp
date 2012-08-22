@@ -134,6 +134,21 @@ int handleInput(int argc,char *argv[], RunOptions &cl_options)
 			cl_options.background_spritePaths[1]=(argv[i+2]);
 			cl_options.background_spritePaths[2]=(argv[i+3]);
 		}
+
+		if(strcmp(argv[i],"-object")==0)
+		{
+			cl_options.objects_spritePath.pop_back();
+			cl_options.objects_spritePath.push_back
+							(argv[i+1]);
+
+			cout<<"CL arg: "<<argv[i+1]<<endl;
+
+			cl_options.objects_HCpath.pop_back();
+			cl_options.objects_HCpath.push_back
+							(argv[i+2]);
+
+			cout<<"CL arg: "<<argv[i+2]<<endl;
+		}
 	
 		if(strcmp(argv[i],"-gwell")==0)
 		{	

@@ -47,6 +47,8 @@ class Sprite
 
 		Uint32 getPixel(int x, int y);
 
+		void putPixel(int x, int y, Uint32 color, int screenID);
+
 		void getDimensions(int &w, int &h);
 
 		float lastErr;

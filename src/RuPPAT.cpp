@@ -152,8 +152,8 @@ void RuPPAT :: parseSelectPixToSurface()
 //{{{
    pthread_rwlock_rdlock(&pix_rw_lock);
 
-	int x, y, i, j, color, size=pixelList_m.size(), screenID=0;
-		
+	int x, y, i, j,  size=pixelList_m.size(), screenID=0;
+	Uint32 color;	
  //#pragma omp parallel for private(x,y,color, i, j)
 	 for( i=0 ; i< size ; i++)
 		{
@@ -276,50 +276,39 @@ void RuPPAT :: handleDelete(int k)
 int RuPPAT :: applyDimming(Pixel_desc &pix_t)
 {
 //{{{
+
+// cout<<"COLOR: "<<pix_t.color<<endl;
+
  const int dim_scale = 1; //bring this up to increase max dim length
  int dimFactor = pix_t.dimFactor;
  int current_color = pix_t.color;
  unsigned int dimTimer= pix_t.dimTimer;
+	unsigned int tmpA; 
 	
 	//if pixel is to be dimmed and dimTimer is over factor
-	if(dimFactor &&  ++dimTimer>dimFactor)
+	if(dimFactor &&  (++dimTimer>dimFactor))
 	{
 		//reset the dimtimer
 		dimTimer = 0;
 
-		//separate out the colors for manipulation
-		unsigned int tmpR = (current_color & 0xFF0000)>>16;
-		unsigned int tmpG = (current_color & 0x00FF00)>>8;
-		unsigned int tmpB = (current_color & 0x0000FF);
-	
-		//dim RED
-		if(tmpR <10)
-			{tmpR=0;}
-			else
-			{tmpR/=1.2;}
 
-		//dim GREEN
-		if(tmpG <10)
-			{tmpG=0;}
-			else
-			{tmpG/=1.2;}
+		tmpA= (Uint8)((current_color & 0xFF000000)>>24);
+		tmpA -=5;
 
-		//dum BLUE
-		if(tmpB <10)
-			{tmpB=0;}
-			else
-			{tmpB/=1.2;}
-
+		//cout<<"alpha is now: "<<tmpA<<endl;
 		//recombine the colors
-		pix_t.color = ( (tmpR<<16) | (tmpG<<8) | tmpB);
-
+		//pix_t.color = ( (tmpA<<24) | (tmpR<<16) | (tmpG<<8) | tmpB);
+		pix_t.color = ( (tmpA<<24) | (0x00FFFFFF&current_color));
 	}
 	//reassign timer
 	pix_t.dimTimer = dimTimer;
 
+	//cout<<"tmpA is: "<<tmpA<<endl;
 	//if the color is really dark, just remove the pixel
-	if(pix_t.color < 10)
-		{pix_t.deleteMe = true;}
+	if(tmpA<10)
+		{
+			pix_t.deleteMe = true;
+		}
 //}}}
 }
 
@@ -710,7 +699,7 @@ void RuPPAT :: runDemos(void *selection)
 	//Create our temporary pixel
 	Pixel_desc t_pix;
 
-	t_pix.color=0xff00ff;
+	t_pix.color=0xffff00ff;
 	t_pix.xAcc = 0;
 	t_pix.yAcc = 0;
 	t_pix.accelLength = 2;
@@ -727,7 +716,7 @@ void RuPPAT :: runDemos(void *selection)
 	 {
 	   case 'g':
 	   {
-			t_pix.color = rand()%0xffffff;
+			t_pix.color = (rand()%0xffffff)|0xFF000000;
 		int count = 0;
 			t_pix.x = 800;
 			t_pix.yVel = 80;
@@ -972,7 +961,7 @@ T1=SDL_GetTicks();
 float t = 0.0;
 float dt = 0.004;
 
-int engine_rate = 120;
+int engine_rate = 160;
 int interval = 1000/engine_rate;
 int nextTick = SDL_GetTicks() + interval;
 
@@ -1194,13 +1183,15 @@ void RuPPAT :: accelPlayer(int p_ID, bool isForward)
 		players[p_ID]->setAccelVectors(isForward);
 		players[p_ID]->getXY_exhaust(t_pix.xVel, t_pix.yVel);
 	pthread_rwlock_unlock(&object_rw_lock);
-
+		
+//t_pix.color = SDL_MapRGBA(mainRender->mainScreen->format,0xfd, 0, 0, 0x0f);
+		//cout<<"make color: "<<t_pix.color<<endl;
 		//color start red
-		t_pix.color=0xaf0000;
+		t_pix.color=0x9f0000ff;
 		t_pix.xAcc = 0;
 		t_pix.yAcc = 0;
 		t_pix.accelLength = 2;
-		t_pix.dimFactor = 4;
+		t_pix.dimFactor = 2;
 
 		t_pix.dimTimer = 0;
 		t_pix.Xtimer =t_pix.Ytimer =0;
@@ -1259,7 +1250,7 @@ void RuPPAT :: turnPlayerToCoord(int p_ID, int x, int y, int rate)
 {
 //{{{
 	float playerDegree = 0.0,deg_playerToPoint = 0.0, 
-		tempErrAccum, tempErrDiff, angleDifScale=.01;
+		tempErrAccum = 0.0, tempErrDiff = 0.0, angleDifScale=.01;
 	int x_diff = 0,  y_diff=0, rateLim = 3;
 
 		//get some values out of the player object	

@@ -19,7 +19,7 @@ class Render
 		
 		Uint32 getPixel(int x, int y, int screenID);
 
-		void putPixel(int x, int y, int color, int screenID);
+		void putPixel(int x, int y, Uint32 color, int screenID);
 		
 		void putSprite(int x, int y, Entity_desc* entityDetails);
 
@@ -29,7 +29,7 @@ class Render
 
 		void applySurface(int x, int y, SDL_Surface* source);	
 		
-		SDL_Surface* mainScreen;
+		SDL_Surface* mainScreen,* pre_surface;
 	private:
 		int mainWidth;
 		int mainHeight;
