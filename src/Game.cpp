@@ -7,16 +7,19 @@ using namespace std;
 //-----CONSTRUCTOR
 Game :: Game()
 {
+//{{{
 	string bkg_paths[]={""};
 	engine = new RuPPAT(1024, 768, BPP,
 				 SDL_HWSURFACE | SDL_DOUBLEBUF,
 					 bkg_paths,0);
 	done = false;
+//}}}
 }
 
 //-----CONSTRUCTOR 2!!
 Game :: Game(int WIDTH_cl, int HEIGHT_cl)
 {
+//{{{
 	string bkg_paths[]={"bkg_one_1080.png",
 				"bkg_two_1080.png",
 					"bkg_three_1080.png"};
@@ -37,12 +40,12 @@ Game :: Game(int WIDTH_cl, int HEIGHT_cl)
 	engine->addObject("asteroid_large_1.png"
 				,700,400,100, -.1, 20.0,49.0,
 					"asteroid_large_1_HC.png");
-
-//engine->addObject("asteroid_large_1.png",600,400,100, -.1, 20.0,49.0,"");
+//}}}
 }
 
 Game::Game(RunOptions options)
 {
+//{{{
 	engine = new RuPPAT(options.width,options.height,BPP,
 					SDL_HWSURFACE | SDL_DOUBLEBUF,
 				options.background_spritePaths,3);
@@ -67,6 +70,7 @@ Game::Game(RunOptions options)
 			220+(i*120),300,10000,-4+i,i,i*10,
 				options.objects_HCpath[i]);
 	}	
+//}}}
 }
 
 
@@ -93,6 +97,7 @@ int mouse_x, mouse_y;
 //RUN the game!
 void Game :: run(string selection, string option)
 {
+//{{{
 	//declare and init SDL events structure
 	Event_desc mainEvents;
 	initEvent(mainEvents );
@@ -136,6 +141,7 @@ void Game :: run(string selection, string option)
 	//joining 
 	cout<<"joining RuPPAT in GAME"<<endl;
 	pthread_join(RuPPAT_th,NULL);
+//}}}
 }
 
 
@@ -144,6 +150,7 @@ void Game :: run(string selection, string option)
 //relevent to them
 void Game :: handleEvents(Event_desc &mainEvents)
 {
+//{{{
 	//keep working while events exist
 	while(SDL_PollEvent(&event))
 	{
@@ -347,6 +354,7 @@ void Game :: handleEvents(Event_desc &mainEvents)
 				right_count++;
 				}
 			}
+//}}}
 }
 
 //-------initEvent
@@ -354,6 +362,7 @@ void Game :: handleEvents(Event_desc &mainEvents)
 //to initial/default values
 void Game :: initEvent(Event_desc &initMe)
 {
+//{{{
 	initMe.space = false;
 	initMe.w = false;
 	initMe.a = false;
@@ -366,6 +375,7 @@ void Game :: initEvent(Event_desc &initMe)
 	initMe.enter = false;
 	initMe.rightCtrl = false;
 	initMe.leftCtrl = false;
+//}}}
 }
 
 //interface provided object containing Game

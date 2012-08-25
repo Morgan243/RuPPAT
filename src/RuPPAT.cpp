@@ -168,6 +168,7 @@ void RuPPAT :: parseSelectPixToSurface()
 //}}}
 }
 
+
 //------------parsePlayersTo Surface--TS
 //tkaes all the player object in the player vector
 //and places them to the screen (at appropriate coords)
@@ -212,7 +213,6 @@ void RuPPAT :: parseObjectsToSurface()
    pthread_rwlock_unlock(&object_rw_lock);
 //}}}
 }
-
 
 
 //------------setUpdateOnSelectPix-----
@@ -266,6 +266,7 @@ void RuPPAT :: handleDelete(int k)
 	//pthread_rwlock_unlock(&pix_rw_lock);
 //}}}
 }
+
 
 //------------applyDimming--------------NEED WORK
 //Pixels fade to black when they should be using
@@ -1159,7 +1160,6 @@ void RuPPAT :: createPixElement(  int x, int y,
 }
 
 
-
 void RuPPAT :: putPixel(int x, int y, unsigned int color, int id)
 {
 	mainRender->putPixel(x,y, color, id);
@@ -1169,6 +1169,7 @@ void RuPPAT :: putSprite(int x, int y, SDL_Surface *sprite)
 {
 	mainRender->putSprite(x, y,sprite);
 }
+
 
 //----these below should be replaced by a better system
 //for handling player control
@@ -1219,6 +1220,7 @@ void RuPPAT :: accelPlayer(int p_ID, bool isForward)
 //}}}
 }
 
+
 void RuPPAT :: turnPlayer(int p_ID, bool isLeft, int numTurns)
 {
 //{{{
@@ -1240,6 +1242,7 @@ void RuPPAT :: turnPlayer(int p_ID, bool isLeft, int numTurns)
 	}
 //}}}
 }
+
 
 //This function is intended to work like a PID loop (proportional, integral, derivative)
 // 	->the current implementation is a basterdize, semi-working version
@@ -1381,5 +1384,4 @@ tempErrDiff =  angle_diff*.1 - tempErrDiff; //angle_diff - tempErrDiff;
 		pthread_rwlock_unlock(&object_rw_lock);
 //}}}
 }
-
 
