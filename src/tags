@@ -88,7 +88,7 @@ HEIGHT	RuPPAT.cpp	/^int WIDTH, HEIGHT;$/;"	v
 HEIGHT_cl	main.cpp	/^	int HEIGHT_cl = 768;$/;"	v
 ID	Descriptors.h	/^	int ID;$/;"	m	struct:Entity_desc	access:public
 ID	Descriptors.h	/^	int ID;\/\/identify the pixel, usefule for debugging$/;"	m	struct:Pixel_desc	access:public
-IDbase	RuPPAT.h	/^	int IDbase;\/\/value of next ID $/;"	m	class:RuPPAT	access:private
+IHDR	mint_logo.png	/^/;"	v
 LEFT	Descriptors.h	7;"	d
 Missile	Missile.cpp	/^Missile::Missile(string sprite_path, int num_rotations, int startingAngle, int mass,$/;"	f	class:Missile	signature:(string sprite_path, int num_rotations, int startingAngle, int mass, float maxaccel, int startX, int startY, float xVel, float yVel, string HC_path)
 Missile	Missile.h	/^		explicit Missile(string sprite_path, int num_rotations, int startingAngle, int mass,$/;"	p	class:Missile	access:public	signature:(string sprite_path, int num_rotations, int startingAngle, int mass, float maxaccel, int startX, int startY, float xVel, float yVel, string HC_path)
@@ -183,7 +183,7 @@ Pixel_desc::ID	Descriptors.h	/^	int ID;\/\/identify the pixel, usefule for debug
 Pixel_desc::Xtimer	Descriptors.h	/^	unsigned int Xtimer;\/\/used for time based movement$/;"	m	struct:Pixel_desc	access:public
 Pixel_desc::Ytimer	Descriptors.h	/^	unsigned int Ytimer;	$/;"	m	struct:Pixel_desc	access:public
 Pixel_desc::accelLength	Descriptors.h	/^	int accelLength;\/\/how long to apply acceleration$/;"	m	struct:Pixel_desc	access:public
-Pixel_desc::color	Descriptors.h	/^	unsigned int color;\/\/color of pixel$/;"	m	struct:Pixel_desc	access:public
+Pixel_desc::color	Descriptors.h	/^	Uint32 color;\/\/color of pixel$/;"	m	struct:Pixel_desc	access:public
 Pixel_desc::deleteMe	Descriptors.h	/^	bool deleteMe;$/;"	m	struct:Pixel_desc	access:public
 Pixel_desc::dimFactor	Descriptors.h	/^	int dimFactor; \/\/larger =equals quicker dimmming time$/;"	m	struct:Pixel_desc	access:public
 Pixel_desc::dimTimer	Descriptors.h	/^	unsigned int dimTimer;$/;"	m	struct:Pixel_desc	access:public
@@ -219,7 +219,6 @@ RK4	RuPPAT.cpp	/^void RuPPAT::RK4(float t, float dt)$/;"	f	class:RuPPAT	signatur
 RK4	RuPPAT.h	/^	void RK4(float t, float dt);$/;"	p	class:RuPPAT	access:public	signature:(float t, float dt)
 RK4_all	RuPPAT.cpp	/^void RuPPAT :: RK4_all(float t, float dt)$/;"	f	class:RuPPAT	signature:(float t, float dt)
 RK4_all	RuPPAT.h	/^	void RK4_all(float t, float dt);$/;"	p	class:RuPPAT	access:public	signature:(float t, float dt)
-RK4_entity	RuPPAT.cpp	/^Entity_desc RuPPAT :: RK4_entity(Entity_desc ent)$/;"	f	class:RuPPAT	signature:(Entity_desc ent)
 RK4_entity	RuPPAT.h	/^	Entity_desc RK4_entity(Entity_desc ent);$/;"	p	class:RuPPAT	access:public	signature:(Entity_desc ent)
 RK4_parse	RuPPAT.cpp	/^void RuPPAT :: RK4_parse(SDL_Surface* background)$/;"	f	class:RuPPAT	signature:(SDL_Surface* background)
 RK4_parse	RuPPAT.h	/^	void RK4_parse(SDL_Surface* background);$/;"	p	class:RuPPAT	access:public	signature:(SDL_Surface* background)
@@ -243,10 +242,11 @@ Render::getPixel	Render.h	/^		Uint32 getPixel(int x, int y, int screenID);$/;"	p
 Render::mainBPP	Render.h	/^		int  mainBPP;$/;"	m	class:Render	access:private
 Render::mainFlags	Render.h	/^		Uint32 mainFlags;$/;"	m	class:Render	access:private
 Render::mainHeight	Render.h	/^		int mainHeight;$/;"	m	class:Render	access:private
-Render::mainScreen	Render.h	/^		SDL_Surface* mainScreen;$/;"	m	class:Render	access:public
+Render::mainScreen	Render.h	/^		SDL_Surface* mainScreen,* pre_surface;$/;"	m	class:Render	access:public
 Render::mainWidth	Render.h	/^		int mainWidth;$/;"	m	class:Render	access:private
-Render::putPixel	Render.cpp	/^void Render :: putPixel(int x, int y, int color, int screenID)$/;"	f	class:Render	signature:(int x, int y, int color, int screenID)
-Render::putPixel	Render.h	/^		void putPixel(int x, int y, int color, int screenID);$/;"	p	class:Render	access:public	signature:(int x, int y, int color, int screenID)
+Render::pre_surface	Render.h	/^		SDL_Surface* mainScreen,* pre_surface;$/;"	m	class:Render	access:public
+Render::putPixel	Render.cpp	/^void Render :: putPixel(int x, int y, Uint32 color, int screenID)$/;"	f	class:Render	signature:(int x, int y, Uint32 color, int screenID)
+Render::putPixel	Render.h	/^		void putPixel(int x, int y, Uint32 color, int screenID);$/;"	p	class:Render	access:public	signature:(int x, int y, Uint32 color, int screenID)
 Render::putPixel2	Render.cpp	/^void Render :: putPixel2(int x, int y, Uint8 r, Uint8 g, Uint8 b)$/;"	f	class:Render	signature:(int x, int y, Uint8 r, Uint8 g, Uint8 b)
 Render::putPixel2	Render.h	/^		void putPixel2(int x, int y, Uint8 r, Uint8 g, Uint8 b);$/;"	p	class:Render	access:public	signature:(int x, int y, Uint8 r, Uint8 g, Uint8 b)
 Render::putSprite	Render.cpp	/^void Render :: putSprite(int x, int y, SDL_Surface* sprite)$/;"	f	class:Render	signature:(int x, int y, SDL_Surface* sprite)
@@ -259,12 +259,10 @@ Render::~Render	Render.h	/^		~Render();$/;"	p	class:Render	access:public	signatu
 RuPPAT	RuPPAT.cpp	/^RuPPAT :: RuPPAT(int width,int height,int bpp, unsigned int flags,$/;"	f	class:RuPPAT	signature:(int width,int height,int bpp, unsigned int flags, string background_img_paths[], int num_bks)
 RuPPAT	RuPPAT.h	/^		RuPPAT(int width,int height,int bpp, unsigned int flags,$/;"	p	class:RuPPAT	access:public	signature:(int width,int height,int bpp, unsigned int flags, string bkg_paths[], int num_bkgs)
 RuPPAT	RuPPAT.h	/^class RuPPAT$/;"	c
-RuPPAT::IDbase	RuPPAT.h	/^	int IDbase;\/\/value of next ID $/;"	m	class:RuPPAT	access:private
 RuPPAT::RK4	RuPPAT.cpp	/^void RuPPAT::RK4(float t, float dt)$/;"	f	class:RuPPAT	signature:(float t, float dt)
 RuPPAT::RK4	RuPPAT.h	/^	void RK4(float t, float dt);$/;"	p	class:RuPPAT	access:public	signature:(float t, float dt)
 RuPPAT::RK4_all	RuPPAT.cpp	/^void RuPPAT :: RK4_all(float t, float dt)$/;"	f	class:RuPPAT	signature:(float t, float dt)
 RuPPAT::RK4_all	RuPPAT.h	/^	void RK4_all(float t, float dt);$/;"	p	class:RuPPAT	access:public	signature:(float t, float dt)
-RuPPAT::RK4_entity	RuPPAT.cpp	/^Entity_desc RuPPAT :: RK4_entity(Entity_desc ent)$/;"	f	class:RuPPAT	signature:(Entity_desc ent)
 RuPPAT::RK4_entity	RuPPAT.h	/^	Entity_desc RK4_entity(Entity_desc ent);$/;"	p	class:RuPPAT	access:public	signature:(Entity_desc ent)
 RuPPAT::RK4_parse	RuPPAT.cpp	/^void RuPPAT :: RK4_parse(SDL_Surface* background)$/;"	f	class:RuPPAT	signature:(SDL_Surface* background)
 RuPPAT::RK4_parse	RuPPAT.h	/^	void RK4_parse(SDL_Surface* background);$/;"	p	class:RuPPAT	access:public	signature:(SDL_Surface* background)
@@ -284,12 +282,10 @@ RuPPAT::createPixElement	RuPPAT.cpp	/^void RuPPAT :: createPixElement(  int x, i
 RuPPAT::createPixElement	RuPPAT.cpp	/^void RuPPAT :: createPixElement(Pixel_desc *pixel )$/;"	f	class:RuPPAT	signature:(Pixel_desc *pixel )
 RuPPAT::createPixElement	RuPPAT.h	/^	void createPixElement(  int x, int y,	$/;"	p	class:RuPPAT	access:public	signature:( int x, int y, int color, int xAccel, int yAccel, int accLength, int dimFactor, int mass )
 RuPPAT::createPixElement	RuPPAT.h	/^	void createPixElement(Pixel_desc *pixel); $/;"	p	class:RuPPAT	access:public	signature:(Pixel_desc *pixel)
-RuPPAT::deltaTime	RuPPAT.h	/^		Uint32 deltaTime;$/;"	m	class:RuPPAT	access:private
 RuPPAT::handleAllDeleteMe	RuPPAT.cpp	/^void RuPPAT :: handleAllDeleteMe()$/;"	f	class:RuPPAT	signature:()
 RuPPAT::handleAllDeleteMe	RuPPAT.h	/^	void handleAllDeleteMe();$/;"	p	class:RuPPAT	access:public	signature:()
 RuPPAT::handleDelete	RuPPAT.cpp	/^void RuPPAT :: handleDelete(int k)$/;"	f	class:RuPPAT	signature:(int k)
 RuPPAT::handleDelete	RuPPAT.h	/^	void handleDelete(int index);$/;"	p	class:RuPPAT	access:public	signature:(int index)
-RuPPAT::lastTime	RuPPAT.h	/^		Uint32 lastTime;$/;"	m	class:RuPPAT	access:private
 RuPPAT::parseObjectsToSurface	RuPPAT.cpp	/^void RuPPAT :: parseObjectsToSurface()$/;"	f	class:RuPPAT	signature:()
 RuPPAT::parseObjectsToSurface	RuPPAT.h	/^	void parseObjectsToSurface();$/;"	p	class:RuPPAT	access:public	signature:()
 RuPPAT::parsePlayersToSurface	RuPPAT.cpp	/^void RuPPAT :: parsePlayersToSurface()$/;"	f	class:RuPPAT	signature:()
@@ -306,7 +302,6 @@ RuPPAT::runPPAT	RuPPAT.cpp	/^void RuPPAT :: runPPAT(bool *mainDone, Event_desc &
 RuPPAT::runPPAT	RuPPAT.h	/^	void runPPAT(bool *mainDone, Event_desc &mainEvents, $/;"	p	class:RuPPAT	access:public	signature:(bool *mainDone, Event_desc &mainEvents, string selection, string option)
 RuPPAT::setUpdateOnSelectPix	RuPPAT.cpp	/^void RuPPAT :: setUpdateOnSelectPix(int set)$/;"	f	class:RuPPAT	signature:(int set)
 RuPPAT::setUpdateOnSelectPix	RuPPAT.h	/^	void setUpdateOnSelectPix(int set);$/;"	p	class:RuPPAT	access:public	signature:(int set)
-RuPPAT::thisTime	RuPPAT.h	/^		Uint32 thisTime;$/;"	m	class:RuPPAT	access:private
 RuPPAT::turnPlayer	RuPPAT.cpp	/^void RuPPAT :: turnPlayer(int p_ID, bool isLeft, int numTurns)$/;"	f	class:RuPPAT	signature:(int p_ID, bool isLeft, int numTurns)
 RuPPAT::turnPlayer	RuPPAT.h	/^	void turnPlayer(int p_ID, bool isLeft, int numTurns);$/;"	p	class:RuPPAT	access:public	signature:(int p_ID, bool isLeft, int numTurns)
 RuPPAT::turnPlayerToCoord	RuPPAT.cpp	/^void RuPPAT :: turnPlayerToCoord(int p_ID, int x, int y, int rate)$/;"	f	class:RuPPAT	signature:(int p_ID, int x, int y, int rate)
@@ -366,6 +361,8 @@ Sprite::incrementAngleIndex	Sprite.h	/^		void incrementAngleIndex();$/;"	p	class
 Sprite::incrementRotationRate	Sprite.cpp	/^void Sprite::incrementRotationRate()$/;"	f	class:Sprite	signature:()
 Sprite::incrementRotationRate	Sprite.h	/^		void incrementRotationRate();$/;"	p	class:Sprite	access:public	signature:()
 Sprite::lastErr	Sprite.h	/^		float lastErr;$/;"	m	class:Sprite	access:public
+Sprite::putPixel	Sprite.cpp	/^void Sprite::putPixel(int x, int y, Uint32 color, int screenID)$/;"	f	class:Sprite	signature:(int x, int y, Uint32 color, int screenID)
+Sprite::putPixel	Sprite.h	/^		void putPixel(int x, int y, Uint32 color, int screenID);$/;"	p	class:Sprite	access:public	signature:(int x, int y, Uint32 color, int screenID)
 Sprite::rotationRate	Sprite.h	/^		float rotationRate;$/;"	m	class:Sprite	access:protected
 Sprite::rotationalErrorAccum	Sprite.h	/^		float rotationalErrorAccum;$/;"	m	class:Sprite	access:public
 Sprite::rotations	Sprite.h	/^		vector<SDL_Surface *> rotations;	$/;"	m	class:Sprite	access:protected
@@ -387,18 +384,11 @@ WIDTH_cl	main.cpp	/^	int WIDTH_cl = 1024;$/;"	v
 Xtimer	Descriptors.h	/^	unsigned int Xtimer;\/\/used for time based movement$/;"	m	struct:Pixel_desc	access:public
 Ytimer	Descriptors.h	/^	unsigned int Ytimer;	$/;"	m	struct:Pixel_desc	access:public
 __DESC_H	Descriptors.h	5;"	d
-__GCC_ATOMIC_INT_LOCK_FREE	Descriptors.h.gch	/^/;"	v
-__GCC_ATOMIC_INT_LOCK_FREE	Game.h.gch	/^/;"	v
-__GCC_ATOMIC_INT_LOCK_FREE	Missile.h.gch	/^/;"	v
-__GCC_ATOMIC_INT_LOCK_FREE	Object.h.gch	/^/;"	v
-__GCC_ATOMIC_INT_LOCK_FREE	PhysFuncs.h.gch	/^/;"	v
-__GCC_ATOMIC_INT_LOCK_FREE	Player.h.gch	/^/;"	v
-__GCC_ATOMIC_INT_LOCK_FREE	Render.h.gch	/^/;"	v
-__GCC_ATOMIC_INT_LOCK_FREE	RuPPAT.h.gch	/^/;"	v
-__GCC_ATOMIC_INT_LOCK_FREE	Sprite.h.gch	/^/;"	v
 a	Descriptors.h	/^	bool w,a,s,d;$/;"	m	struct:Event_desc	access:public
 a	PhysFuncs.h	/^	Derivative a = evaluate( state, t, 0.0f, init, objMass, point_x, point_y);$/;"	l
 a	PhysFuncs.h	/^	Derivative a, b, c, d;$/;"	l
+a	Render.cpp	/^Uint8 r, g, b, a; $/;"	l
+a	Sprite.cpp	/^Uint8 r, g, b, a; $/;"	l
 a_count	Game.cpp	/^		w_count=0, s_count=0, a_count=0, d_count=0;$/;"	v
 accelBackward	Object.cpp	/^void Object :: accelBackward()$/;"	f	class:Object	signature:()
 accelBackward	Object.h	/^		void accelBackward();$/;"	p	class:Object	access:public	signature:()
@@ -409,14 +399,15 @@ accelPlayer	RuPPAT.cpp	/^void RuPPAT :: accelPlayer(int p_ID, bool isForward)$/;
 accelPlayer	RuPPAT.h	/^	void accelPlayer(int p_ID, bool isForward);$/;"	p	class:RuPPAT	access:public	signature:(int p_ID, bool isForward)
 addEntity	RuPPAT.cpp	/^int RuPPAT :: addEntity(Entity_desc new_ent)$/;"	f	class:RuPPAT	signature:(Entity_desc new_ent)
 addEntity	RuPPAT.h	/^	int addEntity(Entity_desc new_ent);$/;"	p	class:RuPPAT	access:public	signature:(Entity_desc new_ent)
-addObject	Game.cpp	/^	engine->addObject(options.objects_spritePath[0],$/;"	p	file:	signature:(options.objects_spritePath[0], 844,560,100000,1.0,0.0,0.0, options.objects_HCpath[0])
-addObject	Game.cpp	/^	engine->addObject(options.objects_spritePath[1],$/;"	p	file:	signature:(options.objects_spritePath[1], 600,400,100,-.1,20.0,49.0, options.objects_HCpath[1])
+addObject	Game.cpp	/^	engine->addObject(options.objects_spritePath[0],$/;"	p	file:	signature:(options.objects_spritePath[0], 844,560,10000,1.0,-10.0,-20.0, options.objects_HCpath[0])
+addObject	Game.cpp	/^	engine->addObject(options.objects_spritePath[1],$/;"	p	file:	signature:(options.objects_spritePath[1], 700,500,10000,-.1,20.0,49.0, options.objects_HCpath[1])
+addObject	Game.cpp	/^	engine->addObject(options.objects_spritePath[i],$/;"	p	file:	signature:(options.objects_spritePath[i], 220+(i*120),300,10000,-4+i,i,i*10, options.objects_HCpath[i])
 addObject	RuPPAT.cpp	/^int RuPPAT :: addObject(string spritePath, int x, int y, int mass, float rotationRate,$/;"	f	class:RuPPAT	signature:(string spritePath, int x, int y, int mass, float rotationRate, float xVel, float yVel, string HB_path)
 addObject	RuPPAT.h	/^	int addObject(string spritePath, int x, int y, int mass, float rotationRate,$/;"	p	class:RuPPAT	access:public	signature:(string spritePath, int x, int y, int mass, float rotationRate, float xVel, float yVel, string HB_path)
 addPlayer	Game.cpp	/^	engine->addPlayer(options.player_spritePath,$/;"	p	file:	signature:(options.player_spritePath, 360,0,1,400,200, options.player_HCpath)
 addPlayer	RuPPAT.cpp	/^int RuPPAT :: addPlayer(string spritePath, int numRotations, int startingAngle,$/;"	f	class:RuPPAT	signature:(string spritePath, int numRotations, int startingAngle, float maxAccel, int x, int y, string HC_path)
 addPlayer	RuPPAT.h	/^	int addPlayer(string spritePath, int numRotations, int startingAngle, $/;"	p	class:RuPPAT	access:public	signature:(string spritePath, int numRotations, int startingAngle, float maxAccel, int x, int y, string HC_path)
-angleDifScale	RuPPAT.cpp	/^		tempErrAccum, tempErrDiff, angleDifScale=.01;$/;"	l
+angleDifScale	RuPPAT.cpp	/^		tempErrAccum = 0.0, tempErrDiff = 0.0, angleDifScale=.01;$/;"	l
 angle_diff	RuPPAT.cpp	/^float angle_diff = deg_playerToPoint - playerDegree;$/;"	l
 applyDimming	RuPPAT.cpp	/^int RuPPAT :: applyDimming(Pixel_desc &pix_t)$/;"	f	class:RuPPAT	signature:(Pixel_desc &pix_t)
 applyDimming	RuPPAT.h	/^	int applyDimming(Pixel_desc &pix_t);$/;"	p	class:RuPPAT	access:public	signature:(Pixel_desc &pix_t)
@@ -426,11 +417,16 @@ args	Game.cpp	/^	void* args = &engineArgs;$/;"	l
 args	RuPPAT.cpp	/^		void* args = &demo;$/;"	l
 b	PhysFuncs.h	/^	Derivative a, b, c, d;$/;"	l
 b	PhysFuncs.h	/^	Derivative b = evaluate( state, t, dt* 0.5f, a, objMass, point_x, point_y);$/;"	l
+b	Render.cpp	/^Uint8 r, g, b, a; $/;"	l
+b	Sprite.cpp	/^Uint8 r, g, b, a; $/;"	l
 backg	RuPPAT.h	/^			SDL_Surface* backg;$/;"	m	struct:RK4_parse_helper_arg	access:public
 backgroundLayers	RuPPAT.cpp	/^	vector<SDL_Surface *>backgroundLayers;\/\/layers of the background$/;"	v
 background_spritePaths	Descriptors.h	/^	std::string background_spritePaths[3];$/;"	m	struct:RunOptions	access:public
+baseID	RuPPAT.cpp	/^	int baseID = 0;$/;"	v
 bkg_paths	Game.cpp	/^	string bkg_paths[]={""};$/;"	l
 bkg_paths	Game.cpp	/^	string bkg_paths[]={"bkg_one_1080.png",$/;"	l
+bpp	Render.cpp	/^    int bpp = pre_surface->format->BytesPerPixel;$/;"	l
+bpp	Sprite.cpp	/^    int bpp = sprite_surf->format->BytesPerPixel;$/;"	l
 buildHitBoxes_fromLayer	Object.cpp	/^void Object::buildHitBoxes_fromLayer(SDL_Surface *HB_surface)$/;"	f	class:Object	signature:(SDL_Surface *HB_surface)
 buildHitBoxes_fromLayer	Object.h	/^		void buildHitBoxes_fromLayer(SDL_Surface* hitBoxLayout);$/;"	p	class:Object	access:public	signature:(SDL_Surface* hitBoxLayout)
 buildHitBoxes_fromSprite	Object.h	/^		void buildHitBoxes_fromSprite();$/;"	p	class:Object	access:public	signature:()
@@ -444,11 +440,10 @@ character	RuPPAT.h	/^			char *character;$/;"	m	struct:helper_char	access:public
 checkHits	Object.cpp	/^bool Object::checkHits(float &xVel, float &yVel, Entity_desc &check_ent)$/;"	f	class:Object	signature:(float &xVel, float &yVel, Entity_desc &check_ent)
 checkHits	Object.h	/^		bool checkHits(float &xVel, float &yVel, Entity_desc &check_ent);$/;"	p	class:Object	access:public	signature:(float &xVel, float &yVel, Entity_desc &check_ent)
 cmdLineOptions	main.cpp	/^	RunOptions cmdLineOptions;$/;"	l
-color	Descriptors.h	/^	unsigned int color;\/\/color of pixel$/;"	m	struct:Pixel_desc	access:public
-color	RuPPAT.cpp	/^	int x, y, i, j, color, size=pixelList_m.size(), screenID=0;$/;"	l
+color	Descriptors.h	/^	Uint32 color;\/\/color of pixel$/;"	m	struct:Pixel_desc	access:public
+color	RuPPAT.cpp	/^	Uint32 color;	$/;"	l
 color	RuPPAT.cpp	/^	int x, y, i, j, color, size=players.size(), screenID=0;$/;"	l
 colour	Render.cpp	/^    Uint32 colour;  $/;"	l
-context	.RuPPAT.h.swp	/^/;"	v
 context	RuPPAT.h	/^			void *context;$/;"	m	struct:RK4_parse_helper_arg	access:public
 context	RuPPAT.h	/^			void *context;$/;"	m	struct:cPE_helper	access:public
 context	RuPPAT.h	/^			void *context;$/;"	m	struct:helper_char	access:public
@@ -491,7 +486,6 @@ defaultTurnAmnt	Game.cpp	/^	 key_count_limit=0, defaultTurnAmnt=4, fastTurn=3,$/
 deg_playerToPoint	RuPPAT.cpp	/^	float playerDegree = 0.0,deg_playerToPoint = 0.0, $/;"	l
 degreeIncrement	Sprite.h	/^		float degreeIncrement;$/;"	m	class:Sprite	access:protected
 deleteMe	Descriptors.h	/^	bool deleteMe;$/;"	m	struct:Pixel_desc	access:public
-deltaTime	RuPPAT.h	/^		Uint32 deltaTime;$/;"	m	class:RuPPAT	access:private
 deltaX	PhysFuncs.h	/^	float deltaX = objX - x;$/;"	l
 deltaY	PhysFuncs.h	/^	float deltaY = objY - y;$/;"	l
 demo	RuPPAT.cpp	/^	helper_char demo;$/;"	l
@@ -536,11 +530,13 @@ endl	main.cpp	/^			cout << "          run fire demo: '-fire'"<< endl;$/;"	l
 endl	main.cpp	/^			cout << "  run gravity well demo: '-gwell'"<< endl;$/;"	l
 endl	main.cpp	/^			cout << "\\n\\n\\t______RuPAP Engine Demo______"<<endl;$/;"	l
 endl	main.cpp	/^			cout << "run particle orbit demo: '-porbit'"<< endl;$/;"	l
+endl	main.cpp	/^			cout<<"CL arg: "<<argv[i+1]<<endl;$/;"	l
+endl	main.cpp	/^			cout<<"CL arg: "<<argv[i+2]<<endl;$/;"	l
 endl	main.cpp	/^			cout<<"\\t\\tMorgan Stuart\\n"<< endl;$/;"	l
 endl	main.cpp	/^		cout<<"ERROR WITH XINIT THREADS!"<<endl;$/;"	l
 engine	Game.h	/^	RuPPAT *engine;	$/;"	m	class:Game	access:private
 engineArgs	Game.cpp	/^	runPPAT_helperArgs engineArgs;$/;"	l
-engine_rate	RuPPAT.cpp	/^int engine_rate = 180;$/;"	l
+engine_rate	RuPPAT.cpp	/^int engine_rate = 160;$/;"	l
 entList	RuPPAT.cpp	/^	vector<Entity_desc> entList;\/\/indpenedt sprites on scree$/;"	v
 entList_m	RuPPAT.cpp	/^	vector<Entity_desc> entList_m;\/\/sprites that attract others $/;"	v
 ent_rw_lock	RuPPAT.cpp	/^		  ent_rw_lock,$/;"	v
@@ -553,6 +549,8 @@ exhaustX	Object.h	/^		float exhaustX, exhaustY;$/;"	m	class:Object	access:protec
 exhaustY	Object.h	/^		float exhaustX, exhaustY;$/;"	m	class:Object	access:protected
 fastTurn	Game.cpp	/^	 key_count_limit=0, defaultTurnAmnt=4, fastTurn=3,$/;"	v
 format	tags	/^!_TAG_FILE_FORMAT	2	\/extended format; --format=1 will not append ;" to lines\/$/;"	v
+g	Render.cpp	/^Uint8 r, g, b, a; $/;"	l
+g	Sprite.cpp	/^Uint8 r, g, b, a; $/;"	l
 gAccTotal	PhysFuncs.h	/^	float theta, gAccTotal=0.0;$/;"	l
 game	main.cpp	/^Game *game;$/;"	v
 game_rate	Game.cpp	/^	int game_rate = 60;$/;"	l
@@ -610,7 +608,6 @@ handleEvents	Game.cpp	/^void Game :: handleEvents(Event_desc &mainEvents)$/;"	f	
 handleEvents	Game.h	/^	void handleEvents(Event_desc &mainEvents);$/;"	p	class:Game	access:public	signature:(Event_desc &mainEvents)
 handleInput	main.cpp	/^int handleInput(int argc,char *argv[], RunOptions &cl_options)$/;"	f	signature:(int argc,char *argv[], RunOptions &cl_options)
 handleInput	main.cpp	/^int handleInput(int argc,char *argv[], RunOptions &cl_options);$/;"	p	file:	signature:(int argc,char *argv[], RunOptions &cl_options)
-heading	.Player.cpp.swp	/^/;"	v
 heading	Object.cpp	/^		float heading = sprite.getAngle();$/;"	l
 height	Descriptors.h	/^	int height;$/;"	m	struct:RunOptions	access:public
 helper	RuPPAT.h	/^		RK4_parse_helper_arg* helper = (RK4_parse_helper_arg*) helper_in;$/;"	l
@@ -623,17 +620,16 @@ helper_char::context	RuPPAT.h	/^			void *context;$/;"	m	struct:helper_char	acces
 hitCircleSprite	Object.h	/^		Sprite sprite, hitCircleSprite;$/;"	m	class:Object	access:public
 hitCircles	Descriptors.h	/^	std::vector<Circle_desc> hitCircles;$/;"	m	struct:Entity_desc	access:public
 i	RuPPAT.cpp	/^			int i =0;$/;"	l
-i	RuPPAT.cpp	/^	int x, y, i, j, color, size=pixelList_m.size(), screenID=0;$/;"	l
+i	RuPPAT.cpp	/^	int x, y, i, j,  size=pixelList_m.size(), screenID=0;$/;"	l
 i	RuPPAT.cpp	/^	int x, y, i, j, color, size=players.size(), screenID=0;$/;"	l
 i	RuPPAT.cpp	/^	int x, y, i;$/;"	l
-i	main.cpp	/^	int i,j,k=0;$/;"	l
+i	main.cpp	/^	int i,j,k=0, num_objects = 0;$/;"	l
 imagePosition	Render.cpp	/^	SDL_Rect imagePosition;$/;"	l
 incrementAngleIndex	Object.cpp	/^	sprite.incrementAngleIndex();$/;"	p	file:	signature:()
 incrementAngleIndex	Sprite.cpp	/^void Sprite::incrementAngleIndex()$/;"	f	class:Sprite	signature:()
 incrementAngleIndex	Sprite.h	/^		void incrementAngleIndex();$/;"	p	class:Sprite	access:public	signature:()
 incrementAngle_index	Object.cpp	/^void Object :: incrementAngle_index()$/;"	f	class:Object	signature:()
 incrementAngle_index	Object.h	/^		void incrementAngle_index();$/;"	p	class:Object	access:public	signature:()
-incrementRotationRate	.Player.cpp.swp	/^/;"	p	file:	signature:()
 incrementRotationRate	Object.cpp	/^	sprite.incrementRotationRate();$/;"	p	file:	signature:()
 incrementRotationRate	Sprite.cpp	/^void Sprite::incrementRotationRate()$/;"	f	class:Sprite	signature:()
 incrementRotationRate	Sprite.h	/^		void incrementRotationRate();$/;"	p	class:Sprite	access:public	signature:()
@@ -650,10 +646,11 @@ interval	RuPPAT.cpp	/^	int interval = 1000\/game_rate;$/;"	l
 interval	RuPPAT.cpp	/^int interval = 1000\/engine_rate;$/;"	l
 isDerivNAN	PhysFuncs.h	/^bool isDerivNAN(Derivative &derivCheck)$/;"	f	signature:(Derivative &derivCheck)
 isNAN	PhysFuncs.h	/^bool isNAN(float &num_to_check)$/;"	f	signature:(float &num_to_check)
-j	RuPPAT.cpp	/^	int x, y, i, j, color, size=pixelList_m.size(), screenID=0;$/;"	l
+iu	fedora_logo.png	/^/;"	v
+j	RuPPAT.cpp	/^	int x, y, i, j,  size=pixelList_m.size(), screenID=0;$/;"	l
 j	RuPPAT.cpp	/^	int x, y, i, j, color, size=players.size(), screenID=0;$/;"	l
-j	main.cpp	/^	int i,j,k=0;$/;"	l
-k	main.cpp	/^	int i,j,k=0;$/;"	l
+j	main.cpp	/^	int i,j,k=0, num_objects = 0;$/;"	l
+k	main.cpp	/^	int i,j,k=0, num_objects = 0;$/;"	l
 k_DOWN	Game.cpp	/^bool k_UP=false, k_DOWN=false, k_LEFT=false, k_RIGHT=false,$/;"	v
 k_LEFT	Game.cpp	/^bool k_UP=false, k_DOWN=false, k_LEFT=false, k_RIGHT=false,$/;"	v
 k_RIGHT	Game.cpp	/^bool k_UP=false, k_DOWN=false, k_LEFT=false, k_RIGHT=false,$/;"	v
@@ -665,12 +662,9 @@ keyT2	RuPPAT.cpp	/^	unsigned int keyT1, keyT2;$/;"	l
 key_count_limit	Game.cpp	/^	 key_count_limit=0, defaultTurnAmnt=4, fastTurn=3,$/;"	v
 lastErr	Object.h	/^		float lastErr;$/;"	m	class:Object	access:public
 lastErr	Sprite.h	/^		float lastErr;$/;"	m	class:Sprite	access:public
-lastTime	RuPPAT.h	/^		Uint32 lastTime;$/;"	m	class:RuPPAT	access:private
 left	Descriptors.h	/^	bool up,left,down,right;$/;"	m	struct:Event_desc	access:public
 leftCtrl	Descriptors.h	/^	bool rightCtrl, leftCtrl;$/;"	m	struct:Event_desc	access:public
 left_count	Game.cpp	/^int x, y, up_count, down_count, left_count, right_count,$/;"	v
-lineoffset	Render.cpp	/^	int lineoffset = y * (mainScreen->pitch \/ 4);$/;"	l
-mDone	.RuPPAT.h.swp	/^/;"	v	typeref:struct:bool
 mDone	RuPPAT.h	/^			bool *mDone;$/;"	m	struct:runPPAT_helperArgs	access:public
 mEvents	RuPPAT.h	/^			Event_desc *mEvents;$/;"	m	struct:runPPAT_helperArgs	access:public
 main	main.cpp	/^int main(int argc, char *argv[])$/;"	f	signature:(int argc, char *argv[])
@@ -679,29 +673,37 @@ mainEvents	Game.cpp	/^	Event_desc mainEvents;$/;"	l
 mainFlags	Render.h	/^		Uint32 mainFlags;$/;"	m	class:Render	access:private
 mainHeight	Render.h	/^		int mainHeight;$/;"	m	class:Render	access:private
 mainRender	RuPPAT.cpp	/^	Render* mainRender;$/;"	v
-mainScreen	Render.h	/^		SDL_Surface* mainScreen;$/;"	m	class:Render	access:public
+mainScreen	Render.h	/^		SDL_Surface* mainScreen,* pre_surface;$/;"	m	class:Render	access:public
 mainWidth	Render.h	/^		int mainWidth;$/;"	m	class:Render	access:private
 mass	Descriptors.h	/^	int mass; \/\/mass	$/;"	m	struct:Pixel_desc	access:public
 mass	Descriptors.h	/^	int mass;$/;"	m	struct:Entity_desc	access:public
-mass_e	RuPPAT.cpp	/^	Entity_desc mass_e;$/;"	l
 mass_e	RuPPAT.cpp	/^	Entity_desc player_e, mass_e, other_obj_e;$/;"	l
 mass_rw_lock	RuPPAT.cpp	/^		  mass_rw_lock,$/;"	v
 mass_size	RuPPAT.cpp	/^	 int mass_size = objectList.size();	$/;"	l
 maxAccel	Descriptors.h	/^	float maxAccel;$/;"	m	struct:Entity_desc	access:public
 mouse_x	Game.cpp	/^int mouse_x, mouse_y;$/;"	v
 mouse_y	Game.cpp	/^int mouse_x, mouse_y;$/;"	v
-n	.Player.cpp.swp	/^/;"	v
+n	LUG_background_three.png	/^∏./;"	v
 n	red_ship.png	/^ÒôΩÎısÁ¨œnﬁ¨;s∆ﬂ"¨*ŒVñ∫©c÷)ÕLp‰Tˇøoê·Hƒπ<1·º40m™ôXπèæÂhÏ§kªﬂsû‹ªuK˛vxÿøπ∂ˆ"p~øÛD⁄ÔT¸{eE˝˙“•Í ‹ú$)äÌU’¶f¯‹˛≥=®Q&NŸáâ/;"	v
 newX	RuPPAT.cpp	/^	float newX, newY, tmp_xVel, tmp_yVel;$/;"	l
 newY	RuPPAT.cpp	/^	float newX, newY, tmp_xVel, tmp_yVel;$/;"	l
+new_object	RuPPAT.cpp	/^		Object *new_object = &(*new_player);$/;"	l
+new_player	RuPPAT.cpp	/^		Player *new_player= $/;"	l
+new_x	RuPPAT.cpp	/^	float new_x=111, new_y=111, new_xVel=0, new_yVel=0;$/;"	l
+new_xVel	RuPPAT.cpp	/^	float new_x=111, new_y=111, new_xVel=0, new_yVel=0;$/;"	l
+new_y	RuPPAT.cpp	/^	float new_x=111, new_y=111, new_xVel=0, new_yVel=0;$/;"	l
+new_yVel	RuPPAT.cpp	/^	float new_x=111, new_y=111, new_xVel=0, new_yVel=0;$/;"	l
 nextTick	Game.cpp	/^	int nextTick = SDL_GetTicks() + interval;$/;"	l
 nextTick	RuPPAT.cpp	/^	int nextTick = SDL_GetTicks() + interval;$/;"	l
 nextTick	RuPPAT.cpp	/^int nextTick = SDL_GetTicks() + interval;$/;"	l
 noDrawEffect	Descriptors.h	/^	bool noDrawEffect;$/;"	m	struct:Entity_desc	access:public
 num_objects	RuPPAT.cpp	/^	 int num_objects = objectList.size();$/;"	l
+num_objects	main.cpp	/^	int i,j,k=0, num_objects = 0;$/;"	l
+num_pixels	RuPPAT.cpp	/^	 int num_pixels = pixelList_m.size();$/;"	l
+obj_desc_prim	RuPPAT.cpp	/^	Entity_desc obj_desc_prim, obj_desc_sec;$/;"	l
+obj_desc_sec	RuPPAT.cpp	/^	Entity_desc obj_desc_prim, obj_desc_sec;$/;"	l
 objectList	RuPPAT.cpp	/^	vector<Object *> objectList;$/;"	v
 object_rw_lock	RuPPAT.cpp	/^		  object_rw_lock;$/;"	v
-object_size	RuPPAT.cpp	/^	 int object_size = objectList.size();	$/;"	l
 objects_HCpath	Descriptors.h	/^	std::vector <std::string> objects_HCpath;$/;"	m	struct:RunOptions	access:public
 objects_spritePath	Descriptors.h	/^	std::vector <std::string> objects_spritePath;$/;"	m	struct:RunOptions	access:public
 offset	Render.cpp	/^	SDL_Rect offset;$/;"	l
@@ -712,6 +714,8 @@ origXvel	RuPPAT.cpp	/^	float origXvel=t_pix.xVel, origYvel=t_pix.yVel;$/;"	l
 origYvel	RuPPAT.cpp	/^	float origXvel=t_pix.xVel, origYvel=t_pix.yVel;$/;"	l
 other_obj_e	RuPPAT.cpp	/^	Entity_desc player_e, mass_e, other_obj_e;$/;"	l
 output	PhysFuncs.h	/^	Derivative output;$/;"	l
+p	Render.cpp	/^    Uint8 *p = (Uint8 *)pre_surface->pixels + y * pre_surface->pitch + x * bpp;$/;"	l
+p	Sprite.cpp	/^    Uint8 *p = (Uint8 *)sprite_surf->pixels + y * sprite_surf->pitch + x * bpp;$/;"	l
 p	red_ship.png	/^Å9ÑV*(ä‚^)E¨§âíRBRˇçwª∂w◊Ø7é∑‚÷9Ω˜4o>ΩﬂºôÅÁˆ€b2)ãy>“4ÒÒ°Cb\/i\/á€◊ØK?\\Ω™Ut›/;"	v
 parseObjectsToSurface	RuPPAT.cpp	/^void RuPPAT :: parseObjectsToSurface()$/;"	f	class:RuPPAT	signature:()
 parseObjectsToSurface	RuPPAT.h	/^	void parseObjectsToSurface();$/;"	p	class:RuPPAT	access:public	signature:()
@@ -728,7 +732,7 @@ pixel	RuPPAT.h	/^			Pixel_desc *pixel;	$/;"	m	struct:cPE_helper	access:public
 pixelList	RuPPAT.cpp	/^	vector<Pixel_desc> pixelList;\/\/independent pixels on screen$/;"	v
 pixelList_m	RuPPAT.cpp	/^	vector<Pixel_desc> pixelList_m;\/\/points of mass on screen$/;"	v
 pixel_size	RuPPAT.cpp	/^	 int pixel_size = pixelList_m.size();$/;"	l
-pixels	Render.cpp	/^	Uint32 *pixels = (Uint32 *)mainScreen->pixels;$/;"	l
+pixels	Render.cpp	/^	Uint32 *pixels = (Uint32 *)pre_surface->pixels;$/;"	l
 pixels	Sprite.cpp	/^	Uint32 *pixels = (Uint32 *)sprite_surf->pixels;$/;"	l
 pixmem32	Render.cpp	/^Uint32 *pixmem32;$/;"	l
 playerDegree	RuPPAT.cpp	/^	float playerDegree = 0.0,deg_playerToPoint = 0.0, $/;"	l
@@ -739,23 +743,27 @@ player_size	RuPPAT.cpp	/^	 int player_size = players.size();$/;"	l
 player_spritePath	Descriptors.h	/^	std::string player_spritePath;$/;"	m	struct:RunOptions	access:public
 players	Game.h	/^	vector<Player *> players;$/;"	m	class:Game	access:private
 players	RuPPAT.cpp	/^	vector<Player *> players;\/\/independent sprite that controlled by AI or human$/;"	v
-point	Render.cpp	/^	int point = lineoffset + x;	$/;"	l
 pos_curr_rate	RuPPAT.cpp	/^float pos_curr_rate = 0.0;$/;"	l
-ptr	Render.cpp	/^	unsigned int *ptr = (unsigned int*)mainScreen->pixels;$/;"	l
+pre_surface	Render.h	/^		SDL_Surface* mainScreen,* pre_surface;$/;"	m	class:Render	access:public
 push_back	Object.cpp	/^			descriptor.hitCircles.push_back(temp_circle);$/;"	p	file:	signature:(temp_circle)
 push_back	RuPPAT.cpp	/^			entList.push_back(new_ent);	$/;"	p	file:	signature:(new_ent)
-push_back	RuPPAT.cpp	/^			objectList.push_back(new Object(spritePath, x, y, mass,$/;"	p	file:	signature:(new Object(spritePath, x, y, mass, 360,0,xVel,yVel, HB_path ))
-push_back	RuPPAT.cpp	/^			players.push_back(new Player(spritePath, numRotations, startingAngle,$/;"	p	file:	signature:(new Player(spritePath, numRotations, startingAngle, maxAccel, x, y, HC_path))
+push_back	RuPPAT.cpp	/^			objectList.push_back(new Object(spritePath, x, y, mass,$/;"	p	file:	signature:(new Object(spritePath, x, y, mass, 360,0,xVel,yVel, HB_path))
+push_back	RuPPAT.cpp	/^			objectList.push_back(new_object);$/;"	p	file:	signature:(new_object)
+push_back	RuPPAT.cpp	/^			players.push_back(new_player);$/;"	p	file:	signature:(new_player)
 push_back	RuPPAT.cpp	/^		    pixelList_m.push_back(tmpPix);$/;"	p	file:	signature:(tmpPix)
 push_back	RuPPAT.cpp	/^		backgroundLayers.push_back(tempBkgOpt);	$/;"	p	file:	signature:(tempBkgOpt)
 push_back	RuPPAT.cpp	/^		objectList.push_back(new Object(spritePath, x, y, mass,$/;"	p	file:	signature:(new Object(spritePath, x, y, mass, 360,0,xVel,yVel, HB_path ))
 push_back	RuPPAT.cpp	/^  	pixelList_m.push_back(temp_pix);$/;"	p	file:	signature:(temp_pix)
-putPixel	Render.cpp	/^void Render :: putPixel(int x, int y, int color, int screenID)$/;"	f	class:Render	signature:(int x, int y, int color, int screenID)
-putPixel	Render.h	/^		void putPixel(int x, int y, int color, int screenID);$/;"	p	class:Render	access:public	signature:(int x, int y, int color, int screenID)
+push_back	main.cpp	/^			cl_options.objects_HCpath.push_back(argv[i+2]);$/;"	p	file:	signature:(argv[i+2])
+push_back	main.cpp	/^			cl_options.objects_spritePath.push_back(argv[i+1]);$/;"	p	file:	signature:(argv[i+1])
+putPixel	Render.cpp	/^void Render :: putPixel(int x, int y, Uint32 color, int screenID)$/;"	f	class:Render	signature:(int x, int y, Uint32 color, int screenID)
+putPixel	Render.h	/^		void putPixel(int x, int y, Uint32 color, int screenID);$/;"	p	class:Render	access:public	signature:(int x, int y, Uint32 color, int screenID)
 putPixel	RuPPAT.cpp	/^		mainRender->putPixel(x,y,color,screenID);$/;"	p	file:	signature:(x,y,color,screenID)
 putPixel	RuPPAT.cpp	/^	mainRender->putPixel(x,y, color, id);$/;"	p	file:	signature:(x,y, color, id)
 putPixel	RuPPAT.cpp	/^void RuPPAT :: putPixel(int x, int y, unsigned int color, int id)$/;"	f	class:RuPPAT	signature:(int x, int y, unsigned int color, int id)
 putPixel	RuPPAT.h	/^	void putPixel(int x, int y, unsigned int color, int id);$/;"	p	class:RuPPAT	access:public	signature:(int x, int y, unsigned int color, int id)
+putPixel	Sprite.cpp	/^void Sprite::putPixel(int x, int y, Uint32 color, int screenID)$/;"	f	class:Sprite	signature:(int x, int y, Uint32 color, int screenID)
+putPixel	Sprite.h	/^		void putPixel(int x, int y, Uint32 color, int screenID);$/;"	p	class:Sprite	access:public	signature:(int x, int y, Uint32 color, int screenID)
 putPixel2	Render.cpp	/^void Render :: putPixel2(int x, int y, Uint8 r, Uint8 g, Uint8 b)$/;"	f	class:Render	signature:(int x, int y, Uint8 r, Uint8 g, Uint8 b)
 putPixel2	Render.h	/^		void putPixel2(int x, int y, Uint8 r, Uint8 g, Uint8 b);$/;"	p	class:Render	access:public	signature:(int x, int y, Uint8 r, Uint8 g, Uint8 b)
 putSprite	Render.cpp	/^void Render :: putSprite(int x, int y, SDL_Surface* sprite)$/;"	f	class:Render	signature:(int x, int y, SDL_Surface* sprite)
@@ -767,6 +775,9 @@ putSprite	RuPPAT.cpp	/^	mainRender->putSprite(x, y,sprite);$/;"	p	file:	signatur
 putSprite	RuPPAT.cpp	/^void RuPPAT :: putSprite(int x, int y, SDL_Surface *sprite)$/;"	f	class:RuPPAT	signature:(int x, int y, SDL_Surface *sprite)
 putSprite	RuPPAT.h	/^	void putSprite(int x, int y, SDL_Surface *sprite);$/;"	p	class:RuPPAT	access:public	signature:(int x, int y, SDL_Surface *sprite)
 r	Descriptors.h	/^	unsigned int r;$/;"	m	struct:Circle_desc	access:public
+r	LUG_background_three.png	/^∏./;"	v
+r	Render.cpp	/^Uint8 r, g, b, a; $/;"	l
+r	Sprite.cpp	/^Uint8 r, g, b, a; $/;"	l
 radius	RuPPAT.cpp	/^	int xPos=300, yPos=300, radius=4;	$/;"	l
 rateLim	RuPPAT.cpp	/^	int x_diff = 0,  y_diff=0, rateLim = 3;$/;"	l
 right	Descriptors.h	/^	bool up,left,down,right;$/;"	m	struct:Event_desc	access:public
@@ -800,7 +811,7 @@ runPPAT_helperArgs::option	RuPPAT.h	/^			string option;$/;"	m	struct:runPPAT_hel
 runPPAT_helperArgs::selection	RuPPAT.h	/^			string selection;$/;"	m	struct:runPPAT_helperArgs	access:public
 s	Descriptors.h	/^	bool w,a,s,d;$/;"	m	struct:Event_desc	access:public
 s_count	Game.cpp	/^		w_count=0, s_count=0, a_count=0, d_count=0;$/;"	v
-screenID	RuPPAT.cpp	/^	int x, y, i, j, color, size=pixelList_m.size(), screenID=0;$/;"	l
+screenID	RuPPAT.cpp	/^	int x, y, i, j,  size=pixelList_m.size(), screenID=0;$/;"	l
 screenID	RuPPAT.cpp	/^	int x, y, i, j, color, size=players.size(), screenID=0;$/;"	l
 sel	RuPPAT.cpp	/^	void *sel = &select;$/;"	l
 sel	RuPPAT.cpp	/^char sel = 'g';$/;"	l
@@ -820,12 +831,12 @@ setAngle_index	Object.h	/^		void setAngle_index(int angleIndex);$/;"	p	class:Obj
 setDescriptor	Object.cpp	/^void Object::setDescriptor(Entity_desc new_desc)$/;"	f	class:Object	signature:(Entity_desc new_desc)
 setDescriptor	Object.h	/^		void setDescriptor(Entity_desc new_desc);$/;"	p	class:Object	access:public	signature:(Entity_desc new_desc)
 setDescriptor	RuPPAT.cpp	/^			objectList[i]->setDescriptor(other_obj_e);$/;"	p	file:	signature:(other_obj_e)
+setDescriptor	RuPPAT.cpp	/^			objectList[j]->setDescriptor(obj_desc_sec);$/;"	p	file:	signature:(obj_desc_sec)
 setDescriptor	RuPPAT.cpp	/^			players[i]->setDescriptor(player_e);$/;"	p	file:	signature:(player_e)
 setID	Object.cpp	/^void Object::setID(int id)$/;"	f	class:Object	signature:(int id)
 setID	Object.h	/^		void setID(int id);$/;"	p	class:Object	access:public	signature:(int id)
 setMainScreen	Render.cpp	/^void Render :: setMainScreen(int color)$/;"	f	class:Render	signature:(int color)
 setMainScreen	Render.h	/^		void setMainScreen(int color);$/;"	p	class:Render	access:public	signature:(int color)
-setRotationRate	.Player.cpp.swp	/^/;"	p	file:	signature:(rotRate)
 setRotationRate	Object.cpp	/^	sprite.setRotationRate(rotRate);$/;"	p	file:	signature:(rotRate)
 setRotationRate	RuPPAT.cpp	/^		objectList.back()->sprite.setRotationRate(rotationRate);$/;"	p	file:	signature:(rotationRate)
 setRotationRate	Sprite.cpp	/^void Sprite::setRotationRate(float rotRate)$/;"	f	class:Sprite	signature:(float rotRate)
@@ -837,7 +848,7 @@ setUpdateOnSelectPix	RuPPAT.cpp	/^void RuPPAT :: setUpdateOnSelectPix(int set)$/
 setUpdateOnSelectPix	RuPPAT.h	/^	void setUpdateOnSelectPix(int set);$/;"	p	class:RuPPAT	access:public	signature:(int set)
 size	RuPPAT.cpp	/^	int size;$/;"	l
 size	RuPPAT.cpp	/^	int size=objectList.size();$/;"	l
-size	RuPPAT.cpp	/^	int x, y, i, j, color, size=pixelList_m.size(), screenID=0;$/;"	l
+size	RuPPAT.cpp	/^	int x, y, i, j,  size=pixelList_m.size(), screenID=0;$/;"	l
 size	RuPPAT.cpp	/^	int x, y, i, j, color, size=players.size(), screenID=0;$/;"	l
 space	Descriptors.h	/^	bool space;$/;"	m	struct:Event_desc	access:public
 space	Game.h	/^	bool space;\/\/$/;"	m	class:Game	access:private
@@ -850,28 +861,25 @@ state	PhysFuncs.h	/^	Entity_desc state;$/;"	l
 state	PhysFuncs.h	/^	Pixel_desc state;$/;"	l
 std::endl	PhysFuncs.h	/^		std::cout<<"Nan found!"<<std::endl;$/;"	m	class:std
 t	RuPPAT.cpp	/^float t = 0.0;$/;"	l
+tIME	asteroid_medium_1_HC.png	/^/;"	v
 tIME	bkg_1_1080.png	/^/;"	v
 tIME	red_planet_HC.png	/^/;"	v
 t_pix	RuPPAT.cpp	/^	Pixel_desc t_pix;$/;"	l
 tempBkg	RuPPAT.cpp	/^	SDL_Surface *tempBkg, * tempBkgOpt;$/;"	l
 tempBkgOpt	RuPPAT.cpp	/^	SDL_Surface *tempBkg, * tempBkgOpt;$/;"	l
-tempErrAccum	RuPPAT.cpp	/^		tempErrAccum, tempErrDiff, angleDifScale=.01;$/;"	l
-tempErrDiff	RuPPAT.cpp	/^		tempErrAccum, tempErrDiff, angleDifScale=.01;$/;"	l
+tempErrAccum	RuPPAT.cpp	/^		tempErrAccum = 0.0, tempErrDiff = 0.0, angleDifScale=.01;$/;"	l
+tempErrDiff	RuPPAT.cpp	/^		tempErrAccum = 0.0, tempErrDiff = 0.0, angleDifScale=.01;$/;"	l
 tempSprite	Sprite.cpp	/^	SDL_Surface *tempSprite, *tempSpriteOpt;$/;"	l
 tempSpriteOpt	Sprite.cpp	/^	SDL_Surface *tempSprite, *tempSpriteOpt;$/;"	l
 temp_circle	Object.cpp	/^	Circle_desc temp_circle;$/;"	l
-temp_e	RuPPAT.cpp	/^	Entity_desc temp_e = ent;$/;"	l
-temp_p	RuPPAT.cpp	/^	Pixel_desc temp_p;$/;"	l
 temp_pix	RuPPAT.cpp	/^  Pixel_desc temp_pix = *pixel;$/;"	l
 temp_pixel	Object.cpp	/^	Uint32 temp_pixel;$/;"	l
 theta	PhysFuncs.h	/^	float theta, gAccTotal=0.0;$/;"	l
 theta	RuPPAT.cpp	/^	float theta;$/;"	l
-thisTime	RuPPAT.h	/^		Uint32 thisTime;$/;"	m	class:RuPPAT	access:private
+thisTime	RuPPAT.cpp	/^	Uint32 thisTime;$/;"	v
 timerConst	RuPPAT.cpp	/^	const int timerConst = 1;$/;"	l
-tmpB	RuPPAT.cpp	/^		unsigned int tmpB = (current_color & 0x0000FF);$/;"	l
-tmpG	RuPPAT.cpp	/^		unsigned int tmpG = (current_color & 0x00FF00)>>8;$/;"	l
+tmpA	RuPPAT.cpp	/^	unsigned int tmpA; $/;"	l
 tmpPix	RuPPAT.cpp	/^Pixel_desc tmpPix;	$/;"	v
-tmpR	RuPPAT.cpp	/^		unsigned int tmpR = (current_color & 0xFF0000)>>16;$/;"	l
 tmp_angle	Sprite.cpp	/^	int tmp_angle = (int) currentAngleIndex_f;$/;"	l
 tmp_xVel	RuPPAT.cpp	/^	float newX, newY, tmp_xVel, tmp_yVel;$/;"	l
 tmp_yVel	RuPPAT.cpp	/^	float newX, newY, tmp_xVel, tmp_yVel;$/;"	l
@@ -894,7 +902,6 @@ updateSprite	Sprite.cpp	/^void Sprite::updateSprite()$/;"	f	class:Sprite	signatu
 updateSprite	Sprite.h	/^		void updateSprite();$/;"	p	class:Sprite	access:public	signature:()
 updated	Descriptors.h	/^	int updated; \/\/indicate if the pixel has been manipulated already$/;"	m	struct:Pixel_desc	access:public
 updatedG	Descriptors.h	/^	bool updatedG;\/\/hsa gravity accel been added?$/;"	m	struct:Pixel_desc	access:public
-v	Game.h.gch	/^oøí/;"	v
 w	Descriptors.h	/^	bool w,a,s,d;$/;"	m	struct:Event_desc	access:public
 w_count	Game.cpp	/^		w_count=0, s_count=0, a_count=0, d_count=0;$/;"	v
 width	Descriptors.h	/^	int width;$/;"	m	struct:RunOptions	access:public
@@ -903,7 +910,7 @@ x	Descriptors.h	/^	float x;$/;"	m	struct:Entity_desc	access:public
 x	Descriptors.h	/^	int x,y;$/;"	m	struct:Circle_desc	access:public
 x	Game.cpp	/^int x, y, up_count, down_count, left_count, right_count,$/;"	v
 x	PhysFuncs.h	/^	float x = (float)state.x;$/;"	l
-x	RuPPAT.cpp	/^	int x, y, i, j, color, size=pixelList_m.size(), screenID=0;$/;"	l
+x	RuPPAT.cpp	/^	int x, y, i, j,  size=pixelList_m.size(), screenID=0;$/;"	l
 x	RuPPAT.cpp	/^	int x, y, i, j, color, size=players.size(), screenID=0;$/;"	l
 x	RuPPAT.cpp	/^	int x, y, i;$/;"	l
 xAcc	Descriptors.h	/^	float xAcc, yAcc;\/\/acceleration vector$/;"	m	struct:Entity_desc	access:public
@@ -920,7 +927,7 @@ y	Descriptors.h	/^	float y;$/;"	m	struct:Entity_desc	access:public
 y	Descriptors.h	/^	int x,y;$/;"	m	struct:Circle_desc	access:public
 y	Game.cpp	/^int x, y, up_count, down_count, left_count, right_count,$/;"	v
 y	PhysFuncs.h	/^	float y = (float)state.y;$/;"	l
-y	RuPPAT.cpp	/^	int x, y, i, j, color, size=pixelList_m.size(), screenID=0;$/;"	l
+y	RuPPAT.cpp	/^	int x, y, i, j,  size=pixelList_m.size(), screenID=0;$/;"	l
 y	RuPPAT.cpp	/^	int x, y, i, j, color, size=players.size(), screenID=0;$/;"	l
 y	RuPPAT.cpp	/^	int x, y, i;$/;"	l
 yAcc	Descriptors.h	/^	float xAcc, yAcc;\/\/acceleration vector$/;"	m	struct:Entity_desc	access:public
@@ -931,6 +938,7 @@ yPos	RuPPAT.cpp	/^	int xPos=300, yPos=300, radius=4;	$/;"	l
 yVel	Descriptors.h	/^	float xVel, yVel;\/\/velocity vector$/;"	m	struct:Entity_desc	access:public
 yVel	Descriptors.h	/^	float xVel, yVel;\/\/velocity vector$/;"	m	struct:Pixel_desc	access:public
 y_diff	RuPPAT.cpp	/^	int x_diff = 0,  y_diff=0, rateLim = 3;$/;"	l
+z	fedora_logo.png	/^/;"	v
 ~Game	Game.cpp	/^Game ::~Game()$/;"	f	class:Game	signature:()
 ~Game	Game.h	/^	~Game();$/;"	p	class:Game	access:public	signature:()
 ~Missile	Missile.h	/^		~Missile();$/;"	p	class:Missile	access:public	signature:()

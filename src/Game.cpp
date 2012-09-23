@@ -12,6 +12,7 @@ Game :: Game()
 	engine = new RuPPAT(1024, 768, BPP,
 				 SDL_HWSURFACE | SDL_DOUBLEBUF,
 					 bkg_paths,0);
+	
 	done = false;
 //}}}
 }
@@ -49,19 +50,19 @@ Game::Game(RunOptions options)
 	engine = new RuPPAT(options.width,options.height,BPP,
 					SDL_HWSURFACE | SDL_DOUBLEBUF,
 				options.background_spritePaths,3);
-
 	done = false;
+
 
 	engine->addPlayer(options.player_spritePath,
 				360,0,1,400,200,
 					options.player_HCpath);
 
 	engine->addObject(options.objects_spritePath[0],
-				844,560,10000,1.0,-10.0,-20.0,
+				844,560,150000,1.0,0.0,0.0,
 				options.objects_HCpath[0]);
 	
 	engine->addObject(options.objects_spritePath[1],
-				700,500,10000,-.1,20.0,49.0,
+				700,500,1000,-.1,10.0,69.0,
 					options.objects_HCpath[1]);
 
 	for(int i = 2; i< options.objects_spritePath.size();i++)
