@@ -44,12 +44,14 @@ Game :: Game(int WIDTH_cl, int HEIGHT_cl)
 //}}}
 }
 
+//-----Latest Constructor: RunOptions encapsulates a lot of good info
 Game::Game(RunOptions options)
 {
 //{{{
+	//init the engine
 	engine = new RuPPAT(options.width,options.height,BPP,
 					SDL_HWSURFACE | SDL_DOUBLEBUF,
-				options.background_spritePaths,3);
+						options.background_spritePaths,3);
 	done = false;
 
 
@@ -59,17 +61,17 @@ Game::Game(RunOptions options)
 
 	engine->addObject(options.objects_spritePath[0],
 				844,560,150000,1.0,0.0,0.0,
-				options.objects_HCpath[0]);
+					options.objects_HCpath[0]);
 	
 	engine->addObject(options.objects_spritePath[1],
 				700,500,1000,-.1,10.0,69.0,
 					options.objects_HCpath[1]);
 
-	for(int i = 2; i< options.objects_spritePath.size();i++)
+	for(int i = 2; i < options.objects_spritePath.size(); i++)
 	{
-	engine->addObject(options.objects_spritePath[i],
-			220+(i*120),300,10000,-4+i,i,i*10,
-				options.objects_HCpath[i]);
+		engine->addObject(options.objects_spritePath[i],
+				220+(i*120),300,10000,-4+i,i,i*10,
+					options.objects_HCpath[i]);
 	}	
 //}}}
 }

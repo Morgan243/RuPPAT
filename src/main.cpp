@@ -16,14 +16,13 @@
 using namespace std;
 
 //depreciated way od doing options below
-//cli options, defaults set here
 	string selection = "gwell";
 	string option;
 
-	//default resolution
+	//Default resolution
 	int WIDTH_cl = 1024;
 	int HEIGHT_cl = 768;
-/////////////////////////////////
+
 
 //let X display know we are going to have multiple threads
 //working on the buffer
@@ -40,7 +39,8 @@ int handleInput(int argc,char *argv[], RunOptions &cl_options);
 /*\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
  * ||||||||||||||||||||||||||||||||
  * `````````ENTRY POINT````````````
- */
+ * ||||||||||||||||||||||||||||||||
+ */////////////////////////////////*/
 int main(int argc, char *argv[])
 {
 	//check that XInitThreads was not erroneous
@@ -66,12 +66,13 @@ int main(int argc, char *argv[])
 		cmdLineOptions.player_spritePath = "red_ship.png";
 		cmdLineOptions.player_HCpath = "red_ship_HC.png";
 
-		//load a few default objects
+		//load a first default object
 		cmdLineOptions.objects_spritePath.push_back
 						("red_planet.png");
 		cmdLineOptions.objects_HCpath.push_back
 						("red_planet_HC.png");
 
+		//load another default object
 		cmdLineOptions.objects_spritePath.push_back
 						("asteroid_medium_1.png");
 		cmdLineOptions.objects_HCpath.push_back
@@ -81,7 +82,6 @@ int main(int argc, char *argv[])
 	if(handleInput(argc,argv,cmdLineOptions)){return 0;}
 
 	//construct a new game, this only initiates vars and such
-	//game = new Game(WIDTH_cl, HEIGHT_cl);
 	game = new Game(cmdLineOptions);
 	
 	//start up the game!!
@@ -90,7 +90,7 @@ int main(int argc, char *argv[])
 	return 0;
 }
 
-//handleInput assigns global variables based on the comman line options selected
+//handleInput assigns global variables based on the command line options selected
 int handleInput(int argc,char *argv[], RunOptions &cl_options)
 {
 	int i,j,k=0, num_objects = 0;
@@ -218,7 +218,6 @@ int handleInput(int argc,char *argv[], RunOptions &cl_options)
 		if(strcmp(argv[i],"-threads")==0)
 		{
 		//	THREADS=atoi(argv[i+1]);
-
 		}		
 	}
 	return k;
