@@ -1,0 +1,20 @@
+main:
+	width=1024
+	height=768
+	backgroundLayers=bkg_one_1080.png,bkg_two_1080.png,bkg_three_1080.png
+Player:
+	sprite=red_ship.png
+object: 
+	x=400
+	y=400
+	mass=1000
+	xVel=0
+	yVel=0
+	spriteBase=red_planet.png
+object:
+	x=300
+	y=300
+	mass=100
+	xVel=20
+	yVel=20
+	spriteBase=asteroid_medium_1.png
