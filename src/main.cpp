@@ -1,4 +1,6 @@
 #include <stdlib.h>
+#include <fstream>
+#include <string>
 #include <math.h>
 #include <iostream>
 #include <omp.h>
@@ -35,6 +37,8 @@ Game *game;
 //handle command line arguments
 int handleInput(int argc,char *argv[], RunOptions &cl_options);
 
+//scan configuration from config file
+int readConfigFile(string filename, RunOptions *fileOptions);
 
 /*\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
  * ||||||||||||||||||||||||||||||||
@@ -46,6 +50,11 @@ int main(int argc, char *argv[])
 	//check that XInitThreads was not erroneous
 	if(!x_o)
 		cout<<"ERROR WITH XINIT THREADS!"<<endl;
+
+	RunOptions fileOptions;
+
+	string filename = "config";
+	readConfigFile(filename,&fileOptions);
 
 	//init runtime option struct
 	RunOptions cmdLineOptions;
@@ -93,6 +102,7 @@ int main(int argc, char *argv[])
 //handleInput assigns global variables based on the command line options selected
 int handleInput(int argc,char *argv[], RunOptions &cl_options)
 {
+	//{{{
 	int i,j,k=0, num_objects = 0;
 	for(i=1;i<argc;i++)
 	{
@@ -221,4 +231,28 @@ int handleInput(int argc,char *argv[], RunOptions &cl_options)
 		}		
 	}
 	return k;
+//}}}
 }
+
+int readConfigFile(string filename, RunOptions *fileOptions)
+{
+	int place = 0;
+	string line;
+
+	ifstream inFile;	
+	inFile.open( "config" );
+
+	while(inFile.good())
+	{		
+		getline( inFile,line );
+
+		if( (place = line.find(':',0)) == -1)
+			place = line.find('=',0);
+
+		string temp = line.substr(0,place);
+
+		cout<<temp<<endl;
+	}
+
+}
+
