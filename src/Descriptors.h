@@ -9,6 +9,19 @@
 #define BACKWARD 2
 #define FORWARD 3
 
+using namespace std;
+struct optionSet
+{
+	std::string option;
+	std::vector<std::string> values;
+};
+
+struct section
+{
+	std::string title;
+	std::vector<optionSet> sectionOptions;
+};
+
 
 struct RunOptions
 {

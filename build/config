@@ -6,7 +6,7 @@
 #not run.
 #
 main:
-	width=1024
+	width=1024#Set the width!!
 	height=768
 	backgroundLayers=bkg_one_1080.png,bkg_two_1080.png,bkg_three_1080.png
 Player:

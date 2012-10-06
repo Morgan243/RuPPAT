@@ -45,6 +45,174 @@ Game :: Game(int WIDTH_cl, int HEIGHT_cl)
 }
 
 //-----Latest Constructor: RunOptions encapsulates a lot of good info
+Game::Game(vector<section> configSections)
+{
+//{{{
+	//init the engine
+//	engine = new RuPPAT(options.width,options.height,BPP,
+//					SDL_HWSURFACE | SDL_DOUBLEBUF,
+//						options.background_spritePaths,3);
+
+	vector<string> tempVect;	
+	vector<string> tempVect_2;
+	for(int i = 0; i< configSections.size(); i++)
+	{
+
+		//////////////////////////////////////////////////
+		//MAIN section: resolution and background settings
+		//////////////////////////////////////////////////	
+		if(configSections[i].title == "main")
+		{
+
+			int width, height;
+			for(int j = 0; j < configSections[i].sectionOptions.size();j++)
+			{
+				if(configSections[i].sectionOptions[j].option 
+						== "width")
+					width = atoi(configSections[i].sectionOptions[j].values[0].c_str());
+
+				else if(configSections[i].sectionOptions[j].option
+					       	== "height")
+				        height = atoi(configSections[i].sectionOptions[j].values[0].c_str());
+
+				else if(configSections[i].sectionOptions[j].option
+						== "backgroundLayers")
+					tempVect = configSections[i].sectionOptions[j].values;
+			}
+
+			engine = new RuPPAT(width, height, BPP,
+					    SDL_HWSURFACE | SDL_DOUBLEBUF,
+					    tempVect);
+		}
+
+
+		if(configSections[i].title == "Player")
+		{
+			int x = 400, y = 200, startingAngle = 0, numRots = 360;
+			float maxAcc = 1.0;
+
+			for(int j = 0; j < configSections[i].sectionOptions.size();j++)
+			{
+				if(configSections[i].sectionOptions[j].option
+						== "sprite")
+					tempVect = configSections[i].sectionOptions[j].values;
+
+				else if(configSections[i].sectionOptions[j].option
+						== "HC")
+					tempVect_2 = configSections[i].sectionOptions[j].values;
+
+				else if(configSections[i].sectionOptions[j].option
+						== "x")
+					x = atoi(configSections[i].sectionOptions[j].values[0].c_str());
+
+				else if(configSections[i].sectionOptions[j].option
+						== "y")
+					y = atoi(configSections[i].sectionOptions[j].values[0].c_str());
+
+				else if(configSections[i].sectionOptions[j].option
+						== "angle")
+					startingAngle = atoi(configSections[i].sectionOptions[j].values[0].c_str());
+
+				else if(configSections[i].sectionOptions[j].option
+						== "maxAcc")
+					 maxAcc = atof(configSections[i].sectionOptions[j].values[0].c_str());
+			}
+
+			engine->addPlayer(tempVect[0],
+					  numRots,
+				  	  startingAngle,
+					  maxAcc,
+					  x, y,
+					  tempVect_2[0]);	  
+							
+		}
+
+		if(configSections[i].title == "Player")
+		{
+			int x = 400, y = 200, startingAngle = 0, numRots = 360,
+				mass = 750;
+
+			float maxAcc = 1.0, rotRate = 0.0, xVel = 0.0, yVel = 0.0;
+
+			for(int j = 0; j < configSections[i].sectionOptions.size();j++)
+			{
+				if(configSections[i].sectionOptions[j].option
+						== "sprite")
+					tempVect = configSections[i].sectionOptions[j].values;
+
+				else if(configSections[i].sectionOptions[j].option
+						== "HC")
+					tempVect_2 = configSections[i].sectionOptions[j].values;
+
+				else if(configSections[i].sectionOptions[j].option
+						== "x")
+					x = atoi(configSections[i].sectionOptions[j].values[0].c_str());
+
+				else if(configSections[i].sectionOptions[j].option
+						== "y")
+					y = atoi(configSections[i].sectionOptions[j].values[0].c_str());
+
+				else if(configSections[i].sectionOptions[j].option
+						== "angle")
+					startingAngle = atoi(configSections[i].sectionOptions[j].values[0].c_str());
+
+				else if(configSections[i].sectionOptions[j].option
+						== "maxAcc")
+					 maxAcc = atof(configSections[i].sectionOptions[j].values[0].c_str());
+
+
+				else if(configSections[i].sectionOptions[j].option
+						== "rotation")
+					rotRate = atof(configSections[i].sectionOptions[j].values[0].c_str());
+
+				else if(configSections[i].sectionOptions[j].option
+						== "mass")
+					 mass = atoi(configSections[i].sectionOptions[j].values[0].c_str());
+					
+				else if(configSections[i].sectionOptions[j].option
+						== "xVel")
+					 xVel = atof(configSections[i].sectionOptions[j].values[0].c_str());
+
+
+				else if(configSections[i].sectionOptions[j].option
+						== "yVel")
+					yVel = atof(configSections[i].sectionOptions[j].values[0].c_str());
+			}
+
+			engine->addObject(tempVect[0],
+				      	  x, y, mass,
+				  	  rotRate,
+					  xVel, yVel,
+					  tempVect_2[0]);	  
+							
+		}
+	}
+
+//	done = false;
+//
+//
+//	engine->addPlayer(options.player_spritePath,
+//				360,0,1,400,200,
+//					options.player_HCpath);
+//
+//	engine->addObject(options.objects_spritePath[0],
+//				844,560,150000,1.0,0.0,0.0,
+//					options.objects_HCpath[0]);
+//	
+//	engine->addObject(options.objects_spritePath[1],
+//				700,500,1000,-.1,10.0,69.0,
+//					options.objects_HCpath[1]);
+//
+//	for(int i = 2; i < options.objects_spritePath.size(); i++)
+//	{
+//		engine->addObject(options.objects_spritePath[i],
+//				220+(i*120),300,10000,-4+i,i,i*10,
+//					options.objects_HCpath[i]);
+//	}	
+//}}}
+}
+
+//-----Latest Constructor: RunOptions encapsulates a lot of good info
 Game::Game(RunOptions options)
 {
 //{{{
@@ -75,7 +243,6 @@ Game::Game(RunOptions options)
 	}	
 //}}}
 }
-
 
 //-----DECONSTRUCTOR
 Game ::~Game()

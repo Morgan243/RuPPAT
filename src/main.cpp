@@ -28,6 +28,9 @@ using namespace std;
 	int HEIGHT_cl = 768;
 
 
+
+
+
 //let X display know we are going to have multiple threads
 //working on the buffer
 int x_o = XInitThreads();
@@ -40,7 +43,7 @@ Game *game;
 int handleInput(int argc,char *argv[], RunOptions &cl_options);
 
 //scan configuration from config file
-int readConfigFile(string filename, RunOptions *fileOptions);
+void readConfigFile(string filename, vector<section> &configSection); 
 
 
 
@@ -57,11 +60,13 @@ int main(int argc, char *argv[])
 
 	RunOptions fileOptions;
 	
+	vector<section> configSection;
+
 	//default config file name
 	string filename = "config";
 
 	//get configuration from file
-	readConfigFile(filename,&fileOptions);
+	readConfigFile(filename, configSection);
 
 	//init runtime option struct
 	RunOptions cmdLineOptions;
@@ -244,24 +249,12 @@ int handleInput(int argc,char *argv[], RunOptions &cl_options)
 }
 
 
-struct optionSet
-{
-	string option;
-	vector<string> values;
-};
 
-struct section
-{
-	string title;
-	vector<optionSet> sectionOptions;
-};
-
-
-int readConfigFile(string filename, RunOptions *fileOptions)
+void readConfigFile(string filename, vector<section>& configSections)
 {
 	int place = 0;
 	string line;
-	vector<section> configSections;
+//	vector<section> configSections;
 
 	ifstream inFile;	
 	inFile.open( "config" );
@@ -290,7 +283,7 @@ int readConfigFile(string filename, RunOptions *fileOptions)
 			int tempPlace = place+1;
 		
 			//make sure there are some values (not all commented out)	
-			if(commentIndex>tempPlace || commentIndex == -1)
+			if(commentIndex>tempPlace || commentIndex == -1 && place != -1)
 			{
   		  	    //go ahead and create new option
   		  	    optionSet nextOptionSet;

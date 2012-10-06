@@ -25,6 +25,10 @@ class RuPPAT
 		//CONSTRUCTOR
 		RuPPAT(int width,int height,int bpp, unsigned int flags,
 			 string bkg_paths[], int num_bkgs);
+
+		RuPPAT(int width, int height, int bpp, unsigned int flags,
+			 vector<string> bkg_paths);
+
 		//DECONSTRUCTOR
 		~RuPPAT();
 

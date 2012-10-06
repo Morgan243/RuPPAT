@@ -29,6 +29,8 @@ public:
 
 	Game(RunOptions options);	
 
+	Game(vector<section> configSection);	
+
 
 	//DECONSTRUCTOR
 	~Game();

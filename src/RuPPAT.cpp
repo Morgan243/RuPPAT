@@ -111,6 +111,52 @@ RuPPAT :: RuPPAT(int width,int height,int bpp, unsigned int flags,
 //}}}
 }
 
+RuPPAT :: RuPPAT(int width, int height, int bpp, unsigned int flags,
+		 vector<string> bkg_paths)
+{
+//{{{
+	//init all the locks--ERROR CHECK too 
+	if(pthread_rwlock_init(&pix_rw_lock, NULL))
+		{cout<<"ERROR initializing pixel rw lock: "<<endl;}
+
+	if(pthread_rwlock_init(&mass_rw_lock, NULL))
+		{cout<<"ERROR initializing mass rw lock: "<<endl;}
+
+	if(pthread_rwlock_init(&ent_rw_lock, NULL))
+		{cout<<"ERROR initializing entity rw lock: "<<endl;}
+
+	if(pthread_rwlock_init(&player_rw_lock, NULL))
+		{cout<<"ERROR initializing player rw lock: "<<endl;}
+
+	if(pthread_mutex_init(&pix_list_lock_2,NULL))
+		{cout<<"ERROR initializing pix lock 2 lock: "<<endl;}
+	
+	if(pthread_rwlock_init(&object_rw_lock,NULL))
+		{cout<<"ERROR initializing object rw lock: "<<endl;}
+
+	mainRender = new Render(width, height, BPP, flags);
+
+	for( int i = 0; i< bkg_paths.size(); i++)
+	{
+		SDL_Surface *tempBkg, * tempBkgOpt;
+
+		tempBkg = IMG_Load((char *)bkg_paths[i].c_str());
+
+		tempBkgOpt = SDL_DisplayFormatAlpha(tempBkg);
+
+		backgroundLayers.push_back(tempBkgOpt);	
+	}
+
+	WIDTH = width;
+	HEIGHT = height;
+
+	gravitationalConstant = 22;
+
+//}}}
+}
+
+
+
 
 //------------DECONSTRUCTOR-------
 //destroy the mutexes
