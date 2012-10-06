@@ -6,18 +6,20 @@
 #include <omp.h>
 #include <X11/Xlib.h>
 
+//SDL Dependencies
 #include "SDL/SDL.h"
 #include "SDL/SDL_gfxPrimitives.h"
 #include "SDL/SDL_rotozoom.h"
 #include "SDL/SDL_image.h"
 
+//Demo Headers Included
 #include "Descriptors.h"
 #include "Game.h"
 #include "Render.h"
 
 using namespace std;
 
-//depreciated way od doing options below
+	//depreciated way old doing options below
 	string selection = "gwell";
 	string option;
 
@@ -40,6 +42,8 @@ int handleInput(int argc,char *argv[], RunOptions &cl_options);
 //scan configuration from config file
 int readConfigFile(string filename, RunOptions *fileOptions);
 
+
+
 /*\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
  * ||||||||||||||||||||||||||||||||
  * `````````ENTRY POINT````````````
@@ -52,12 +56,16 @@ int main(int argc, char *argv[])
 		cout<<"ERROR WITH XINIT THREADS!"<<endl;
 
 	RunOptions fileOptions;
-
+	
+	//default config file name
 	string filename = "config";
+
+	//get configuration from file
 	readConfigFile(filename,&fileOptions);
 
 	//init runtime option struct
 	RunOptions cmdLineOptions;
+
 
 		//set default resolution
 		cmdLineOptions.height = 768;
@@ -87,6 +95,7 @@ int main(int argc, char *argv[])
 		cmdLineOptions.objects_HCpath.push_back
 						("asteroid_medium_1_HC.png");
 	
+
 	//handle command line args, exit if -help used
 	if(handleInput(argc,argv,cmdLineOptions)){return 0;}
 
@@ -122,7 +131,7 @@ int handleInput(int argc,char *argv[], RunOptions &cl_options)
 
 	if((strcmp(argv[i],"-file")==0)||(strcmp(argv[i],"-f")==0))
 		{
-		//filename = argv[i+1];	
+			//filename = argv[i+1];	
 		}
 
 		if(strcmp(argv[i],"-height")==0)
@@ -150,26 +159,26 @@ int handleInput(int argc,char *argv[], RunOptions &cl_options)
 		
 			if(num_objects<2)
 			{
-			cl_options.objects_spritePath[num_objects]=(argv[i+1]);
+				cl_options.objects_spritePath[num_objects]=(argv[i+1]);
 
-			cout<<"CL arg: "<<argv[i+1]<<endl;
+				cout<<"CL arg: "<<argv[i+1]<<endl;
 
-			cl_options.objects_HCpath[num_objects] = (argv[i+2]);
+				cl_options.objects_HCpath[num_objects] = (argv[i+2]);
 
-			cout<<"CL arg: "<<argv[i+2]<<endl;
+				cout<<"CL arg: "<<argv[i+2]<<endl;
 			}
 			else
 			{
-			cl_options.objects_spritePath.push_back(argv[i+1]);
+				cl_options.objects_spritePath.push_back(argv[i+1]);
 
-			cout<<"CL arg: "<<argv[i+1]<<endl;
+				cout<<"CL arg: "<<argv[i+1]<<endl;
 
-			cl_options.objects_HCpath.push_back(argv[i+2]);
+				cl_options.objects_HCpath.push_back(argv[i+2]);
 
-			cout<<"CL arg: "<<argv[i+2]<<endl;
+				cout<<"CL arg: "<<argv[i+2]<<endl;
 			}
+
 			num_objects++;
-			
 		}
 	
 		if(strcmp(argv[i],"-gwell")==0)
@@ -234,25 +243,98 @@ int handleInput(int argc,char *argv[], RunOptions &cl_options)
 //}}}
 }
 
+
+struct optionSet
+{
+	string option;
+	vector<string> values;
+};
+
+struct section
+{
+	string title;
+	vector<optionSet> sectionOptions;
+};
+
+
 int readConfigFile(string filename, RunOptions *fileOptions)
 {
 	int place = 0;
 	string line;
+	vector<section> configSections;
 
 	ifstream inFile;	
 	inFile.open( "config" );
 
+	//keep moving through file while not at end
 	while(inFile.good())
 	{		
-		getline( inFile,line );
+		//get line from inFile into line
+		getline( inFile , line );
 
+		//is this a section header line (ex: "main:")
 		if( (place = line.find(':',0)) == -1)
+		{
+			//not a new section, add a new option to current section
+			//then add values to the new section
+
+			//fint the '=', the start of option values
 			place = line.find('=',0);
 
-		string temp = line.substr(0,place);
+			//charater after '='
+			int tempPlace = place+1;
 
-		cout<<temp<<endl;
+			//go ahead and create new option
+			optionSet nextOptionSet;
+		
+			//get the option name out of line
+			nextOptionSet.option = line.substr(0,place);
+			
+			cout<<"Option: "<<nextOptionSet.option<<endl;
+
+			//go through line, finding ',', and setting the value 
+			for(int i = place+1; i<line.length(); i++)
+			{
+				
+				if(line[i]==',')
+				{
+					//add new value: string from last(tempPlace) to i
+					nextOptionSet.values.push_back
+						(line.substr(tempPlace,i - tempPlace));
+						
+					cout<<"New value: "
+						<<nextOptionSet.values.back()
+						<<endl;
+
+						//set temp place to char after ','
+						tempPlace = i+1;
+				}	
+			}
+	
+			//there will always be one value not contained between two delimiters
+			//ex: backgroundLayers=bkg_one_1080.png,bkg_two_1080.png,bkg_three_1
+			nextOptionSet.values.push_back
+				(line.substr(tempPlace,line.length() - tempPlace));
+
+			cout<<"New value: "<<nextOptionSet.values.back()<<endl;
+		
+			//finally add the option into the section's fields
+			configSections.back().sectionOptions.push_back(nextOptionSet);
+
+		}
+		else//it is a new section, make new section struct
+		{
+			//declare new section
+			section nextSection;
+
+			//get the title out of line (string up to ':')
+			nextSection.title = line.substr(0,place);
+
+			cout<<"Section Title: "<<nextSection.title<<endl;
+			
+			//add the new section
+			configSections.push_back(nextSection);
+		}
 	}
-
 }
 
