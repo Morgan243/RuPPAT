@@ -1,10 +1,17 @@
+# Configuration for RuPPAT Demo
+# 	Morgan Stuart, 2012
+#
+#This Config is in testing now, it is read but not used.
+#If this file is not in the directory of the exe, the program
+#not run.
+#
 main:
 	width=1024
 	height=768
 	backgroundLayers=bkg_one_1080.png,bkg_two_1080.png,bkg_three_1080.png
 Player:
 	sprite=red_ship.png
-object: 
+object:
 	x=400
 	y=400
 	mass=1000

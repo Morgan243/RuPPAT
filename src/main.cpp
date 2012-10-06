@@ -271,9 +271,14 @@ int readConfigFile(string filename, RunOptions *fileOptions)
 	{		
 		//get line from inFile into line
 		getline( inFile , line );
+		
+		//find a hastage that marks comments
+		int commentIndex = line.find('#',0);
 
-		//is this a section header line (ex: "main:")
-		if( (place = line.find(':',0)) == -1)
+		place = line.find(':',0);
+		//if this is not a section header line (ex: "main:")
+		//and the comment hash doesnt exist or doesnt start the line (!=0)
+		if( (place == -1) && (commentIndex != 0))
 		{
 			//not a new section, add a new option to current section
 			//then add values to the new section
@@ -283,46 +288,70 @@ int readConfigFile(string filename, RunOptions *fileOptions)
 
 			//charater after '='
 			int tempPlace = place+1;
-
-			//go ahead and create new option
-			optionSet nextOptionSet;
 		
-			//get the option name out of line
-			nextOptionSet.option = line.substr(0,place);
-			
-			cout<<"Option: "<<nextOptionSet.option<<endl;
-
-			//go through line, finding ',', and setting the value 
-			for(int i = place+1; i<line.length(); i++)
+			//make sure there are some values (not all commented out)	
+			if(commentIndex>tempPlace || commentIndex == -1)
 			{
-				
-				if(line[i]==',')
+  		  	    //go ahead and create new option
+  		  	    optionSet nextOptionSet;
+  		 
+			    int stringStart=line.find('\t',0); 
+			    if(stringStart)
+  			  	    //get the option name out of line
+	  		  	    nextOptionSet.option = line.substr(0,place);
+			    else
+		    nextOptionSet.option = line.substr(stringStart+1,place - stringStart-1);
+
+  		  	    cout<<"Option: "<<nextOptionSet.option<<endl;
+
+			    bool leaveOnComment = false;
+
+  		  	    //go through line, finding ',', and setting the value 
+  		  	    for(int i = place+1; i<line.length() && !leaveOnComment; i++)
+  		  	    {
+  		  	    	
+				//if comma and not hash
+  		  	    	if(line[i] == ',' && line[i] != '#')
+  		  	    	{
+  		  	    		//add new value: string from last(tempPlace) to i
+  		  	    		nextOptionSet.values.push_back
+  		  	    			(line.substr(tempPlace,i - tempPlace));
+  		  	    			
+  		  	    		cout<<"New value: "
+  		  	    			<<nextOptionSet.values.back()
+  		  	    			<<endl;
+  
+  		  	    			//set temp place to char after ','
+  		  	    			tempPlace = i+1;
+  		  	    	}	
+				else if(line[i] == '#')//found comment, break out of loop
 				{
-					//add new value: string from last(tempPlace) to i
-					nextOptionSet.values.push_back
-						(line.substr(tempPlace,i - tempPlace));
-						
-					cout<<"New value: "
-						<<nextOptionSet.values.back()
-						<<endl;
-
-						//set temp place to char after ','
-						tempPlace = i+1;
-				}	
+					leaveOnComment = true;
+				}
+  		  	    }
+  	
+  		  	  //there will always be one value not contained between two delimiters
+  		  	  //ex: backgroundLayers=bkg_one_1080.png,bkg_two_1080.png,bkg_three_1
+  		  	   if(!leaveOnComment)
+			   {
+				    nextOptionSet.values.push_back
+					(line.substr(tempPlace,line.length() - tempPlace));
+			   }
+			   else
+			   {
+			   	nextOptionSet.values.push_back
+					(line.substr(tempPlace, commentIndex - tempPlace));
+			   }
+  		  	    cout<<"New value: "<<nextOptionSet.values.back()<<endl;
+  		  
+  		  	    //finally add the option into the section's fields
+  		  	    configSections.back().sectionOptions.push_back(nextOptionSet);
 			}
-	
-			//there will always be one value not contained between two delimiters
-			//ex: backgroundLayers=bkg_one_1080.png,bkg_two_1080.png,bkg_three_1
-			nextOptionSet.values.push_back
-				(line.substr(tempPlace,line.length() - tempPlace));
-
-			cout<<"New value: "<<nextOptionSet.values.back()<<endl;
-		
-			//finally add the option into the section's fields
-			configSections.back().sectionOptions.push_back(nextOptionSet);
 
 		}
-		else//it is a new section, make new section struct
+		//it is a new section, make new section struct
+		else if (commentIndex !=0 && 
+				((commentIndex > place) || commentIndex < 0))
 		{
 			//declare new section
 			section nextSection;
