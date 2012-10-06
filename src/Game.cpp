@@ -61,7 +61,7 @@ Game::Game(vector<section> configSections)
 		//////////////////////////////////////////////////
 		//MAIN section: resolution and background settings
 		//////////////////////////////////////////////////	
-		if(configSections[i].title == "main")
+		if(configSections[i].title == "Main")
 		{
 
 			int width, height;
@@ -127,7 +127,7 @@ Game::Game(vector<section> configSections)
 							
 		}
 
-		if(configSections[i].title == "Player")
+		if(configSections[i].title == "Object")
 		{
 			int x = 400, y = 200, startingAngle = 0, numRots = 360,
 				mass = 750;
@@ -137,7 +137,7 @@ Game::Game(vector<section> configSections)
 			for(int j = 0; j < configSections[i].sectionOptions.size();j++)
 			{
 				if(configSections[i].sectionOptions[j].option
-						== "sprite")
+						== "spriteBase")
 					tempVect = configSections[i].sectionOptions[j].values;
 
 				else if(configSections[i].sectionOptions[j].option
@@ -160,7 +160,6 @@ Game::Game(vector<section> configSections)
 						== "maxAcc")
 					 maxAcc = atof(configSections[i].sectionOptions[j].values[0].c_str());
 
-
 				else if(configSections[i].sectionOptions[j].option
 						== "rotation")
 					rotRate = atof(configSections[i].sectionOptions[j].values[0].c_str());
@@ -172,7 +171,6 @@ Game::Game(vector<section> configSections)
 				else if(configSections[i].sectionOptions[j].option
 						== "xVel")
 					 xVel = atof(configSections[i].sectionOptions[j].values[0].c_str());
-
 
 				else if(configSections[i].sectionOptions[j].option
 						== "yVel")

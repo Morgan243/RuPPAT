@@ -72,40 +72,42 @@ int main(int argc, char *argv[])
 	RunOptions cmdLineOptions;
 
 
-		//set default resolution
-		cmdLineOptions.height = 768;
-		cmdLineOptions.width = 1024;
-
-		//set default background layer paths
-		cmdLineOptions.background_spritePaths[0]
-					="bkg_one_1080.png";
-		cmdLineOptions.background_spritePaths[1]
-					="bkg_two_1080.png";
-		cmdLineOptions.background_spritePaths[2]
-					="bkg_three_1080.png";
-
-		//set default player sprit attribute
-		cmdLineOptions.player_spritePath = "red_ship.png";
-		cmdLineOptions.player_HCpath = "red_ship_HC.png";
-
-		//load a first default object
-		cmdLineOptions.objects_spritePath.push_back
-						("red_planet.png");
-		cmdLineOptions.objects_HCpath.push_back
-						("red_planet_HC.png");
-
-		//load another default object
-		cmdLineOptions.objects_spritePath.push_back
-						("asteroid_medium_1.png");
-		cmdLineOptions.objects_HCpath.push_back
-						("asteroid_medium_1_HC.png");
+//		//set default resolution
+//		cmdLineOptions.height = 768;
+//		cmdLineOptions.width = 1024;
+//
+//		//set default background layer paths
+//		cmdLineOptions.background_spritePaths[0]
+//					="bkg_one_1080.png";
+//		cmdLineOptions.background_spritePaths[1]
+//					="bkg_two_1080.png";
+//		cmdLineOptions.background_spritePaths[2]
+//					="bkg_three_1080.png";
+//
+//		//set default player sprit attribute
+//		cmdLineOptions.player_spritePath = "red_ship.png";
+//		cmdLineOptions.player_HCpath = "red_ship_HC.png";
+//
+//		//load a first default object
+//		cmdLineOptions.objects_spritePath.push_back
+//						("red_planet.png");
+//		cmdLineOptions.objects_HCpath.push_back
+//						("red_planet_HC.png");
+//
+//		//load another default object
+//		cmdLineOptions.objects_spritePath.push_back
+//						("asteroid_medium_1.png");
+//		cmdLineOptions.objects_HCpath.push_back
+//						("asteroid_medium_1_HC.png");
 	
 
 	//handle command line args, exit if -help used
 	if(handleInput(argc,argv,cmdLineOptions)){return 0;}
 
 	//construct a new game, this only initiates vars and such
-	game = new Game(cmdLineOptions);
+//	game = new Game(cmdLineOptions);
+
+	game = new Game(configSection);
 	
 	//start up the game!!
 	game->run(selection, option);
