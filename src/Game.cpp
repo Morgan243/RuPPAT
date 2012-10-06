@@ -44,7 +44,8 @@ Game :: Game(int WIDTH_cl, int HEIGHT_cl)
 //}}}
 }
 
-//-----Latest Constructor: RunOptions encapsulates a lot of good info
+//-----Latest Constructor: configSections holds vector of config sections
+// 			   sections hold vectors of options, which have vectors of values 
 Game::Game(vector<section> configSections)
 {
 //{{{
@@ -210,7 +211,7 @@ Game::Game(vector<section> configSections)
 //}}}
 }
 
-//-----Latest Constructor: RunOptions encapsulates a lot of good info
+//-----Deprecated Constructor: RunOptions encapsulates a lot of good info
 Game::Game(RunOptions options)
 {
 //{{{

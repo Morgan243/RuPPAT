@@ -5,23 +5,45 @@
 #If this file is not in the directory of the exe, the program
 #not run.
 #
-main:
-	width=1024#Set the width!!
-	height=768
+Main:
+	width=1920#Set the width!!
+	height=1080
 	backgroundLayers=bkg_one_1080.png,bkg_two_1080.png,bkg_three_1080.png
 Player:
-	sprite=red_ship.png
-object:
-	x=400
-	y=400
-	mass=1000
+	#sprite=red_ship.png
+	sprite=arch_logo.png
+	x=100
+	y=100
+	HC=red_ship_HC.png
+Object:
+	x=840
+	y=550
+	mass=100000
+	rotation=0.8
 	xVel=0
 	yVel=0
 	spriteBase=red_planet.png
-object:
+#Object:
+#	x=1540
+#	y=750
+#	mass=100000
+#	rotation=-1.8
+#	xVel=0
+#	yVel=0
+#	spriteBase=teal_planet.png
+Object:
 	x=300
 	y=300
 	mass=100
+	rotation=-.3
 	xVel=20
 	yVel=20
 	spriteBase=asteroid_medium_1.png
+Object:
+	x=400
+	y=200
+	mass=1000
+	xVel=-5
+	rotation=0.5
+	yVel=10
+	spriteBase=asteroid_large_1.png
