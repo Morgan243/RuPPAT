@@ -67,7 +67,10 @@ class RuPPAT
 
 	void RK4_parse(SDL_Surface* background);
 
-	void runPPAT(bool *mainDone, Event_desc &mainEvents, 
+//	void runPPAT(bool *mainDone, Event_desc &mainEvents, 
+//			string selection, string option);
+//
+	void runPPAT(bool *mainDone, Event_desc *mainEvents, 
 			string selection, string option);
 
 	void createPixElement(  int x, int y,	
@@ -122,17 +125,6 @@ class RuPPAT
 		}
 
 
-
-
-	//.....[HELPER]updateSelectPix	
-//	static void *updateSelectPix_helper(void *context)
-//		{
-//		((RuPPAT*)context)->updateSelectPix();
-//		return NULL;
-//		}
-
-
-
 	//.....[HELPER]runDemos(char selection)
 	struct helper_char
 		{
@@ -178,15 +170,22 @@ class RuPPAT
 			string option;
 		};
 
-	static void *runPPAT_helper(void *helper_args)
-		{
-		runPPAT_helperArgs *helper = (runPPAT_helperArgs*) helper_args;
-		bool *d = helper->mDone;
-		Event_desc *e = helper->mEvents;
-		((RuPPAT *)helper->context)->runPPAT(d, *e,
-				helper->selection, helper->option);
-		return NULL;
-		}
+//	static void *runPPAT_helper(void *helper_args)
+//		{
+//		runPPAT_helperArgs *helper = (runPPAT_helperArgs*) helper_args;
+//		bool *d = helper->mDone;
+//		Event_desc *e = helper->mEvents;
+//		((RuPPAT *)helper->context)->runPPAT(d, *e,
+//				helper->selection, helper->option);
+//		return NULL;
+//		}
+//
+//	static void *help_runPPAT(bool *mainDone, Event_desc *mainEvents, 
+//			string selection, string option, RuPPAT *context)
+//		{
+//		context->runPPAT(mainDone, *mainEvents, 
+//			 selection,  option);
+//		}
 
 
 #endif

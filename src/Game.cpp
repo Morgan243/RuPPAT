@@ -1,6 +1,6 @@
 #include "Game.h"
 #include "unistd.h"
-
+#include <thread>
 using namespace std;
 
 
@@ -269,24 +269,12 @@ void Game :: run(string selection, string option)
 //{{{
 	//declare and init SDL events structure
 	Event_desc mainEvents;
-	initEvent(mainEvents );
+	initEvent( mainEvents );
 
-	//defined in RuPPAT.h to pass stuff to engine
-	runPPAT_helperArgs engineArgs;
+	//Launch the particle physics and time engine!
+	std::thread ruppat_th(&RuPPAT::runPPAT, engine,
+			&done, &mainEvents, selection, option);
 
-	//assign engines options
-	engineArgs.context = this;
-	engineArgs.mDone =&done;
-	engineArgs.mEvents = &mainEvents;
-	engineArgs.selection = selection;
-	engineArgs.option = option;
-
-
-	void* args = &engineArgs;
-	pthread_t RuPPAT_th;
-
-	//Launch the RuPPAT engine its own thread
-	pthread_create(&RuPPAT_th, NULL, runPPAT_helper,args); 
 
 	int game_rate = 60;
 	int interval = 1000/game_rate;
@@ -309,7 +297,8 @@ void Game :: run(string selection, string option)
 	
 	//joining 
 	cout<<"joining RuPPAT in GAME"<<endl;
-	pthread_join(RuPPAT_th,NULL);
+
+	ruppat_th.join();
 //}}}
 }
 

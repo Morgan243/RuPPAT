@@ -10,6 +10,8 @@
 #include "Player.h"
 #include "Object.h"
 #include <pthread.h>
+#include <thread>
+#include <mutex>
 #include <omp.h>
 #include <unistd.h>
 
@@ -1066,8 +1068,11 @@ void * select = &sel;
 //spawn threads to do work
 //
 //
-void RuPPAT :: runPPAT(bool *mainDone, Event_desc &mainEvents
+//void RuPPAT :: runPPAT(bool *mainDone, Event_desc &mainEvents
+//			, string selection, string option)
+void RuPPAT :: runPPAT(bool *mainDone, Event_desc *mainEvents
 			, string selection, string option)
+
 {
 //{{{
 bool *DONE = (bool*)mainDone;
@@ -1121,7 +1126,7 @@ bool *DONE = (bool*)mainDone;
 	{
 		//if space is pressed and it has been
 		//a while since it was last pressed
-		if(mainEvents.space && keyT1>60)
+		if(mainEvents->space && keyT1>60)
 			{
 			//reset the key tick count
 			keyT1 = 0;

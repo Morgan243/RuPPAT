@@ -6,7 +6,7 @@
 ##################################################################################
 
 
-CFLAGS=-lm -lSDL -lSDL_image -lSDL_gfx -lm -fopenmp -lpthread -lX11 -ggdb
+CFLAGS=-lm -lSDL -lSDL_image -lSDL_gfx -lm -fopenmp -lpthread -lX11 -std=c++11 -ggdb
 COMP=g++
 BUILD_DIR=./
 BUILD_OUT=-o $(BUILD_DIR)
