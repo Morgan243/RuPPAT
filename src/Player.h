@@ -16,6 +16,8 @@
 #include <vector>
 #include <iostream>
 
+#ifndef PLAYER_H
+#define PLAYER_H
 using namespace std;
 
 //Player inherits from object
@@ -35,3 +37,5 @@ class Player : public Object
 	protected:
 
 };
+
+#endif

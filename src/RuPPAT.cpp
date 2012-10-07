@@ -7,7 +7,7 @@
 
 #include "RuPPAT.h"
 #include "PhysFuncs.h"
-#include "Player.h"
+//#include "Player.h"
 #include "Object.h"
 #include <pthread.h>
 #include <thread>
@@ -15,50 +15,8 @@
 #include <omp.h>
 #include <unistd.h>
 
-//mutexes/lock used throughout
-pthread_mutex_t  pix_list_lock_2;
-pthread_rwlock_t  pix_rw_lock, 
-		  mass_rw_lock,
-		  ent_rw_lock,
-		  player_rw_lock,
-		  object_rw_lock;
-
-int WIDTH, HEIGHT;
 
 using namespace std;
-
-	//These globals would be better placed as fields in the RuPPAT class
-	//but my implementation of pthreads+OO results in undefined behavior
-	//so until i figure out a better way, globals will have to do
-//{{{
-	bool done;//if this goes true, all threads stop, engine stops
-	int gravitationalConstant;
-	int baseID = 0;
-	Uint32 thisTime;
-	//main window
-	Render* mainRender;
-
-	
-	vector<Pixel_desc> pixelList;//independent pixels on screen
-	vector<Pixel_desc> pixelList_m;//points of mass on screen
-
-	
-	vector<Entity_desc> entList;//indpenedt sprites on scree
-	vector<Entity_desc> entList_m;//sprites that attract others 
-
-	vector<SDL_Surface *>backgroundLayers;//layers of the background
-
-	vector<Player *> players;//independent sprite that controlled by AI or human
-
-	//the objectList will become the primary list of all on screen
-	//moveable sprites. Entities/sprites moveable by gravity and 
-	//rotateable, i.e not static. As objects are added to the
-	//other lists, the base form Object will be sliced into this list.
-	vector<Object *> objectList;
-
-
-	queue<Pixel_desc> toRender;
-//}}}
 
 
 //------------CONSTRUCTOR--------
@@ -156,8 +114,6 @@ RuPPAT :: RuPPAT(int width, int height, int bpp, unsigned int flags,
 
 //}}}
 }
-
-
 
 
 //------------DECONSTRUCTOR-------
@@ -1113,6 +1069,7 @@ void RuPPAT :: runPPAT(bool *mainDone, Event_desc *mainEvents
 		//a while since it was last pressed
 		if(mainEvents->space && keyT1>60)
 			{
+
 			//reset the key tick count
 			keyT1 = 0;
 
@@ -1121,6 +1078,7 @@ void RuPPAT :: runPPAT(bool *mainDone, Event_desc *mainEvents
 
 			//then run demo->place pixels w/ attr
 			runDemos(sel);
+
 			}
 
 		//increment keypress counter
@@ -1282,7 +1240,7 @@ void RuPPAT :: turnPlayer(int p_ID, bool isLeft, int numTurns)
 
 
 //This function is intended to work like a PID loop (proportional, integral, derivative)
-// 	->the current implementation is a basterdize, semi-working version
+// 	->the current implementation is a basterdized, semi-working version
 // The goal is to continually adjust the turn amount until the ship is pointing towards
 // the desired coordinates. Thus the manipulated variable is the rotation rate, and the
 // set point is a heading or vector alignment
