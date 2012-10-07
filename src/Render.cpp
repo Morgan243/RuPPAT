@@ -11,6 +11,7 @@
 //creates screen using arguments
 Render::Render(int width, int height, int bpp, Uint32 flags)
 {
+  //{{{
 	//assign private members for use later
 	mainWidth = width;
 	mainHeight = height;
@@ -26,15 +27,15 @@ Render::Render(int width, int height, int bpp, Uint32 flags)
 	//finally, assign mainscreen to 
 	mainScreen = SDL_SetVideoMode(width, height, bpp, flags);
 
-#if SDL_BYTEORDER == SDL_BIG_ENDIAN 
-pre_surface = 
-SDL_CreateRGBSurface(SDL_SWSURFACE,width,height,32, 0xFF000000, 
-0x00FF0000, 0x0000FF00, 0x000000FF); 
-#else 
-pre_surface = 
-SDL_CreateRGBSurface(SDL_SWSURFACE,width,height,32, 0x000000FF, 
-0x0000FF00, 0x00FF0000, 0xFF000000); 
-#endif 
+	#if SDL_BYTEORDER == SDL_BIG_ENDIAN 
+		pre_surface = 
+		SDL_CreateRGBSurface(SDL_SWSURFACE,width,height,32, 0xFF000000, 
+		0x00FF0000, 0x0000FF00, 0x000000FF); 
+	#else 
+		pre_surface = 
+		SDL_CreateRGBSurface(SDL_SWSURFACE,width,height,32, 0x000000FF, 
+		0x0000FF00, 0x00FF0000, 0xFF000000); 
+	#endif 
 
 
 printf("Surface %s: w:%d h:%d bpp:%d\n", 
@@ -45,13 +46,14 @@ printf("Surface %s: w:%d h:%d bpp:%d\n",
     fprintf(stderr, "Unable to set video: %s\n", SDL_GetError());
     exit(1);
   }
+  //}}}
 }
 
 
 //-----------------DECONSTRUCTOR------
 Render::~Render()
 {
-SDL_Quit();
+	SDL_Quit();
 }
 
 //-----------------setMainScreen-----
@@ -59,7 +61,7 @@ SDL_Quit();
 //color specified by the arg
 void Render :: setMainScreen(int color)
 {
-SDL_FillRect(mainScreen, NULL, color);
+	SDL_FillRect(mainScreen, NULL, color);
 }
 
 
@@ -67,8 +69,6 @@ SDL_FillRect(mainScreen, NULL, color);
 //swap whats being shown with what has been added to main screen
 void Render::OnRender()
 {
-//	putSprite(0,0,pre_surface);
-	
 	applySurface(0,0,pre_surface);
 	SDL_Flip(mainScreen);
 	SDL_FillRect(pre_surface,NULL,0);
@@ -83,9 +83,6 @@ Uint32 Render::getPixel(int x, int y, int screenID)
 
 	Uint32 *pixels = (Uint32 *)pre_surface->pixels;
 	return pixels[ ( y * pre_surface->w ) + x ];
-
-//	Uint32 *pixels = (Uint32 *)mainScreen->pixels;
-//	return pixels[ ( y * mainScreen->w ) + x ];
 }
 
 
@@ -94,49 +91,53 @@ Uint32 Render::getPixel(int x, int y, int screenID)
 //specified bu the arguments
 void Render :: putPixel(int x, int y, Uint32 color, int screenID)
 {
-//if (SDL_MUSTLOCK(mainScreen)) 
-//	SDL_LockSurface(mainScreen);	
-//
-//Uint8 r, g, b, a; 
-//// This will probably warn you about addressing locals 
-// SDL_GetRGBA(color, mainScreen->format, &r, &g, &b, &a); 
-//
-// // Now give it transparent pixels 
-// color = SDL_MapRGBA(mainScreen->format, r, g, b, SDL_ALPHA_TRANSPARENT); 
-//
-//
-//    int bpp = mainScreen->format->BytesPerPixel;
-//    /* Here p is the address to the pixel we want to set */
-//    Uint8 *p = (Uint8 *)mainScreen->pixels + y * mainScreen->pitch + x * bpp;
-//	
-//	*(Uint32 *)p = color;
-//
-//if( SDL_MUSTLOCK(mainScreen) )
-//        SDL_UnlockSurface(mainScreen);
-//
+//{{{
+	//if (SDL_MUSTLOCK(mainScreen)) 
+	//	SDL_LockSurface(mainScreen);	
+	//
+	//Uint8 r, g, b, a; 
+	//// This will probably warn you about addressing locals 
+	// SDL_GetRGBA(color, mainScreen->format, &r, &g, &b, &a); 
+	//
+	// // Now give it transparent pixels 
+	// color = SDL_MapRGBA(mainScreen->format, r, g, b, SDL_ALPHA_TRANSPARENT); 
+	//
+	//
+	//    int bpp = mainScreen->format->BytesPerPixel;
+	//    /* Here p is the address to the pixel we want to set */
+	//    Uint8 *p = (Uint8 *)mainScreen->pixels + y * mainScreen->pitch + x * bpp;
+	//	
+	//	*(Uint32 *)p = color;
+	//
+	//if( SDL_MUSTLOCK(mainScreen) )
+	//        SDL_UnlockSurface(mainScreen);
+	//
 
-if (SDL_MUSTLOCK(pre_surface)) 
-	SDL_LockSurface(pre_surface);	
+	if (SDL_MUSTLOCK(pre_surface)) 
+		SDL_LockSurface(pre_surface);	
 
-Uint8 r, g, b, a; 
-// This will probably warn you about addressing locals 
- SDL_GetRGBA(color, pre_surface->format, &r, &g, &b, &a); 
- 
- // Now give it transparent pixels 
- color = SDL_MapRGBA(pre_surface->format, r, g, b, a); 
-//std::cout<<"Pixel color: "<<color<<std::endl;
+		Uint8 r, g, b, a; 
+		
+		// This will probably warn you about addressing locals 
+		SDL_GetRGBA(color, pre_surface->format, &r, &g, &b, &a); 
+		 
+		// Now give it transparent pixels 
+		color = SDL_MapRGBA(pre_surface->format, r, g, b, a); 
 
-    int bpp = pre_surface->format->BytesPerPixel;
-    /* Here p is the address to the pixel we want to set */
-    Uint8 *p = (Uint8 *)pre_surface->pixels + y * pre_surface->pitch + x * bpp;
+		int bpp = pre_surface->format->BytesPerPixel;
 
-	//prevent placeing pixel outside of screens bounds
-	
-if( ((y*(pre_surface->pitch/4)) < mainHeight*mainWidth) && (y*(pre_surface->pitch/4)) >=0)	
-		*(Uint32 *)p = color;
+		/* Here p is the address to the pixel we want to set */
+		Uint8 *p = (Uint8 *)pre_surface->pixels + y * pre_surface->pitch + x * bpp;
 
-if( SDL_MUSTLOCK(pre_surface))
-        SDL_UnlockSurface(pre_surface);
+		//prevent placeing pixel outside of screens bounds	
+		if( ((y*(pre_surface->pitch/4))
+		    < mainHeight*mainWidth) 
+		    && (y*(pre_surface->pitch/4)) >=0 )
+				*(Uint32 *)p = color;
+
+	if( SDL_MUSTLOCK(pre_surface))
+		SDL_UnlockSurface(pre_surface);
+//}}}
 }
 
 
@@ -144,13 +145,13 @@ if( SDL_MUSTLOCK(pre_surface))
 //a different way to putPixel, should act similar to putPixel
 void Render :: putPixel2(int x, int y, Uint8 r, Uint8 g, Uint8 b)
 {
-Uint32 *pixmem32;
-    Uint32 colour;  
+	Uint32 *pixmem32;
+	Uint32 colour;  
  
-    colour = SDL_MapRGB( mainScreen->format, r, g, b );
+	colour = SDL_MapRGB( mainScreen->format, r, g, b );
   
-    pixmem32 = (Uint32*) mainScreen->pixels  + y + x;
-    *pixmem32 = colour;
+	pixmem32 = (Uint32*) mainScreen->pixels  + y + x;
+	*pixmem32 = colour;
 }
 
 
@@ -166,7 +167,7 @@ void Render :: putSprite(int x, int y, SDL_Surface* sprite)
 	imagePosition.w=0;
 	imagePosition.h=0;
 
-	 if(SDL_MUSTLOCK(mainScreen))
+	if(SDL_MUSTLOCK(mainScreen))
 		SDL_LockSurface(mainScreen);
 
 		SDL_BlitSurface(sprite,NULL,mainScreen,&imagePosition);
