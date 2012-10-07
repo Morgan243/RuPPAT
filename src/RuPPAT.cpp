@@ -1002,7 +1002,7 @@ void RuPPAT::RK4(float t, float dt)
 //based on acceleration and such on all
 //elements in pixel list), incrementing time 
 //and rendering the pixels
-void RuPPAT :: RK4_parse(SDL_Surface* background)
+void RuPPAT :: RK4_parse()
 {
 //{{{
 Uint32 T1=0, T2=1000;
@@ -1017,13 +1017,12 @@ int nextTick = SDL_GetTicks() + interval;
 char sel = 'g';
 void * select = &sel;
 
-
+std::thread *rk4_th = new std::thread(&RuPPAT::RK4,this,t,dt);
 	//keep looping until program end
 	while(!done)
 	  {
 		//calculate new positions and velocities
 		//RK4_all(t, dt);
-	
 
 		//increment time
 		t += dt;
@@ -1034,6 +1033,9 @@ void * select = &sel;
 		//blit middle layer
 		mainRender->applySurface(0,0,backgroundLayers[1]);
 
+		
+		rk4_th->join();	
+
 		//parse objects	
 		parseObjectsToSurface();	
 		
@@ -1043,6 +1045,10 @@ void * select = &sel;
 		//parse players
 		parsePlayersToSurface();
 
+
+		//std::thread rk4(&RuPPAT::RK4,this,t,dt);
+		rk4_th = new std::thread(&RuPPAT::RK4,this,t,dt);
+
 		//blit top layer
 		mainRender->applySurface(0,0,backgroundLayers[2]);
 
@@ -1050,16 +1056,14 @@ void * select = &sel;
 		mainRender->OnRender();
 	
 	if(nextTick > SDL_GetTicks())SDL_Delay(nextTick - SDL_GetTicks());
-	
 		nextTick = SDL_GetTicks() + interval;
-	
 
-		RK4(t,dt);		
+		//rk4.join();	
 
 	  }
 	cout<<"Render thread ending!"<<endl;
 //}}}
-}//END <RK4_parse>
+}
 
 
 //||||||||||||||||||||||||||||||||||||\\
@@ -1075,12 +1079,7 @@ void RuPPAT :: runPPAT(bool *mainDone, Event_desc *mainEvents
 
 {
 //{{{
-bool *DONE = (bool*)mainDone;
-
-	//declare the main compute and render thread
-	pthread_t rk4_th;
-
-
+	bool *DONE = (bool*)mainDone;
 
 	cout<<"SELECTION: "<<selection<<"\t OPTION: "<<option<<endl;
 
@@ -1093,23 +1092,9 @@ bool *DONE = (bool*)mainDone;
 	else select='r';
 
 
-
-
-	//prepare helper struct (NOT USED?)
-	helper_char demo;
-	demo.context = this;
-	demo.character = &select;
-		void* args = &demo;
-
-	//prepare args for main compute and render thread
-	RK4_parse_helper_arg RK_help;
-	//RK_help.backg=bkg;
-	RK_help.context=this;
-	void* RK_args = &RK_help;
-
 	//launch thread into rk4 parse
-	pthread_create(&rk4_th, NULL, RK4_parse_helper, RK_args);
-
+	std::thread RK4_parse_th(&RuPPAT::RK4_parse, this);
+	
 	void *sel = &select;
 
 
@@ -1137,6 +1122,7 @@ bool *DONE = (bool*)mainDone;
 			//then run demo->place pixels w/ attr
 			runDemos(sel);
 			}
+
 		//increment keypress counter
 		keyT1++;
 
@@ -1144,13 +1130,13 @@ bool *DONE = (bool*)mainDone;
 		if(nextTick > SDL_GetTicks())SDL_Delay(nextTick - SDL_GetTicks());
 			nextTick = SDL_GetTicks() + interval;	
 
-	}//END while
+	}
 
 	//tell threads to finish
 	done = true;
 
 	//join on RK4_parse thread
-	pthread_join(rk4_th, NULL);
+	RK4_parse_th.join();
 //}}}
 }
 

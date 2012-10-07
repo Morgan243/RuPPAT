@@ -65,11 +65,8 @@ class RuPPAT
 
 	void RK4(float t, float dt);
 
-	void RK4_parse(SDL_Surface* background);
+	void RK4_parse();
 
-//	void runPPAT(bool *mainDone, Event_desc &mainEvents, 
-//			string selection, string option);
-//
 	void runPPAT(bool *mainDone, Event_desc *mainEvents, 
 			string selection, string option);
 
@@ -92,100 +89,11 @@ class RuPPAT
 
 	void turnPlayerToCoord(int p_ID, int x, int y, int rate);
 
-
-
 	private:
 
 	//	Uint32 thisTime;
 	//	Uint32 lastTime;
 	//	Uint32 deltaTime;
 
-
-
-//	int IDbase;//value of next ID 
-
 };
-
-//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-//-v-v-v-v-v-___HELPER STRUCTURES AND FUNCTIONS___-v-v-v-v-v-v-
-
-	//.....[HELPER]createPixElement(Pixel_desc)
-	struct cPE_helper
-		{
-			void *context;
-			Pixel_desc *pixel;	
-		};
-
-	static void *createPixElement_helper(void *cpe_helper)
-		{
-		cPE_helper *helper = (cPE_helper*) cpe_helper;
-		Pixel_desc *pix = helper->pixel;
-		((RuPPAT *)helper->context)->createPixElement(pix);
-		return NULL;
-		}
-
-
-	//.....[HELPER]runDemos(char selection)
-	struct helper_char
-		{
-			void *context;
-			char *character;
-		};
-
-	static void *runDemos_helper(void *helper_c)
-		{
-		helper_char *helper = (helper_char*) helper_c;
-		char *c = helper->character;
-		((RuPPAT *)helper->context)->runDemos(c);
-		return NULL;
-		}
-
-
-	
-	//.....[HELPER]RK4_pars
-	struct RK4_parse_helper_arg
-		{
-			void *context;
-			//vector<SDL_Surface *> bkg_layers;
-			SDL_Surface* backg;
-		};
-
-	static void *RK4_parse_helper(void *helper_in)
-		{
-		RK4_parse_helper_arg* helper = (RK4_parse_helper_arg*) helper_in;
-		
-		((RuPPAT*)helper->context)->RK4_parse(helper->backg);
-		return NULL;
-		};
-
-
-
-	//.....[HELPER]runPPAT
-	struct runPPAT_helperArgs
-		{
-			void *context;
-			bool *mDone;
-			Event_desc *mEvents;
-			string selection;
-			string option;
-		};
-
-//	static void *runPPAT_helper(void *helper_args)
-//		{
-//		runPPAT_helperArgs *helper = (runPPAT_helperArgs*) helper_args;
-//		bool *d = helper->mDone;
-//		Event_desc *e = helper->mEvents;
-//		((RuPPAT *)helper->context)->runPPAT(d, *e,
-//				helper->selection, helper->option);
-//		return NULL;
-//		}
-//
-//	static void *help_runPPAT(bool *mainDone, Event_desc *mainEvents, 
-//			string selection, string option, RuPPAT *context)
-//		{
-//		context->runPPAT(mainDone, *mainEvents, 
-//			 selection,  option);
-//		}
-
-
 #endif
