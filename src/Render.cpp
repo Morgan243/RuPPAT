@@ -27,15 +27,23 @@ Render::Render(int width, int height, int bpp, Uint32 flags)
 	//finally, assign mainscreen to 
 	mainScreen = SDL_SetVideoMode(width, height, bpp, flags);
 
-	#if SDL_BYTEORDER == SDL_BIG_ENDIAN 
-		pre_surface = 
-		SDL_CreateRGBSurface(SDL_SWSURFACE,width,height,32, 0xFF000000, 
-		0x00FF0000, 0x0000FF00, 0x000000FF); 
-	#else 
-		pre_surface = 
-		SDL_CreateRGBSurface(SDL_SWSURFACE,width,height,32, 0x000000FF, 
-		0x0000FF00, 0x00FF0000, 0xFF000000); 
-	#endif 
+//	#if SDL_BYTEORDER == SDL_BIG_ENDIAN 
+//		pre_surface = 
+//		SDL_CreateRGBSurface(SDL_SWSURFACE,width,height,32, 0xFF000000, 
+//		0x00FF0000, 0x0000FF00, 0x000000FF); 
+//
+//		sprite_surface = 
+//		SDL_CreateRGBSurface(SDL_SWSURFACE,width,height,32, 0xFF000000, 
+//		0x00FF0000, 0x0000FF00, 0x000000FF); 
+//	#else 
+//		sprite_surface = 
+//		SDL_CreateRGBSurface(SDL_SWSURFACE,width,height,32, 0xFF000000, 
+//		0x00FF0000, 0x0000FF00, 0x00000000); 
+//
+//		pre_surface = 
+//		SDL_CreateRGBSurface(SDL_SWSURFACE,width,height,32, 0x000000FF, 
+//		0x0000FF00, 0x00FF0000, 0xFF000000); 
+//	#endif 
 
 
 printf("Surface %s: w:%d h:%d bpp:%d\n", 
@@ -49,11 +57,83 @@ printf("Surface %s: w:%d h:%d bpp:%d\n",
   //}}}
 }
 
+Render::Render(int width, int height, int bpp, Uint32 flags,
+		int game_width, int game_height)
+{
+  //{{{
+	//assign private members for use later
+	mainWidth = width;
+	mainHeight = height;
+	mainBPP = bpp;
+	mainFlags = flags;
+
+	this->game_width = game_width;
+	this->game_height = game_height;
+
+	//just init the sdl video stuff
+	SDL_Init(SDL_INIT_VIDEO);
+
+	//set caption
+	SDL_WM_SetCaption("RuPPAT Demo",NULL);
+
+	//finally, assign mainscreen to 
+	mainScreen = SDL_SetVideoMode(width, height, bpp, flags);
+
+	#if SDL_BYTEORDER == SDL_BIG_ENDIAN 
+		pre_surface = 
+		SDL_CreateRGBSurface(SDL_SWSURFACE,width,height,32, 0xFF000000, 
+		0x00FF0000, 0x0000FF00, 0x000000FF); 
+
+		sprite_surface = 
+		SDL_CreateRGBSurface(SDL_SWSURFACE,width,height,32, 0xFF000000, 
+		0x00FF0000, 0x0000FF00, 0x000000FF); 
+	#else 
+		sprite_surface = 
+		SDL_CreateRGBSurface(SDL_SWSURFACE,width,height,32, 0xFF000000, 
+		0x00FF0000, 0x0000FF00, 0x000000FF); 
+
+		pre_surface = 
+		SDL_CreateRGBSurface(SDL_SWSURFACE,width,height,32, 0x000000FF, 
+		0x0000FF00, 0x00FF0000, 0xFF000000); 
+	#endif 
+
+
+printf("Surface %s: w:%d h:%d bpp:%d\n", 
+	"mainScreen", mainScreen->w, mainScreen->h, mainScreen->format->BitsPerPixel);
+
+printf("Game space: width = %d, height = %d\n", game_width, game_height);
+
+  if ( mainScreen == NULL ) 
+  {
+    fprintf(stderr, "Unable to set video: %s\n", SDL_GetError());
+    exit(1);
+  }
+  //}}}
+}
 
 //-----------------DECONSTRUCTOR------
 Render::~Render()
 {
+	SDL_FreeSurface(mainScreen);
+	SDL_FreeSurface( pre_surface);
 	SDL_Quit();
+}
+
+void Render::setGameArea(int w, int h)
+{
+	game_width = w;
+	game_height = h;
+	#if SDL_BYTEORDER == SDL_BIG_ENDIAN 
+		pre_surface = 
+		SDL_CreateRGBSurface(SDL_SWSURFACE,game_width,game_height,32, 0xFF000000, 
+		0x00FF0000, 0x0000FF00, 0x000000FF); 
+
+	#else 
+
+		pre_surface = 
+		SDL_CreateRGBSurface(SDL_SWSURFACE,game_width,game_height,32, 0x000000FF, 
+		0x0000FF00, 0x00FF0000, 0xFF000000); 
+	#endif 
 }
 
 //-----------------setMainScreen-----
@@ -69,11 +149,24 @@ void Render :: setMainScreen(int color)
 //swap whats being shown with what has been added to main screen
 void Render::OnRender()
 {
+	//applySurface(0,0,sprite_surface);
 	applySurface(0,0,pre_surface);
+
+	
 	SDL_Flip(mainScreen);
 	SDL_FillRect(pre_surface,NULL,0);
 }
 
+void Render::OnRender(int x, int y)
+{
+	//applySurface(0,0,sprite_surface);
+	applySurface(x,y,pre_surface);
+
+	
+	SDL_Flip(mainScreen);
+	SDL_FillRect(pre_surface,NULL,0);
+
+}
 
 //-----------------getPixel---------
 //returns the color (32 bit unsigned int) of the
@@ -92,26 +185,6 @@ Uint32 Render::getPixel(int x, int y, int screenID)
 void Render :: putPixel(int x, int y, Uint32 color, int screenID)
 {
 //{{{
-	//if (SDL_MUSTLOCK(mainScreen)) 
-	//	SDL_LockSurface(mainScreen);	
-	//
-	//Uint8 r, g, b, a; 
-	//// This will probably warn you about addressing locals 
-	// SDL_GetRGBA(color, mainScreen->format, &r, &g, &b, &a); 
-	//
-	// // Now give it transparent pixels 
-	// color = SDL_MapRGBA(mainScreen->format, r, g, b, SDL_ALPHA_TRANSPARENT); 
-	//
-	//
-	//    int bpp = mainScreen->format->BytesPerPixel;
-	//    /* Here p is the address to the pixel we want to set */
-	//    Uint8 *p = (Uint8 *)mainScreen->pixels + y * mainScreen->pitch + x * bpp;
-	//	
-	//	*(Uint32 *)p = color;
-	//
-	//if( SDL_MUSTLOCK(mainScreen) )
-	//        SDL_UnlockSurface(mainScreen);
-	//
 
 	if (SDL_MUSTLOCK(pre_surface)) 
 		SDL_LockSurface(pre_surface);	
@@ -131,7 +204,7 @@ void Render :: putPixel(int x, int y, Uint32 color, int screenID)
 
 		//prevent placeing pixel outside of screens bounds	
 		if( ((y*(pre_surface->pitch/4))
-		    < mainHeight*mainWidth) 
+		    < game_height*game_width) 
 		    && (y*(pre_surface->pitch/4)) >=0 )
 				*(Uint32 *)p = color;
 
@@ -167,13 +240,20 @@ void Render :: putSprite(int x, int y, SDL_Surface* sprite)
 	imagePosition.w=0;
 	imagePosition.h=0;
 
-	if(SDL_MUSTLOCK(mainScreen))
-		SDL_LockSurface(mainScreen);
 
-		SDL_BlitSurface(sprite,NULL,mainScreen,&imagePosition);
-	
-	if(SDL_MUSTLOCK(mainScreen))
-		SDL_UnlockSurface(mainScreen);
+//	if(SDL_MUSTLOCK(mainScreen))
+//		SDL_LockSurface(mainScreen);
+	if(SDL_MUSTLOCK(pre_surface))
+		SDL_LockSurface(pre_surface);
+
+		//finally blit the source onto main at (x,y) on main
+		SDL_BlitSurface(sprite,NULL,pre_surface,&imagePosition);
+
+	if(SDL_MUSTLOCK(pre_surface))
+		SDL_UnlockSurface(pre_surface);
+
+//	if(SDL_MUSTLOCK(mainScreen))
+//		SDL_UnlockSurface(mainScreen);
 }
 
 //blit a surface onto the main screen, good for backgrounds and testing sprites
@@ -184,15 +264,20 @@ void Render::applySurface(int x, int y, SDL_Surface* source)
 
 	offset.x = x;
 	offset.y = y;
-	offset.w = mainScreen->w;
-	offset.h = mainScreen->h;
+	offset.w = mainScreen->w + x;
+	offset.h = mainScreen->h + y;
 	
 	if(SDL_MUSTLOCK(mainScreen))
 		SDL_LockSurface(mainScreen);
+//	if(SDL_MUSTLOCK(pre_surface))
+//		SDL_LockSurface(pre_surface);
 
 		//finally blit the source onto main at (x,y) on main
 		SDL_BlitSurface(source,&offset,mainScreen,NULL);
 
+//	if(SDL_MUSTLOCK(pre_surface))
+//		SDL_UnlockSurface(pre_surface);
+//
 	if(SDL_MUSTLOCK(mainScreen))
 		SDL_UnlockSurface(mainScreen);
 }

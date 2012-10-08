@@ -41,9 +41,11 @@ Sprite::Sprite(string path_to_sprite,int numRotations, int startingAngle)
 
 	for(int i = 0; i<numRotations;i++)
 	{
-		rotations.push_back(rotozoomSurface(tempSpriteOpt,
+		rotations.push_back(
+				rotozoomSurface(tempSpriteOpt,
 							i*degreeIncrement,
 							1.0,0));	
+		SDL_SetAlpha(rotations.back(), 0, 0xFF);
 	}
 }
 

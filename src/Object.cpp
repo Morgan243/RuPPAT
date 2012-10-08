@@ -148,7 +148,12 @@ int Object :: getY()
 {
 	return descriptor.y;
 }
-
+void Object :: setXY(int x, int y)
+{
+	descriptor.x = x;
+	descriptor.y = y;
+	
+}
 float Object :: getXvel()
 {
 	return descriptor.xVel;

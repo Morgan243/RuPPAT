@@ -94,6 +94,7 @@ class RuPPAT
 	private:
 
 		int WIDTH, HEIGHT, 
+		    game_width, game_height,
 		    gravitationalConstant,
 		    baseID = 0;
 
@@ -103,7 +104,8 @@ class RuPPAT
 		bool done;
 		
 		Render* mainRender;
-		
+
+				
 		//mutexes/lock used throughout
 		pthread_mutex_t  pix_list_lock_2;
 		pthread_rwlock_t  pix_rw_lock, 
@@ -112,6 +114,8 @@ class RuPPAT
 				  player_rw_lock,
 				  object_rw_lock;
 
+
+		int centerX, centerY=0;
 
 		//independent pixels on screen
 		vector<Pixel_desc> pixelList;

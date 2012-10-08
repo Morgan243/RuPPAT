@@ -11,11 +11,19 @@ class Render
 {
 	public:
 		Render(int width, int height, int BPP, Uint32 flags);
+
+		Render(int width, int height, int BPP, Uint32 flags,
+			int game_width, int game_height);
+
 		~Render();
+
+		void setGameArea(int w, int h);
 
 		void setMainScreen(int color);
 
 		void OnRender();
+
+		void OnRender(int x, int y);
 		
 		Uint32 getPixel(int x, int y, int screenID);
 
@@ -29,10 +37,10 @@ class Render
 
 		void applySurface(int x, int y, SDL_Surface* source);	
 		
-		SDL_Surface* mainScreen,* pre_surface;
+		SDL_Surface* mainScreen,* pre_surface, *sprite_surface;
 	private:
-		int mainWidth;
-		int mainHeight;
+		int mainWidth, game_width;
+		int mainHeight, game_height;
 		int  mainBPP;
 		Uint32 mainFlags;
 };

@@ -94,8 +94,8 @@ RuPPAT :: RuPPAT(int width, int height, int bpp, unsigned int flags,
 	if(pthread_rwlock_init(&object_rw_lock,NULL))
 		{cout<<"ERROR initializing object rw lock: "<<endl;}
 
+	
 	mainRender = new Render(width, height, BPP, flags);
-
 	for( int i = 0; i< bkg_paths.size(); i++)
 	{
 		SDL_Surface *tempBkg, * tempBkgOpt;
@@ -105,7 +105,18 @@ RuPPAT :: RuPPAT(int width, int height, int bpp, unsigned int flags,
 		tempBkgOpt = SDL_DisplayFormatAlpha(tempBkg);
 
 		backgroundLayers.push_back(tempBkgOpt);	
+
+		//SDL_SetAlpha(backgroundLayers.back(), 0, 0xFF);
 	}
+
+	game_width = backgroundLayers[0]->w;
+	game_height = backgroundLayers[0]->h;
+
+	printf("game width = %d, game height = %d\n", game_width, game_height);
+	mainRender->setGameArea(backgroundLayers[0]->w, backgroundLayers[0]->h);
+
+	//mainRender = new Render(width, height, BPP, flags,
+	//		backgroundLayers[0]->w, backgroundLayers[0]->h);
 
 	WIDTH = width;
 	HEIGHT = height;
@@ -161,8 +172,8 @@ void RuPPAT :: parseSelectPixToSurface()
  //#pragma omp parallel for private(x,y,color, i, j)
 	 for( i=0 ; i< size ; i++)
 		{
-		x =	pixelList_m[i].x;
-		y =	pixelList_m[i].y;
+		x =	pixelList_m[i].x;// - centerX;
+		y =	pixelList_m[i].y;// - centerY;
 		color =	pixelList_m[i].color;
 	
 		mainRender->putPixel(x,y,color,screenID);
@@ -189,7 +200,9 @@ void RuPPAT :: parsePlayersToSurface()
 		{
 		x =	players[i]->getX();
 		y =	players[i]->getY();
-		
+	
+		centerX = x;
+		centerY = y;	
 		players[i]->updateSprite();
 	
 		mainRender->putSprite(x,y, players[i]->getSprite());
@@ -211,6 +224,8 @@ void RuPPAT :: parseObjectsToSurface()
 			x = objectList[i]->getX();
 			y = objectList[i]->getY();	
 	
+		//	objectList[i]->setXY(x,y);
+
 			objectList[i]->sprite.updateSprite();
 			mainRender->putSprite(x,y,objectList[i]->getSprite());
 		}
@@ -453,14 +468,14 @@ void RuPPAT :: RK4_all(float t, float dt)
 			if(newX<=0)
 				{newX=1;tmp_xVel=tmp_xVel*(-1);}
 
-			if(newX>=WIDTH)
-				{newX=WIDTH-1;tmp_xVel=tmp_xVel*(-1);}
+			if(newX>=game_width)
+				{newX=game_width-1;tmp_xVel=tmp_xVel*(-1);}
 
 			if(newY<=0)
 				{newY=1;tmp_yVel=tmp_yVel*(-1);}
 
-			if(newY>=HEIGHT)
-				{newY=HEIGHT-1;tmp_yVel=tmp_yVel*(-1);}	
+			if(newY>=game_height)
+				{newY=game_height-1;tmp_yVel=tmp_yVel*(-1);}	
 
 
 
@@ -503,14 +518,14 @@ void RuPPAT :: RK4_all(float t, float dt)
 			if(newX<=0)
 				{newX=1;tmp_xVel=tmp_xVel*(-1);}
 
-			if(newX>=WIDTH)
-				{newX=WIDTH-1;tmp_xVel=tmp_xVel*(-1);}
+			if(newX>=game_width)
+				{newX=game_width-1;tmp_xVel=tmp_xVel*(-1);}
 
 			if(newY<=0)
 				{newY=1;tmp_yVel=tmp_yVel*(-1);}
 
-			if(newY>=HEIGHT)
-				{newY=HEIGHT-1;tmp_yVel=tmp_yVel*(-1);}	
+			if(newY>=game_height)
+				{newY=game_height-1;tmp_yVel=tmp_yVel*(-1);}	
 
 
 
@@ -543,14 +558,7 @@ void RuPPAT :: RK4_all(float t, float dt)
 		if(mass_e.ID!=other_obj_e.ID)//dont apply grav to self!
 			{
 
-	//cout<<"i = "<<i<<" and j = "<<j<<endl;
-		//integrate to get velocity and locations
-	//if( !(other_obj_e.x==mass_e.x || other_obj_e.y==mass_e.y))
-//cout<<"mass_e: "<<mass_e.x<<","<<mass_e.y<<" with mass = "<<mass_e.mass<<" ID="<<mass_e.ID<<endl;
-//cout<<"other_obj_e: "<<other_obj_e.x<<","<<other_obj_e.y<<" with mass = "<<other_obj_e.mass<<" ID="<<other_obj_e.ID<<endl;
-
-//cout<<"applying!\n"<<endl;
-	integrate_ent(other_obj_e,t, dt,
+		integrate_ent(other_obj_e,t, dt,
 			mass_e.mass, mass_e.x, mass_e.y);
 
 		newX = other_obj_e.x;
@@ -563,14 +571,14 @@ void RuPPAT :: RK4_all(float t, float dt)
 			if(newX<=0)
 				{newX=1;tmp_xVel=tmp_xVel*(-1);}
 
-			if(newX>=WIDTH)
-				{newX=WIDTH-1;tmp_xVel=tmp_xVel*(-1);}
+			if(newX>=game_width)
+				{newX=game_width-1;tmp_xVel=tmp_xVel*(-1);}
 
 			if(newY<=0)
 				{newY=1;tmp_yVel=tmp_yVel*(-1);}
 
-			if(newY>=HEIGHT)
-				{newY=HEIGHT-1;tmp_yVel=tmp_yVel*(-1);}	
+			if(newY>=game_height)
+				{newY=game_height-1;tmp_yVel=tmp_yVel*(-1);}	
 
 
 
@@ -610,14 +618,14 @@ void RuPPAT :: RK4_all(float t, float dt)
 			if(newX<=0)
 				{newX=1;tmp_xVel=tmp_xVel*(-1);}
 
-			if(newX>=WIDTH)
-				{newX=WIDTH-1;tmp_xVel=tmp_xVel*(-1);}
+			if(newX>=game_width)
+				{newX=game_width-1;tmp_xVel=tmp_xVel*(-1);}
 
 			if(newY<=0)
 				{newY=1;tmp_yVel=tmp_yVel*(-1);}
 
-			if(newY>=HEIGHT)
-				{newY=HEIGHT-1;tmp_yVel=tmp_yVel*(-1);}	
+			if(newY>=game_height)
+				{newY=game_height-1;tmp_yVel=tmp_yVel*(-1);}	
 
 
 
@@ -655,14 +663,14 @@ void RuPPAT :: RK4_all(float t, float dt)
 			if(newX<=0)
 				{newX=1;tmp_xVel=tmp_xVel*(-1);}
 
-			if(newX>=WIDTH)
-				{newX=WIDTH-1;tmp_xVel=tmp_xVel*(-1);}
+			if(newX>=game_width)
+				{newX=game_width-1;tmp_xVel=tmp_xVel*(-1);}
 
 			if(newY<=0)
 				{newY=1;tmp_yVel=tmp_yVel*(-1);}
 
-			if(newY>=HEIGHT)
-				{newY=HEIGHT-1;tmp_yVel=tmp_yVel*(-1);}	
+			if(newY>=game_height)
+				{newY=game_height-1;tmp_yVel=tmp_yVel*(-1);}	
 
 
 
@@ -876,14 +884,14 @@ void RuPPAT::RK4(float t, float dt)
 			if(new_x<=0)
 				{new_x=1;new_xVel=new_xVel*(-1);}
 
-			if(new_x>=WIDTH)
-				{new_x=WIDTH-1;new_xVel=new_xVel*(-1);}
+			if(new_x>=game_width)
+				{new_x=game_width-1;new_xVel=new_xVel*(-1);}
 
 			if(new_y<=0)
 				{new_y=1;new_yVel=new_yVel*(-1);}
 
-			if(new_y>=HEIGHT)
-				{new_y=HEIGHT-1;new_yVel=new_yVel*(-1);}	
+			if(new_y>=game_height)
+				{new_y=game_height-1;new_yVel=new_yVel*(-1);}	
 
 
 			obj_desc_sec.xVel = new_xVel;
@@ -922,14 +930,14 @@ void RuPPAT::RK4(float t, float dt)
 			if(new_x<=0)
 				{new_x=1;new_xVel=new_xVel*(-1);}
 
-			if(new_x>=WIDTH)
-				{new_x=WIDTH-1;new_xVel=new_xVel*(-1);}
+			if(new_x>=game_width)
+				{new_x=game_width-1;new_xVel=new_xVel*(-1);}
 
 			if(new_y<=0)
 				{new_y=1;new_yVel=new_yVel*(-1);}
 
-			if(new_y>=HEIGHT)
-				{new_y=HEIGHT-1;new_yVel=new_yVel*(-1);}	
+			if(new_y>=game_height)
+				{new_y=game_height-1;new_yVel=new_yVel*(-1);}	
 
 			pix_desc.xVel = new_xVel;
 			pix_desc.yVel = new_yVel;	
@@ -969,28 +977,28 @@ float dt = 0.004;
 int engine_rate = 160;
 int interval = 1000/engine_rate;
 int nextTick = SDL_GetTicks() + interval;
+int xOrigin, yOrigin, screen_centX=WIDTH/2, screen_centY=HEIGHT/2;
 
 char sel = 'g';
 void * select = &sel;
 
 std::thread *rk4_th = new std::thread(&RuPPAT::RK4,this,t,dt);
+
 	//keep looping until program end
 	while(!done)
 	  {
-		//calculate new positions and velocities
-		//RK4_all(t, dt);
-
 		//increment time
 		t += dt;
 	
 		//blit bottom layer	
-		mainRender->applySurface(0,0,backgroundLayers[0]);
-
+		mainRender->applySurface(xOrigin,yOrigin,backgroundLayers[0]);
+		
 		//blit middle layer
-		mainRender->applySurface(0,0,backgroundLayers[1]);
-
+		mainRender->applySurface(xOrigin,yOrigin,backgroundLayers[1]);
 		
 		rk4_th->join();	
+
+		
 
 		//parse objects	
 		parseObjectsToSurface();	
@@ -1006,11 +1014,25 @@ std::thread *rk4_th = new std::thread(&RuPPAT::RK4,this,t,dt);
 		rk4_th = new std::thread(&RuPPAT::RK4,this,t,dt);
 
 		//blit top layer
-		mainRender->applySurface(0,0,backgroundLayers[2]);
+		mainRender->applySurface(xOrigin,yOrigin,backgroundLayers[2]);
 
-		//render the updated surface	
-		mainRender->OnRender();
-	
+		
+		if(centerX < screen_centX)
+			xOrigin = 0;
+		else if(centerX > (game_width-screen_centX))
+			xOrigin = game_width - WIDTH;
+		else
+			xOrigin = centerX - screen_centX;
+
+		if(centerY < screen_centY)
+			yOrigin = 0;
+		else if(centerY > (game_height-screen_centY))
+			yOrigin = game_height - HEIGHT;
+		else
+			yOrigin = centerY - screen_centY;
+
+		mainRender->OnRender(xOrigin,yOrigin);
+
 	if(nextTick > SDL_GetTicks())SDL_Delay(nextTick - SDL_GetTicks());
 		nextTick = SDL_GetTicks() + interval;
 

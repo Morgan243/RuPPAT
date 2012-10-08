@@ -49,6 +49,8 @@ explicit Object(string sprite_path, int start_x, int start_y, int start_mass,
 		int getX();
 		int getY();
 
+		void setXY(int x, int y);
+
 		float getXvel();
 		float getYvel();
 
