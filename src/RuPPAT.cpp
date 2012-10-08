@@ -99,13 +99,20 @@ RuPPAT :: RuPPAT(int width, int height, int bpp, unsigned int flags,
 	for( int i = 0; i< bkg_paths.size(); i++)
 	{
 		SDL_Surface *tempBkg, * tempBkgOpt;
+		
+		cout<<"Loading..."<<bkg_paths[i]<<endl;
 
 		tempBkg = IMG_Load((char *)bkg_paths[i].c_str());
-
+	
+		cout<<"\tReassigning..."<<bkg_paths[i]<<endl;
 		tempBkgOpt = SDL_DisplayFormatAlpha(tempBkg);
 
+		SDL_FreeSurface(tempBkg);
+
+		cout<<"\tPushing back..."<<bkg_paths[i]<<endl;
 		backgroundLayers.push_back(tempBkgOpt);	
 
+		
 		//SDL_SetAlpha(backgroundLayers.back(), 0, 0xFF);
 	}
 
@@ -991,7 +998,7 @@ std::thread *rk4_th = new std::thread(&RuPPAT::RK4,this,t,dt);
 		t += dt;
 	
 		//blit bottom layer	
-		mainRender->applySurface(xOrigin,yOrigin,backgroundLayers[0]);
+		mainRender->applySurface(xOrigin/1.2,yOrigin/1.2,backgroundLayers[0]);
 		
 		//blit middle layer
 		mainRender->applySurface(xOrigin,yOrigin,backgroundLayers[1]);
