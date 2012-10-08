@@ -5,6 +5,7 @@
 #include <iostream>
 #include <omp.h>
 #include <X11/Xlib.h>
+#include <sys/resource.h>
 
 //SDL Dependencies
 #include "SDL/SDL.h"
@@ -57,6 +58,22 @@ int main(int argc, char *argv[])
 	//check that XInitThreads was not erroneous
 	if(!x_o)
 		cout<<"ERROR WITH XINIT THREADS!"<<endl;
+
+
+	struct rlimit rl;
+
+	if(!getrlimit(RLIMIT_STACK, &rl))
+	{
+		rl.rlim_cur = 16*1024*1024*4; //64MB
+
+		if(setrlimit(RLIMIT_STACK, &rl))
+			{
+				fprintf(stderr, "setrlimit failed\n");
+				printf("stack limit setting failed!\n");
+			}	
+
+	}
+
 
 	RunOptions fileOptions;
 	

@@ -6,8 +6,9 @@
 #not run.
 #
 Main:
-	width=1280#Set the width!!
+	width=780#Set the width!!
 	height=800
+	#backgroundLayers=bkg_massive_8k_one.png,backgroundLayers=bkg_massive_8k_two.png,backgroundLayers=bkg_massive_8k_three.png
 	backgroundLayers=bkg_one_1080.png,bkg_two_1080.png,bkg_three_1080.png
 Player:
 	#sprite=red_ship.png
@@ -18,7 +19,7 @@ Player:
 Object:
 	x=840
 	y=550
-	mass=100000
+	mass=140000
 	rotation=0.8
 	xVel=0
 	yVel=0
@@ -40,12 +41,12 @@ Object:
 	yVel=20
 	spriteBase=asteroid_medium_1.png
 Object:
-	x=300
+	x=1400
 	y=300
 	mass=100
 	rotation=-.3
-	xVel=20
-	yVel=20
+	xVel=-30
+	yVel=1
 	spriteBase=asteroid_medium_1.png
 Object:
 	x=400
