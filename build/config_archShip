@@ -11,8 +11,8 @@ Main:
 	#backgroundLayers=bkg_massive_8k_one.png,backgroundLayers=bkg_massive_8k_two.png,backgroundLayers=bkg_massive_8k_three.png
 	backgroundLayers=bkg_one_1080.png,bkg_two_1080.png,bkg_three_1080.png
 Player:
-	sprite=red_ship.png
-	#sprite=arch_logo.png
+	#sprite=red_ship.png
+	sprite=arch_logo.png
 	x=100
 	y=100
 	HC=red_ship_HC.png

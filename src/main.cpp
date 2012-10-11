@@ -30,6 +30,8 @@ using namespace std;
 
 
 
+//default config file name
+string filename = "config";
 
 
 //let X display know we are going to have multiple threads
@@ -74,55 +76,18 @@ int main(int argc, char *argv[])
 
 	}
 
+	//init runtime option struct
+	RunOptions cmdLineOptions;
+
+	//handle command line args, exit if -help used
+	if(handleInput(argc,argv,cmdLineOptions)){return 0;}
 
 	RunOptions fileOptions;
 	
 	vector<section> configSection;
 
-	//default config file name
-	string filename = "config";
-
 	//get configuration from file
 	readConfigFile(filename, configSection);
-
-	//init runtime option struct
-	RunOptions cmdLineOptions;
-
-
-//		//set default resolution
-//		cmdLineOptions.height = 768;
-//		cmdLineOptions.width = 1024;
-//
-//		//set default background layer paths
-//		cmdLineOptions.background_spritePaths[0]
-//					="bkg_one_1080.png";
-//		cmdLineOptions.background_spritePaths[1]
-//					="bkg_two_1080.png";
-//		cmdLineOptions.background_spritePaths[2]
-//					="bkg_three_1080.png";
-//
-//		//set default player sprit attribute
-//		cmdLineOptions.player_spritePath = "red_ship.png";
-//		cmdLineOptions.player_HCpath = "red_ship_HC.png";
-//
-//		//load a first default object
-//		cmdLineOptions.objects_spritePath.push_back
-//						("red_planet.png");
-//		cmdLineOptions.objects_HCpath.push_back
-//						("red_planet_HC.png");
-//
-//		//load another default object
-//		cmdLineOptions.objects_spritePath.push_back
-//						("asteroid_medium_1.png");
-//		cmdLineOptions.objects_HCpath.push_back
-//						("asteroid_medium_1_HC.png");
-	
-
-	//handle command line args, exit if -help used
-	if(handleInput(argc,argv,cmdLineOptions)){return 0;}
-
-	//construct a new game, this only initiates vars and such
-//	game = new Game(cmdLineOptions);
 
 	game = new Game(configSection);
 	
@@ -140,22 +105,27 @@ int handleInput(int argc,char *argv[], RunOptions &cl_options)
 	for(i=1;i<argc;i++)
 	{
 		
-	if((strcmp(argv[i],"-help")==0)||(strcmp(argv[i],"-h")==0))
+	if((strcmp(argv[i],"-help")==0)
+	   ||(strcmp(argv[i],"-h")==0) 
+	   || (strcmp(argv[i],"--help")==0))
 		{
 			cout << "\n\n\t______RuPAP Engine Demo______"<<endl;
 			cout<<"\t\tMorgan Stuart\n"<< endl;
-			cout << "  run gravity well demo: '-gwell'"<< endl;
-			cout << "          run fire demo: '-fire'"<< endl;
-			cout << "run particle orbit demo: '-porbit'"<< endl;
-
+			cout << "The granular CLI options have been deprecated."<< endl;
+			cout << "They will not override the config. They do nothing."<< endl;
+			cout << "Instead, use a config file. A default should have"<< endl;
+			cout << "been included called \"config\". You can specify a "<<endl;
+			cout << "different file using the config file option."<< endl;
+			cout << "This is the only option you should be using.\n"<< endl;
+			cout <<"-cd, --config-file \t Specify config file name\n"<<endl;
 			cout << "                print this menu: '-help'\n\n"<< endl;
 			k=1;
 		}
 
 
-	if((strcmp(argv[i],"-file")==0)||(strcmp(argv[i],"-f")==0))
+	if((strcmp(argv[i],"--config-file")==0)||(strcmp(argv[i],"-cf")==0))
 		{
-			//filename = argv[i+1];	
+			filename = argv[i+1];	
 		}
 
 		if(strcmp(argv[i],"-height")==0)
@@ -210,6 +180,7 @@ int handleInput(int argc,char *argv[], RunOptions &cl_options)
 			selection = "gwell";
 		}
 
+		
 		if(strcmp(argv[i],"-explode")==0)
 		{	
 			selection = "explode";
@@ -276,7 +247,7 @@ void readConfigFile(string filename, vector<section>& configSections)
 //	vector<section> configSections;
 
 	ifstream inFile;	
-	inFile.open( "config" );
+	inFile.open( filename.c_str() );
 
 	//keep moving through file while not at end
 	while(inFile.good())
