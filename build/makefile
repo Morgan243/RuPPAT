@@ -13,10 +13,10 @@ BUILD_OUT=-o $(BUILD_DIR)
 SOURCE_DIR=../src/
 all: test
 
-test: main.o Render.o Game.o RuPPAT.o PhysFuncs.o Descriptors.o Player.o Object.o Sprite.o Missile.o
+test: main.o Render.o Game.o RuPPAT.o PhysFuncs.o Descriptors.o Player.o Object.o Sprite.o Missile.o Primitives.o
 	$(COMP) $(BUILD_DIR)main.o $(BUILD_DIR)Render.o $(BUILD_DIR)Game.o $(BUILD_DIR)RuPPAT.o $(SOURCE_DIR)PhysFuncs.h \
 	$(SOURCE_DIR)Descriptors.h $(BUILD_DIR)Player.o $(BUILD_DIR)Object.o $(BUILD_DIR)Sprite.o $(BUILD_DIR)Missile.o \
-	$(CFLAGS) $(BUILD_OUT)test  
+	$(BUILD_DIR)Primitives.o $(CFLAGS) $(BUILD_OUT)test  
 
 main.o: $(SOURCE_DIR)main.cpp
 	$(COMP) -c $(SOURCE_DIR)main.cpp $(CFLAGS) 
@@ -47,6 +47,9 @@ Sprite.o: $(SOURCE_DIR)Sprite.h $(SOURCE_DIR)Sprite.cpp
 
 Missile.o: $(SOURCE_DIR)Missile.h $(SOURCE_DIR)Missile.cpp
 	$(COMP) -c $(SOURCE_DIR)Missile.h $(SOURCE_DIR)Missile.cpp $(CFLAGS)
+
+Primitives.o: $(SOURCE_DIR)Primitives.h $(SOURCE_DIR)Primitives.cpp
+	$(COMP) -c $(SOURCE_DIR)Primitives.h $(SOURCE_DIR)Primitives.cpp $(CFLAGS)
 
 clean: 
 	rm $(BUILD_DIR)*.o $(SOURCE_DIR)*.gch $(BUILD_DIR)test

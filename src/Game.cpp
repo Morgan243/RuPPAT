@@ -49,16 +49,24 @@ Game :: Game(int WIDTH_cl, int HEIGHT_cl)
 Game::Game(vector<section> configSections)
 {
 //{{{
-	//init the engine
-//	engine = new RuPPAT(options.width,options.height,BPP,
-//					SDL_HWSURFACE | SDL_DOUBLEBUF,
-//						options.background_spritePaths,3);
+
+	//A few defaults, not configurable at the moment
+	key_count_limit = 0;
+	defaultTurnAmnt = 4;
+	fastTurn = 3;
+	w_count = 0;
+	s_count = 0;
+	a_count = 0;
+	d_count = 0;
+
+	k_UP=false; k_DOWN=false; k_LEFT=false;
+       	k_RIGHT=false;k_lCTRL=false;
 
 	vector<string> tempVect;	
 	vector<string> tempVect_2;
+	
 	for(int i = 0; i< configSections.size(); i++)
 	{
-
 		//////////////////////////////////////////////////
 		//MAIN section: resolution and background settings
 		//////////////////////////////////////////////////	
@@ -70,11 +78,13 @@ Game::Game(vector<section> configSections)
 			{
 				if(configSections[i].sectionOptions[j].option 
 						== "width")
-					width = atoi(configSections[i].sectionOptions[j].values[0].c_str());
+					width =
+					atoi(configSections[i].sectionOptions[j].values[0].c_str());
 
 				else if(configSections[i].sectionOptions[j].option
 					       	== "height")
-				        height = atoi(configSections[i].sectionOptions[j].values[0].c_str());
+				        height = 
+					atoi(configSections[i].sectionOptions[j].values[0].c_str());
 
 				else if(configSections[i].sectionOptions[j].option
 						== "backgroundLayers")
@@ -86,7 +96,7 @@ Game::Game(vector<section> configSections)
 					    tempVect);
 		}
 
-
+		//Setup player: object controlled by the player(person-user)
 		if(configSections[i].title == "Player")
 		{
 			int x = 400, y = 200, startingAngle = 0, numRots = 360;
@@ -104,19 +114,23 @@ Game::Game(vector<section> configSections)
 
 				else if(configSections[i].sectionOptions[j].option
 						== "x")
-					x = atoi(configSections[i].sectionOptions[j].values[0].c_str());
+					x = 
+					atoi(configSections[i].sectionOptions[j].values[0].c_str());
 
 				else if(configSections[i].sectionOptions[j].option
 						== "y")
-					y = atoi(configSections[i].sectionOptions[j].values[0].c_str());
+					y = 
+					atoi(configSections[i].sectionOptions[j].values[0].c_str());
 
 				else if(configSections[i].sectionOptions[j].option
 						== "angle")
-					startingAngle = atoi(configSections[i].sectionOptions[j].values[0].c_str());
+					startingAngle = 
+					atoi(configSections[i].sectionOptions[j].values[0].c_str());
 
 				else if(configSections[i].sectionOptions[j].option
 						== "maxAcc")
-					 maxAcc = atof(configSections[i].sectionOptions[j].values[0].c_str());
+					maxAcc = 
+					atof(configSections[i].sectionOptions[j].values[0].c_str());
 			}
 
 			engine->addPlayer(tempVect[0],
@@ -125,9 +139,9 @@ Game::Game(vector<section> configSections)
 					  maxAcc,
 					  x, y,
 					  tempVect_2[0]);	  
-							
 		}
 
+		//Setup andy additional object requested
 		if(configSections[i].title == "Object")
 		{
 			int x = 400, y = 200, startingAngle = 0, numRots = 360,
@@ -139,43 +153,53 @@ Game::Game(vector<section> configSections)
 			{
 				if(configSections[i].sectionOptions[j].option
 						== "spriteBase")
-					tempVect = configSections[i].sectionOptions[j].values;
+					tempVect = 
+						configSections[i].sectionOptions[j].values;
 
 				else if(configSections[i].sectionOptions[j].option
 						== "HC")
-					tempVect_2 = configSections[i].sectionOptions[j].values;
+					tempVect_2 = 
+						configSections[i].sectionOptions[j].values;
 
 				else if(configSections[i].sectionOptions[j].option
 						== "x")
-					x = atoi(configSections[i].sectionOptions[j].values[0].c_str());
+					x = 
+					atoi(configSections[i].sectionOptions[j].values[0].c_str());
 
 				else if(configSections[i].sectionOptions[j].option
 						== "y")
-					y = atoi(configSections[i].sectionOptions[j].values[0].c_str());
+					y = 
+					atoi(configSections[i].sectionOptions[j].values[0].c_str());
 
 				else if(configSections[i].sectionOptions[j].option
 						== "angle")
-					startingAngle = atoi(configSections[i].sectionOptions[j].values[0].c_str());
+					startingAngle = 
+					atoi(configSections[i].sectionOptions[j].values[0].c_str());
 
 				else if(configSections[i].sectionOptions[j].option
 						== "maxAcc")
-					 maxAcc = atof(configSections[i].sectionOptions[j].values[0].c_str());
+					maxAcc = 
+					atof(configSections[i].sectionOptions[j].values[0].c_str());
 
 				else if(configSections[i].sectionOptions[j].option
 						== "rotation")
-					rotRate = atof(configSections[i].sectionOptions[j].values[0].c_str());
+					rotRate = 
+					atof(configSections[i].sectionOptions[j].values[0].c_str());
 
 				else if(configSections[i].sectionOptions[j].option
 						== "mass")
-					 mass = atoi(configSections[i].sectionOptions[j].values[0].c_str());
+					 mass = 
+					atoi(configSections[i].sectionOptions[j].values[0].c_str());
 					
 				else if(configSections[i].sectionOptions[j].option
 						== "xVel")
-					 xVel = atof(configSections[i].sectionOptions[j].values[0].c_str());
+					 xVel = 
+					atof(configSections[i].sectionOptions[j].values[0].c_str());
 
 				else if(configSections[i].sectionOptions[j].option
 						== "yVel")
-					yVel = atof(configSections[i].sectionOptions[j].values[0].c_str());
+					yVel = 
+					atof(configSections[i].sectionOptions[j].values[0].c_str());
 			}
 
 			engine->addObject(tempVect[0],
@@ -183,31 +207,8 @@ Game::Game(vector<section> configSections)
 				  	  rotRate,
 					  xVel, yVel,
 					  tempVect_2[0]);	  
-							
 		}
 	}
-
-//	done = false;
-//
-//
-//	engine->addPlayer(options.player_spritePath,
-//				360,0,1,400,200,
-//					options.player_HCpath);
-//
-//	engine->addObject(options.objects_spritePath[0],
-//				844,560,150000,1.0,0.0,0.0,
-//					options.objects_HCpath[0]);
-//	
-//	engine->addObject(options.objects_spritePath[1],
-//				700,500,1000,-.1,10.0,69.0,
-//					options.objects_HCpath[1]);
-//
-//	for(int i = 2; i < options.objects_spritePath.size(); i++)
-//	{
-//		engine->addObject(options.objects_spritePath[i],
-//				220+(i*120),300,10000,-4+i,i,i*10,
-//					options.objects_HCpath[i]);
-//	}	
 //}}}
 }
 
@@ -248,11 +249,6 @@ Game ::~Game()
 {
 //	delete engine;
 }
-
-//some globals cuase im lazy
-int x, y, up_count, down_count, left_count, right_count,
-	 key_count_limit=0, defaultTurnAmnt=4, fastTurn=3,
-		w_count=0, s_count=0, a_count=0, d_count=0;
 
 //keep track of button presses
 bool k_UP=false, k_DOWN=false, k_LEFT=false, k_RIGHT=false,

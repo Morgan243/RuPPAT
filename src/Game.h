@@ -72,6 +72,16 @@ private:
 	RuPPAT *engine;	
 
 	vector<Player *> players;
+
+
+	int x, y, 
+	    up_count, down_count, left_count, right_count,
+	    key_count_limit, defaultTurnAmnt, fastTurn,
+	    w_count, s_count, a_count, d_count;
+
+	bool  k_UP, k_DOWN, k_LEFT, k_RIGHT,
+		k_lCTRL, k_lMOUSE;
+
 };
 #endif
 

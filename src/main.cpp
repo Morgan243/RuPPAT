@@ -244,7 +244,6 @@ void readConfigFile(string filename, vector<section>& configSections)
 {
 	int place = 0;
 	string line;
-//	vector<section> configSections;
 
 	ifstream inFile;	
 	inFile.open( filename.c_str() );
@@ -259,6 +258,7 @@ void readConfigFile(string filename, vector<section>& configSections)
 		int commentIndex = line.find('#',0);
 
 		place = line.find(':',0);
+
 		//if this is not a section header line (ex: "main:")
 		//and the comment hash doesnt exist or doesnt start the line (!=0)
 		if( (place == -1) && (commentIndex != 0))
@@ -281,9 +281,11 @@ void readConfigFile(string filename, vector<section>& configSections)
 			    int stringStart=line.find('\t',0); 
 			    if(stringStart)
   			  	    //get the option name out of line
-	  		  	    nextOptionSet.option = line.substr(0,place);
+	  		  	    nextOptionSet.option = line.substr
+					(0,place);
 			    else
-		    nextOptionSet.option = line.substr(stringStart+1,place - stringStart-1);
+				    nextOptionSet.option = line.substr
+				    	(stringStart+1,place - stringStart-1);
 
   		  	    cout<<"Option: "<<nextOptionSet.option<<endl;
 
@@ -313,8 +315,8 @@ void readConfigFile(string filename, vector<section>& configSections)
 				}
   		  	    }
   	
-  		  	  //there will always be one value not contained between two delimiters
-  		  	  //ex: backgroundLayers=bkg_one_1080.png,bkg_two_1080.png,bkg_three_1
+  	  	  //there will always be one value not contained between two delimiters
+  	  	  //ex: backgroundLayers=bkg_one_1080.png,bkg_two_1080.png,bkg_three_1
   		  	   if(!leaveOnComment)
 			   {
 				    nextOptionSet.values.push_back

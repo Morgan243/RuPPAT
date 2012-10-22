@@ -7,14 +7,13 @@
 
 #include "RuPPAT.h"
 #include "PhysFuncs.h"
-//#include "Player.h"
 #include "Object.h"
 #include <pthread.h>
 #include <thread>
 #include <mutex>
 #include <omp.h>
 #include <unistd.h>
-
+#include "Primitives.h"
 
 using namespace std;
 
@@ -412,298 +411,6 @@ int RuPPAT :: addObject(string spritePath, int x, int y, int mass, float rotatio
 }
 
 
-void RuPPAT :: RK4_all(float t, float dt)
-{
-//{{{
-	const Uint32 NOW = SDL_GetTicks(); 
-	float newX, newY, tmp_xVel, tmp_yVel;
-
-	//Mass_desc temp_mass;	
-	Pixel_desc pix_desc;
-	Entity_desc player_e, mass_e, other_obj_e;
-
-	//get the size of the player list
-	pthread_rwlock_rdlock(&player_rw_lock);
-	 int player_size = players.size();
-	pthread_rwlock_unlock(&player_rw_lock);
-
-	//get the size of pixeList
-	pthread_rwlock_rdlock(&pix_rw_lock);
-	 int pixel_size = pixelList_m.size();
-	pthread_rwlock_unlock(&pix_rw_lock);
-
-	//get size of mass
-	pthread_rwlock_rdlock(&object_rw_lock);
-	 int mass_size = objectList.size();	
-	pthread_rwlock_unlock(&object_rw_lock);
-
-
-
-	const int timerConst = 1;
-
-//if there are mass objects	
- if(mass_size)
-  {
-   for(int j = 0; j<mass_size;j++)
-	{
-
-	//get mass
-	pthread_rwlock_rdlock(&object_rw_lock);
-		mass_e = objectList[j]->getDescriptor();	
-	pthread_rwlock_unlock(&object_rw_lock);
-
-
-	  for(int i=0; i<player_size ;i++)
-	      {//{{{
-
-		//get the descriptor for the player
-		pthread_rwlock_rdlock(&player_rw_lock);
-			player_e = players[i]->getDescriptor();
-		pthread_rwlock_unlock(&player_rw_lock);
-
-		//integrate to get velocity and locations
-	integrate_ent(player_e,t, dt,
-			mass_e.mass, mass_e.x, mass_e.y);
-
-		newX = player_e.x;
-		newY = player_e.y;
-
-		tmp_xVel = player_e.xVel;
-		tmp_yVel = player_e.yVel;
-
-			//make sure the new location is within bounds
-			if(newX<=0)
-				{newX=1;tmp_xVel=tmp_xVel*(-1);}
-
-			if(newX>=game_width)
-				{newX=game_width-1;tmp_xVel=tmp_xVel*(-1);}
-
-			if(newY<=0)
-				{newY=1;tmp_yVel=tmp_yVel*(-1);}
-
-			if(newY>=game_height)
-				{newY=game_height-1;tmp_yVel=tmp_yVel*(-1);}	
-
-
-
-			player_e.xVel = tmp_xVel;
-			player_e.yVel = tmp_yVel;
-			player_e.x = newX;
-			player_e.y = newY;
-
-
-
-		
-		pthread_rwlock_wrlock(&player_rw_lock);
-//			if(players[i]->checkHits(player_e.xVel,player_e.yVel,mass_e))
-//				cout<<"COLLISION!!"<<endl;
-			players[i]->setDescriptor(player_e);
-		pthread_rwlock_unlock(&player_rw_lock);
-
-	      }
-		//}}}
-
-
-	  for(int i=0; i<pixel_size ;i++)
-	      {
-	//{{{
-	pthread_rwlock_rdlock(&pix_rw_lock);
-		pix_desc = pixelList_m[i];
-	pthread_rwlock_unlock(&pix_rw_lock);	
-
-
-		integrate(pix_desc, t, dt,
-			mass_e.mass, mass_e.x, mass_e.y);
-
-		newX = pix_desc.x;
-		newY = pix_desc.y;
-
-		tmp_xVel = pix_desc.xVel;
-		tmp_yVel = pix_desc.yVel;
-
-
-			if(newX<=0)
-				{newX=1;tmp_xVel=tmp_xVel*(-1);}
-
-			if(newX>=game_width)
-				{newX=game_width-1;tmp_xVel=tmp_xVel*(-1);}
-
-			if(newY<=0)
-				{newY=1;tmp_yVel=tmp_yVel*(-1);}
-
-			if(newY>=game_height)
-				{newY=game_height-1;tmp_yVel=tmp_yVel*(-1);}	
-
-
-
-			pix_desc.xVel = tmp_xVel;
-			pix_desc.yVel = tmp_yVel;
-			pix_desc.x = newX;
-			pix_desc.y = newY;
-
-	pthread_rwlock_wrlock(&pix_rw_lock);
-		pixelList_m[i] = pix_desc;
-		if(pixelList_m[i].dimFactor){applyDimming(pixelList_m[i]);}
-		if(pixelList_m[i].deleteMe)
-			{
-				handleDelete(i);
-				pixel_size = pixelList_m.size();
-			}
-	pthread_rwlock_unlock(&pix_rw_lock);
-
-	      }//end pixelList for[i]
-	//}}}	
-
-	//go through other objects 
-	  for(int i=0; i<mass_size; i++)
-		{
-		//{{{
-		pthread_rwlock_rdlock(&object_rw_lock);
-			other_obj_e = objectList[i]->getDescriptor();
-		pthread_rwlock_unlock(&object_rw_lock);
-
-		if(mass_e.ID!=other_obj_e.ID)//dont apply grav to self!
-			{
-
-		integrate_ent(other_obj_e,t, dt,
-			mass_e.mass, mass_e.x, mass_e.y);
-
-		newX = other_obj_e.x;
-		newY = other_obj_e.y;
-
-		tmp_xVel = other_obj_e.xVel;
-		tmp_yVel = other_obj_e.yVel;
-
-			//make sure the new location is within bounds
-			if(newX<=0)
-				{newX=1;tmp_xVel=tmp_xVel*(-1);}
-
-			if(newX>=game_width)
-				{newX=game_width-1;tmp_xVel=tmp_xVel*(-1);}
-
-			if(newY<=0)
-				{newY=1;tmp_yVel=tmp_yVel*(-1);}
-
-			if(newY>=game_height)
-				{newY=game_height-1;tmp_yVel=tmp_yVel*(-1);}	
-
-
-
-			other_obj_e.xVel = tmp_xVel;
-			other_obj_e.yVel = tmp_yVel;
-			other_obj_e.x = newX;
-			other_obj_e.y = newY;
-
-		pthread_rwlock_wrlock(&player_rw_lock);
-			objectList[i]->setDescriptor(other_obj_e);
-		pthread_rwlock_unlock(&player_rw_lock);
-			}
-		}
-		//}}} 
-	}//end massLIst for[j]
-   }//end if mass_size not 0
- else//no masses!
-  {
-	for(int i=0; i<player_size ;i++)
-	      {
-
-
-		pthread_rwlock_rdlock(&player_rw_lock);
-			player_e = players[i]->getDescriptor();
-		pthread_rwlock_unlock(&player_rw_lock);
-
-	integrate_ent(player_e,t, dt,
-			0, 0, 0);
-
-		newX = player_e.x;
-		newY = player_e.y;
-
-		tmp_xVel = player_e.xVel;
-		tmp_yVel = player_e.yVel;
-
-
-			if(newX<=0)
-				{newX=1;tmp_xVel=tmp_xVel*(-1);}
-
-			if(newX>=game_width)
-				{newX=game_width-1;tmp_xVel=tmp_xVel*(-1);}
-
-			if(newY<=0)
-				{newY=1;tmp_yVel=tmp_yVel*(-1);}
-
-			if(newY>=game_height)
-				{newY=game_height-1;tmp_yVel=tmp_yVel*(-1);}	
-
-
-
-			player_e.xVel = tmp_xVel;
-			player_e.yVel = tmp_yVel;
-			player_e.x = newX;
-			player_e.y = newY;
-
-		pthread_rwlock_wrlock(&player_rw_lock);
-			players[i]->setDescriptor(player_e);
-		pthread_rwlock_unlock(&player_rw_lock);
-
-	      }
-
-
-
-	  for(int i=0; i<pixel_size ;i++)
-	      {
-
-	pthread_rwlock_rdlock(&pix_rw_lock);
-		pix_desc = pixelList_m[i];
-	pthread_rwlock_unlock(&pix_rw_lock);	
-
-
-		integrate(pix_desc, t, dt,
-			0, 0, 0);
-
-		newX = pix_desc.x;
-		newY = pix_desc.y;
-
-		tmp_xVel = pix_desc.xVel;
-		tmp_yVel = pix_desc.yVel;
-
-
-			if(newX<=0)
-				{newX=1;tmp_xVel=tmp_xVel*(-1);}
-
-			if(newX>=game_width)
-				{newX=game_width-1;tmp_xVel=tmp_xVel*(-1);}
-
-			if(newY<=0)
-				{newY=1;tmp_yVel=tmp_yVel*(-1);}
-
-			if(newY>=game_height)
-				{newY=game_height-1;tmp_yVel=tmp_yVel*(-1);}	
-
-
-
-			pix_desc.xVel = tmp_xVel;
-			pix_desc.yVel = tmp_yVel;
-			pix_desc.x = newX;
-			pix_desc.y = newY;
-
-	pthread_rwlock_wrlock(&pix_rw_lock);
-		pixelList_m[i] = pix_desc;
-		if(pixelList_m[i].dimFactor){applyDimming(pixelList_m[i]);}
-		if(pixelList_m[i].deleteMe)
-			{
-			handleDelete(i);
-			pixel_size = pixelList_m.size();
-			}
-	pthread_rwlock_unlock(&pix_rw_lock);
-
-
-
-	      }//end pixelList for[i]
-  }//end else mass_size is zero
-}
-//}}}
-
-
 //-----------runDemos-------
 //just puts pixels with different attributes
 //depending on the selection argument
@@ -908,7 +615,6 @@ void RuPPAT::RK4(float t, float dt)
 
 		//at this point, all the velocities and locations should
 		//be updated and valid, we can go ahead and set the descriptor
-
 		pthread_rwlock_wrlock(&object_rw_lock);
 			objectList[j]->setDescriptor(obj_desc_sec);
 		pthread_rwlock_unlock(&object_rw_lock);
@@ -989,6 +695,32 @@ int xOrigin, yOrigin, screen_centX=WIDTH/2, screen_centY=HEIGHT/2;
 char sel = 'g';
 void * select = &sel;
 
+SDL_Surface *primitives =
+			SDL_CreateRGBSurface(SDL_SWSURFACE,600,600,32, 0xFF000000, 
+			0x00FF0000, 0x0000FF00, 0x000000FF); 
+
+Primitives primMaker(1,0x9f0000ff, primitives);
+CoOrd pA, pB, pC, pD, pCenter;
+pCenter.x = 200;
+pCenter.y = 200;
+
+
+pA.x = 200;
+pA.y = 400;
+
+pB.x = 200;
+pB.y = 100;
+
+pC.x = 100;
+pC.y = 200;
+
+pD.x = 100;
+pD.y = 200;
+
+
+
+
+
 std::thread *rk4_th = new std::thread(&RuPPAT::RK4,this,t,dt);
 
 	//keep looping until program end
@@ -1015,7 +747,13 @@ std::thread *rk4_th = new std::thread(&RuPPAT::RK4,this,t,dt);
 
 		//parse players
 		parsePlayersToSurface();
-
+		
+		primMaker.drawCircle(pCenter, 25);
+		primMaker.drawLine(pCenter, pA,6, primitives);
+	//	primMaker.drawLine(pCenter, pB,8, mainRender->pre_surface);
+	//	primMaker.drawLine(pCenter, pC,10, mainRender->pre_surface);
+	//	primMaker.drawLine(pCenter, pD,18, mainRender->pre_surface);
+		
 
 		//std::thread rk4(&RuPPAT::RK4,this,t,dt);
 		rk4_th = new std::thread(&RuPPAT::RK4,this,t,dt);
@@ -1024,6 +762,7 @@ std::thread *rk4_th = new std::thread(&RuPPAT::RK4,this,t,dt);
 		mainRender->applySurface(xOrigin,yOrigin,backgroundLayers[2]);
 
 		
+		//test for boundry conditions of screen centering	
 		if(centerX < screen_centX)
 			xOrigin = 0;
 		else if(centerX > (game_width-screen_centX))
@@ -1038,12 +777,11 @@ std::thread *rk4_th = new std::thread(&RuPPAT::RK4,this,t,dt);
 		else
 			yOrigin = centerY - screen_centY;
 
+		//mainRender->putSprite(xOrigin + (WIDTH/2),yOrigin + (HEIGHT/2),primitives);
 		mainRender->OnRender(xOrigin,yOrigin);
 
 	if(nextTick > SDL_GetTicks())SDL_Delay(nextTick - SDL_GetTicks());
 		nextTick = SDL_GetTicks() + interval;
-
-		//rk4.join();	
 
 	  }
 	cout<<"Render thread ending!"<<endl;
@@ -1057,8 +795,6 @@ std::thread *rk4_th = new std::thread(&RuPPAT::RK4,this,t,dt);
 //spawn threads to do work
 //
 //
-//void RuPPAT :: runPPAT(bool *mainDone, Event_desc &mainEvents
-//			, string selection, string option)
 void RuPPAT :: runPPAT(bool *mainDone, Event_desc *mainEvents
 			, string selection, string option)
 

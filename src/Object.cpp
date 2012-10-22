@@ -16,7 +16,7 @@ Object :: Object(string sprite_path, int start_x, int start_y, int start_mass)
 		
 }//}}}
 
-Object::Object(string sprite_path, int start_x, int start_y, int start_mass,
+Object :: Object(string sprite_path, int start_x, int start_y, int start_mass,
 			int num_rotations, int starting_angle)
 :sprite(sprite_path,num_rotations,starting_angle), hitCircleSprite()
 {

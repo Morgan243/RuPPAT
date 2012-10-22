@@ -10,6 +10,17 @@
 #define FORWARD 3
 
 using namespace std;
+
+struct CoOrd_fl
+{
+	float x,y;
+};
+
+struct CoOrd
+{
+	int x,y;
+};
+
 struct optionSet
 {
 	std::string option;
