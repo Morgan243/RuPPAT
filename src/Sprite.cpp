@@ -39,6 +39,7 @@ Sprite::Sprite(string path_to_sprite,int numRotations, int startingAngle)
 	sprite_surf = tempSpriteOpt;
 
 
+
 	for(int i = 0; i<numRotations;i++)
 	{
 		rotations.push_back(
@@ -47,6 +48,9 @@ Sprite::Sprite(string path_to_sprite,int numRotations, int startingAngle)
 							1.0,0));	
 		SDL_SetAlpha(rotations.back(), 0, 0xFF);
 	}
+	
+	generateSpriteOutlines();
+
 }
 
 Sprite::~Sprite()
@@ -135,27 +139,18 @@ void Sprite::putPixel(int x, int y, Uint32 color, int screenID)
 if (SDL_MUSTLOCK(sprite_surf)) 
 	SDL_LockSurface(sprite_surf);	
 
-//	unsigned int *ptr = (unsigned int*)mainScreen->pixels;
-//	int lineoffset = y * (mainScreen->pitch / 4);
-//	
-//
-//	int point = lineoffset + x;	
-//
-//	//prevent placeing pixel outside of screens bounds
-//	if((point < mainHeight*mainWidth) && (point>=0))
-//		ptr[point] = color;
+	Uint8 r, g, b, a; 
 
-Uint8 r, g, b, a; 
-// This will probably warn you about addressing locals 
- SDL_GetRGBA(color, sprite_surf->format, &r, &g, &b, &a); 
+	// This will probably warn you about addressing locals 
+	SDL_GetRGBA(color, sprite_surf->format, &r, &g, &b, &a); 
 
- // Now give it transparent pixels 
- color = SDL_MapRGBA(sprite_surf->format, r, g, b, SDL_ALPHA_TRANSPARENT); 
+	// Now give it transparent pixels 
+	color = SDL_MapRGBA(sprite_surf->format, r, g, b, SDL_ALPHA_TRANSPARENT); 
 
-
-    int bpp = sprite_surf->format->BytesPerPixel;
-    /* Here p is the address to the pixel we want to set */
-    Uint8 *p = (Uint8 *)sprite_surf->pixels + y * sprite_surf->pitch + x * bpp;
+	int bpp = sprite_surf->format->BytesPerPixel;
+	
+	// Here p is the address to the pixel we want to set 
+	Uint8 *p = (Uint8 *)sprite_surf->pixels + y * sprite_surf->pitch + x * bpp;
 	
 	*(Uint32 *)p = color;
 
@@ -169,3 +164,44 @@ void Sprite::getDimensions(int &w, int &h)
 	w = sprite_surf->w;
 	h = sprite_surf->h;
 }
+void Sprite::generateSpriteOutlines()
+{
+//{{{	
+
+	for(int k = 0; k < rotations.size(); k++)
+	{
+		unsigned int pixVal[rotations[k]->w][rotations[k]->h]; 
+
+		for(int i = 0; i < rotations[k]->h; i++)
+		{
+			for(int j = 0; j < rotations[k]->w; j++)
+			{
+
+				if(((pixVal[j][i] = getPixel(j,i)) != 0) 
+						&& (k == 0))
+					printf("1 ");
+				else if (k==0)
+					printf("_ ");
+			}
+			if(!k)
+			printf("\n");
+			//pixMaps.push_back(&pixVal);
+		}
+	}
+///}}}
+}
+
+vector<CoOrd> Sprite:: outlineSprite()
+{
+
+//	for(int i = 0; i < sprite->w; i++)
+	{
+		//for(int j = 0; j < sprite->h; j++)
+		{
+
+		}
+	}
+
+}
+
+

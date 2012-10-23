@@ -4,6 +4,7 @@
 #include "SDL/SDL_gfxPrimitives.h"
 #include "SDL/SDL_rotozoom.h"
 #include "SDL/SDL_image.h"
+#include "Descriptors.h"
 
 #include <iostream>
 #include <vector>
@@ -54,6 +55,9 @@ class Sprite
 		float lastErr;
 		float rotationalErrorAccum;
 
+		void generateSpriteOutlines();
+		vector<CoOrd> outlineSprite();
+
 	protected:
 		float rotationRate;
 		float degreeIncrement;
@@ -65,5 +69,6 @@ class Sprite
 		SDL_Surface *sprite_surf;
 		vector<SDL_Surface *> rotations;	
 		
+		unsigned int ** pixMaps;
 };
 #endif

@@ -255,7 +255,6 @@ void Render :: putSprite(int x, int y, SDL_Surface* sprite)
 //	if(SDL_MUSTLOCK(mainScreen))
 //		SDL_UnlockSurface(mainScreen);
 }
-
 //blit a surface onto the main screen, good for backgrounds and testing sprites
 void Render::applySurface(int x, int y, SDL_Surface* source)
 {

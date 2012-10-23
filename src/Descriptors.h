@@ -63,10 +63,12 @@ struct Entity_desc
 
 	float xVel, yVel;//velocity vector
 	float xAcc, yAcc;//acceleration vector
-//	int xGacc,yGacc; //grav acceleration
+
 	int mass;
 	int ID;
 	float maxAccel;
+
+	int hitCircle_radius;
 	bool noDrawEffect;
 	
 	std::vector<Circle_desc> hitCircles;
