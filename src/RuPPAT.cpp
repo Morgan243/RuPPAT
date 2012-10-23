@@ -433,7 +433,6 @@ void RuPPAT :: runDemos(void *selection)
 	t_pix.dimFactor = 0;
 
 	t_pix.dimTimer = 0;
-	t_pix.Xtimer =t_pix.Ytimer =0;// SDL_GetTicks();
 
 	t_pix.deleteMe = false;
 
@@ -794,7 +793,6 @@ std::thread *rk4_th = new std::thread(&RuPPAT::RK4,this,t,dt);
 //	RuPPAT Entry Point
 //spawn threads to do work
 //
-//
 void RuPPAT :: runPPAT(bool *mainDone, Event_desc *mainEvents
 			, string selection, string option)
 
@@ -896,11 +894,9 @@ void RuPPAT :: createPixElement(  int x, int y,
 		tmpPix.yVel = 0;
 		tmpPix.xAcc = xAccel;
 		tmpPix.yAcc = yAccel;
-		tmpPix.xGacc = 0;
-		tmpPix.yGacc = 0;
 
-		tmpPix.Xtimer = thisTime;
-		tmpPix.Ytimer = thisTime;
+		//tmpPix.Xtimer = thisTime;
+		//tmpPix.Ytimer = thisTime;
 
 		tmpPix.deleteMe = false;
 		tmpPix.ID=baseID++;
@@ -945,8 +941,6 @@ void RuPPAT :: accelPlayer(int p_ID, bool isForward)
 		players[p_ID]->getXY_exhaust(t_pix.xVel, t_pix.yVel);
 	pthread_rwlock_unlock(&object_rw_lock);
 		
-//t_pix.color = SDL_MapRGBA(mainRender->mainScreen->format,0xfd, 0, 0, 0x0f);
-		//cout<<"make color: "<<t_pix.color<<endl;
 		//color start red
 		t_pix.color=0x9f0000ff;
 		t_pix.xAcc = 0;
@@ -955,7 +949,6 @@ void RuPPAT :: accelPlayer(int p_ID, bool isForward)
 		t_pix.dimFactor = 2;
 
 		t_pix.dimTimer = 0;
-		t_pix.Xtimer =t_pix.Ytimer =0;
 
 		t_pix.deleteMe = false;
 

@@ -71,7 +71,7 @@ struct Entity_desc
 	int hitCircle_radius;
 	bool noDrawEffect;
 	
-	std::vector<Circle_desc> hitCircles;
+	//std::vector<Circle_desc> hitCircles;
 };
 
 struct Event_desc
@@ -97,10 +97,10 @@ struct Pixel_desc
 	float xVel, yVel;//velocity vector
 
 	float xAcc, yAcc;//acceleration vector
-	int xGacc,yGacc; //grav acceleration
+	
 
-	unsigned int Xtimer;//used for time based movement
-	unsigned int Ytimer;	
+	//unsigned int Xtimer;//used for time based movement
+//	unsigned int Ytimer;	
 	unsigned int dimTimer;
 
 	int accelLength;//how long to apply acceleration
