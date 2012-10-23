@@ -895,9 +895,6 @@ void RuPPAT :: createPixElement(  int x, int y,
 		tmpPix.xAcc = xAccel;
 		tmpPix.yAcc = yAccel;
 
-		//tmpPix.Xtimer = thisTime;
-		//tmpPix.Ytimer = thisTime;
-
 		tmpPix.deleteMe = false;
 		tmpPix.ID=baseID++;
 

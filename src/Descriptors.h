@@ -85,22 +85,22 @@ struct Event_desc
 
 };
 
-struct Pixel_desc
+//A little different than entities; the idea being that these
+//pixels get flung out into the game from a point and may fade
+//out over time.
+struct Pixel_desc : public Entity_desc
 {
-	int ID;//identify the pixel, usefule for debugging
+	//int ID;//identify the pixel, usefule for debugging
 
-	float x, y; //position
+	//float x, y; //position
 	Uint32 color;//color of pixel
 	
-	int mass; //mass	
+	//int mass; //mass	
 
-	float xVel, yVel;//velocity vector
+	//float xVel, yVel;//velocity vector
 
-	float xAcc, yAcc;//acceleration vector
+	//float xAcc, yAcc;//acceleration vector
 	
-
-	//unsigned int Xtimer;//used for time based movement
-//	unsigned int Ytimer;	
 	unsigned int dimTimer;
 
 	int accelLength;//how long to apply acceleration
