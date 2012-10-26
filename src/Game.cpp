@@ -4,47 +4,7 @@
 using namespace std;
 
 
-//-----CONSTRUCTOR
-Game :: Game()
-{
-//{{{
-	string bkg_paths[]={""};
-	engine = new RuPPAT(1024, 768, BPP,
-				 SDL_HWSURFACE | SDL_DOUBLEBUF,
-					 bkg_paths,0);
-	
-	done = false;
-//}}}
-}
-
-//-----CONSTRUCTOR 2!!
-Game :: Game(int WIDTH_cl, int HEIGHT_cl)
-{
-//{{{
-	string bkg_paths[]={"bkg_one_1080.png",
-				"bkg_two_1080.png",
-					"bkg_three_1080.png"};
-
-	engine = new RuPPAT(WIDTH_cl, HEIGHT_cl, BPP, 
-				SDL_HWSURFACE | SDL_DOUBLEBUF,
-					bkg_paths,3);
-	done = false;
-
-	engine->addPlayer("red_ship.png",
-				 360, 0, 1, 400, 200,
-					"red_ship_HC.png");
-	
-	engine->addObject("red_planet.png",
-				844 , 560, 100000,1.0,0.0,0.0,
-					"red_planet_HC.png");
-
-	engine->addObject("asteroid_large_1.png"
-				,700,400,100, -.1, 20.0,49.0,
-					"asteroid_large_1_HC.png");
-//}}}
-}
-
-//-----Latest Constructor: configSections holds vector of config sections
+//-----CONSTRUCTOR: configSections holds vector of config sections
 // 			   sections hold vectors of options, which have vectors of values 
 Game::Game(vector<section> configSections)
 {
@@ -209,38 +169,6 @@ Game::Game(vector<section> configSections)
 					  tempVect_2[0]);	  
 		}
 	}
-//}}}
-}
-
-//-----Deprecated Constructor: RunOptions encapsulates a lot of good info
-Game::Game(RunOptions options)
-{
-//{{{
-	//init the engine
-	engine = new RuPPAT(options.width,options.height,BPP,
-					SDL_HWSURFACE | SDL_DOUBLEBUF,
-						options.background_spritePaths,3);
-	done = false;
-
-
-	engine->addPlayer(options.player_spritePath,
-				360,0,1,400,200,
-					options.player_HCpath);
-
-	engine->addObject(options.objects_spritePath[0],
-				844,560,150000,1.0,0.0,0.0,
-					options.objects_HCpath[0]);
-	
-	engine->addObject(options.objects_spritePath[1],
-				700,500,1000,-.1,10.0,69.0,
-					options.objects_HCpath[1]);
-
-	for(int i = 2; i < options.objects_spritePath.size(); i++)
-	{
-		engine->addObject(options.objects_spritePath[i],
-				220+(i*120),300,10000,-4+i,i,i*10,
-					options.objects_HCpath[i]);
-	}	
 //}}}
 }
 

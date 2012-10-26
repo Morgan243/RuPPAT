@@ -19,57 +19,6 @@ using namespace std;
 
 
 //------------CONSTRUCTOR--------
-//initialize some locks, start render (window)
-//and set some variables
-RuPPAT :: RuPPAT(int width,int height,int bpp, unsigned int flags,
-		string background_img_paths[], int num_bks)
-{
-//{{{
-	//init all the locks--ERROR CHECK too 
-	if(pthread_rwlock_init(&pix_rw_lock, NULL))
-		{cout<<"ERROR initializing pixel rw lock: "<<endl;}
-
-	if(pthread_rwlock_init(&mass_rw_lock, NULL))
-		{cout<<"ERROR initializing mass rw lock: "<<endl;}
-
-	if(pthread_rwlock_init(&ent_rw_lock, NULL))
-		{cout<<"ERROR initializing entity rw lock: "<<endl;}
-
-	if(pthread_rwlock_init(&player_rw_lock, NULL))
-		{cout<<"ERROR initializing player rw lock: "<<endl;}
-
-	if(pthread_mutex_init(&pix_list_lock_2,NULL))
-		{cout<<"ERROR initializing pix lock 2 lock: "<<endl;}
-	
-	if(pthread_rwlock_init(&object_rw_lock,NULL))
-		{cout<<"ERROR initializing object rw lock: "<<endl;}
-
-	//start the render; opens up game window
-	mainRender = new Render(width, height, BPP, flags );
-
-	//load all the layers for the background
-	for(int i = 0; i<num_bks;i++)
-	{
-	SDL_Surface *tempBkg, * tempBkgOpt;
-
-		tempBkg = IMG_Load((char *)background_img_paths[i].c_str());
-
-		tempBkgOpt = SDL_DisplayFormatAlpha(tempBkg);
-
-		backgroundLayers.push_back(tempBkgOpt);	
-
-	}
-
-	//engine needs to know how much real estate it has
-	WIDTH = width;
-	HEIGHT = height;
-
-
-	//set grav constant
-	gravitationalConstant=22;
-//}}}
-}
-
 RuPPAT :: RuPPAT(int width, int height, int bpp, unsigned int flags,
 		 vector<string> bkg_paths)
 {
@@ -218,6 +167,7 @@ void RuPPAT :: parsePlayersToSurface()
 //}}}
 }
 
+
 void RuPPAT :: parseObjectsToSurface()
 {
 //{{{
@@ -358,21 +308,6 @@ int RuPPAT :: addPlayer(string spritePath, int numRotations, int startingAngle,
 		
 			objectList.push_back(new_object);
 		pthread_rwlock_unlock(&object_rw_lock);
-
-	return size;
-//}}}
-}
-
-//returns entity ID
-int RuPPAT :: addEntity(Entity_desc new_ent)
-{
-//{{{
-	int size;
-
-		pthread_rwlock_wrlock(&ent_rw_lock);
-			entList.push_back(new_ent);	
-			size = entList.size()-1;
-		pthread_rwlock_unlock(&ent_rw_lock);
 
 	return size;
 //}}}
@@ -910,17 +845,6 @@ void RuPPAT :: createPixElement(  int x, int y,
 		    pixelList_m.push_back(tmpPix);
 		 pthread_rwlock_unlock(&pix_rw_lock);
 //}}}
-}
-
-
-void RuPPAT :: putPixel(int x, int y, unsigned int color, int id)
-{
-	mainRender->putPixel(x,y, color, id);
-}
-
-void RuPPAT :: putSprite(int x, int y, SDL_Surface *sprite)
-{
-	mainRender->putSprite(x, y,sprite);
 }
 
 

@@ -90,16 +90,8 @@ struct Event_desc
 //out over time.
 struct Pixel_desc : public Entity_desc
 {
-	//int ID;//identify the pixel, usefule for debugging
-
 	//float x, y; //position
 	Uint32 color;//color of pixel
-	
-	//int mass; //mass	
-
-	//float xVel, yVel;//velocity vector
-
-	//float xAcc, yAcc;//acceleration vector
 	
 	unsigned int dimTimer;
 
