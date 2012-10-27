@@ -48,7 +48,9 @@ class Sprite
 
 		Uint32 getPixel(int x, int y);
 
-		void putPixel(int x, int y, Uint32 color, int screenID);
+		Uint32 getPixel(int x, int y, int rotation_i);
+
+		void putPixel(int x, int y, Uint32 color, int rotation_i);
 
 		void getDimensions(int &w, int &h);
 
@@ -57,6 +59,9 @@ class Sprite
 
 		void generateSpriteOutlines();
 		vector<CoOrd> outlineSprite();
+
+		void clearPixelFromAll(int start_rot_i, int x, int y);
+		void clearPixel(int rotation, int x, int y);
 
 	protected:
 		float rotationRate;
@@ -70,5 +75,7 @@ class Sprite
 		vector<SDL_Surface *> rotations;	
 		
 		unsigned int ** pixMaps;
+
+		string sprite_path;
 };
 #endif
