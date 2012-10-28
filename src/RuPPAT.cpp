@@ -6,7 +6,7 @@
 */
 
 #include "RuPPAT.h"
-#include "PhysFuncs.h"
+//#include "PhysFuncs.h"
 #include "Object.h"
 #include <pthread.h>
 #include <thread>
@@ -361,6 +361,7 @@ void RuPPAT :: runDemos(void *selection)
 	//Create our temporary pixel
 	Pixel_desc t_pix;
 
+	//t_pix.mass = 10;
 	t_pix.color=0xffff00ff;
 	t_pix.xAcc = 0;
 	t_pix.yAcc = 0;
@@ -379,13 +380,13 @@ void RuPPAT :: runDemos(void *selection)
 	   {
 			t_pix.color = (rand()%0xffffff)|0xFF000000;
 		int count = 0;
-			t_pix.x = 800;
-			t_pix.yVel = 80;
+			t_pix.x = 700;
+			t_pix.yVel = 70;
+			t_pix.xVel = 20;
 			t_pix.xAcc = 0;
 			t_pix.dimFactor = 1000;
 		while(count<50 && !done)
 		{  
-
 			t_pix.y = 584;
 			t_pix.x-=1;
 			createPixElement(&t_pix);
@@ -486,17 +487,13 @@ void RuPPAT::RK4(float t, float dt)
 	 int num_pixels = pixelList_m.size();
 	pthread_rwlock_unlock(&pix_rw_lock);
 
-	Entity_desc obj_desc_prim, obj_desc_sec;
+	Entity_desc *obj_desc_prim , *obj_desc_sec, obj_desc_tri;
 	Pixel_desc pix_desc;
 
  //go through object list, apply gravity 
  //to other objects and pixels
  for(int i = 0; i<num_objects;i++)
  {
-	//get the descriptor from this object
-	pthread_rwlock_rdlock(&object_rw_lock);
-		obj_desc_prim = objectList[i]->getDescriptor();
-	pthread_rwlock_unlock(&object_rw_lock);
 
 	//go through the object list to apply grav to other objects
 	for(int j = 0; j<num_objects; j++)
@@ -504,29 +501,22 @@ void RuPPAT::RK4(float t, float dt)
 	  //make sure not to apply the grav to objects self
 	  if(i!=j)
 	   {
-
-		pthread_rwlock_rdlock(&object_rw_lock);
-			obj_desc_sec = objectList[j]->getDescriptor();
+		//Runge Kutta integrator
+		pthread_rwlock_wrlock(&object_rw_lock);	
+			obj_desc_tri = objectList[j]->getDescriptor();
+			obj_desc_prim = objectList[i]->PhysicsHandler(t,dt, obj_desc_tri);
 		pthread_rwlock_unlock(&object_rw_lock);
 
-	   if(obj_desc_prim.ID != obj_desc_sec.ID)
-		{
-
-		//Runge Kutta integrator
-		integrate_ent(obj_desc_sec, t, dt, 
-			obj_desc_prim.mass, obj_desc_prim.x, obj_desc_prim.y);
-
-		
 		//the following checks that the objects new location
 		//is not outside the boundry of the game. This should
 		//be replaced with function calls or object methods, as
 		//there will be many situations in which this will need
 		//to be handled differently.
-		new_x = obj_desc_sec.x;
-		new_y = obj_desc_sec.y;
+		new_x = obj_desc_prim->x;
+		new_y = obj_desc_prim->y;
 		
-		new_xVel = obj_desc_sec.xVel;
-		new_yVel = obj_desc_sec.yVel;
+		new_xVel = obj_desc_prim->xVel;
+		new_yVel = obj_desc_prim->yVel;
 			
 			//make sure the new location is within bounds
 			if(new_x<=0)
@@ -541,36 +531,37 @@ void RuPPAT::RK4(float t, float dt)
 			if(new_y>=game_height)
 				{new_y=game_height-1;new_yVel=new_yVel*(-1);}	
 
-
-			obj_desc_sec.xVel = new_xVel;
-			obj_desc_sec.yVel = new_yVel;
-			obj_desc_sec.x = new_x;
-			obj_desc_sec.y = new_y;
-
 		//at this point, all the velocities and locations should
 		//be updated and valid, we can go ahead and set the descriptor
 		pthread_rwlock_wrlock(&object_rw_lock);
-			objectList[j]->setDescriptor(obj_desc_sec);
+			obj_desc_prim->xVel = new_xVel;
+			obj_desc_prim->yVel = new_yVel;
+			obj_desc_prim->x = new_x;
+			obj_desc_prim->y = new_y;
 		pthread_rwlock_unlock(&object_rw_lock);
-		}
+		
 	   }
 	}
 	//next, go through the pixel structs 
 	for(int j = 0; j<num_pixels; j++)
 	{
-		pthread_rwlock_rdlock(&pix_rw_lock);
-			pix_desc = pixelList_m[j];
+
+		pthread_rwlock_rdlock(&object_rw_lock);
+		pthread_rwlock_wrlock(&pix_rw_lock);
+			obj_desc_sec = &pixelList_m[j];
+			obj_desc_sec = objectList[i]->PhysicsHandler(*obj_desc_sec, t, dt);
+
+			new_x = obj_desc_sec->x;
+			new_y = obj_desc_sec->y;
+
+			new_xVel = obj_desc_sec->xVel;
+			new_yVel = obj_desc_sec->yVel;
+			//cout<<"Pix Velocity: "<<new_xVel<<" , "<<new_yVel<<endl;
 		pthread_rwlock_unlock(&pix_rw_lock);	
+		pthread_rwlock_unlock(&object_rw_lock);
 
+			
 
-		integrate(pix_desc, t, dt,
-			obj_desc_prim.mass, obj_desc_prim.x, obj_desc_prim.y);
-
-		new_x = pix_desc.x;
-		new_y = pix_desc.y;
-
-		new_xVel = pix_desc.xVel;
-		new_yVel = pix_desc.yVel;
 
 
 			//make sure the new location is within bounds
@@ -586,13 +577,14 @@ void RuPPAT::RK4(float t, float dt)
 			if(new_y>=game_height)
 				{new_y=game_height-1;new_yVel=new_yVel*(-1);}	
 
-			pix_desc.xVel = new_xVel;
-			pix_desc.yVel = new_yVel;	
-			pix_desc.x = new_x;
-			pix_desc.y = new_y;
-			
 		pthread_rwlock_wrlock(&pix_rw_lock);
-			pixelList_m[j] = pix_desc;
+			obj_desc_sec->xVel = new_xVel;
+			obj_desc_sec->yVel = new_yVel;	
+			obj_desc_sec->x = new_x;
+			obj_desc_sec->y = new_y;
+			
+		
+			//pixelList_m[j] = obj_desc_sec;
 			if(pixelList_m[j].dimFactor){applyDimming(pixelList_m[j]);}
 			if(pixelList_m[j].deleteMe)
 				{
@@ -775,7 +767,8 @@ void RuPPAT :: runPPAT(bool *mainDone, Event_desc *mainEvents
 			cout<<"SPACE PRESSED!!!"<<endl;	
 
 			//then run demo->place pixels w/ attr
-			runDemos(sel);
+			//runDemos(sel);
+			firePlayersWeapon(0);
 
 			}
 
@@ -877,7 +870,7 @@ void RuPPAT :: accelPlayer(int p_ID, bool isForward)
 
 	
 	float origXvel=t_pix.xVel, origYvel=t_pix.yVel;
-		cout<<origXvel<<"  "<<origYvel<<endl;	
+	//	cout<<origXvel<<"  "<<origYvel<<endl;	
 	
 	//create 10 pixels with slight random variation
 	for(int i =0; i< 10; i++)
@@ -1059,3 +1052,9 @@ tempErrDiff =  angle_diff*.1 - tempErrDiff; //angle_diff - tempErrDiff;
 //}}}
 }
 
+
+void RuPPAT :: firePlayersWeapon(int p_ID)
+{
+
+
+}

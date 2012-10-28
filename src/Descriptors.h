@@ -105,5 +105,14 @@ struct Pixel_desc : public Entity_desc
 
 	bool deleteMe;
 };
-
+struct Derivative
+{
+	//velocities
+	float dx;
+	float dy;
+	
+	//accelerations
+	float ddx;
+	float ddy;
+};
 #endif

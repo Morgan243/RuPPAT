@@ -11,7 +11,7 @@ Game::Game(vector<section> configSections)
 //{{{
 
 	//A few defaults, not configurable at the moment
-	key_count_limit = 0;
+	key_count_limit = 2;
 	defaultTurnAmnt = 4;
 	fastTurn = 3;
 	w_count = 0;
@@ -200,7 +200,7 @@ void Game :: run(string selection, string option)
 			&done, &mainEvents, selection, option);
 
 
-	int game_rate = 60;
+	int game_rate = 120;
 	int interval = 1000/game_rate;
 	
 	//get the tick# when events should be handled
@@ -244,7 +244,7 @@ void Game :: handleEvents(Event_desc &mainEvents)
 		//if a key was pressed
 		if(event.type == SDL_KEYDOWN)
 			{
-			cout<<"keydown!"<<endl;
+			//cout<<"keydown!"<<endl;
 
 
 			//LEFT CONTROL

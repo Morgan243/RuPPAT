@@ -6,7 +6,7 @@
 #not run.
 #
 Main:
-	width=780#Set the width!!
+	width=980#Set the width!!
 	height=800
 	#backgroundLayers=bkg_massive_8k_one.png,backgroundLayers=bkg_massive_8k_two.png,backgroundLayers=bkg_massive_8k_three.png
 	backgroundLayers=bkg_one_1080.png,bkg_two_1080.png,bkg_three_1080.png
@@ -16,10 +16,11 @@ Player:
 	x=100
 	y=100
 	HC=red_ship_HC.png
+	missle=white_rocket.png
 Object:
 	x=840
 	y=550
-	mass=140000
+	mass=299950
 	rotation=0.8
 	xVel=0
 	yVel=0
@@ -35,7 +36,7 @@ Object:
 Object:
 	x=300
 	y=500
-	mass=400
+	mass=150
 	rotation=-1.3
 	xVel=10
 	yVel=20
@@ -51,7 +52,7 @@ Object:
 Object:
 	x=400
 	y=200
-	mass=1000
+	mass=600
 	xVel=-5
 	rotation=0.5
 	yVel=10

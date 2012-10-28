@@ -1,7 +1,7 @@
 //generic representation for interacting sprites (moving/alive/etc)
 
 #include "Object.h"
-//#include "PhysFuncs.h"
+#include "PhysFuncs.h"
 
 Object :: Object(string sprite_path, int start_x, int start_y, int start_mass)
 :sprite(sprite_path,360,0)
@@ -47,6 +47,9 @@ Object::Object(string sprite_path, int start_x, int start_y, int start_mass,
 	descriptor.xVel=xVel;
 	descriptor.yVel=yVel;
 
+	descriptor.xAcc=0.0;
+	descriptor.yAcc=0.0;
+
 	//set mass
 	descriptor.mass = start_mass;
 
@@ -72,7 +75,7 @@ void Object::setDescriptor(Entity_desc new_desc)
 	descriptor = new_desc;
 }
 
-Entity_desc Object::getDescriptor()
+Entity_desc Object::getDescriptor() const
 {
 	return descriptor;
 }
@@ -138,13 +141,17 @@ SDL_Surface *Object :: getSprite(int angle)
 	return sprite.getSprite(angle);
 }
 
+int Object :: getMass() const
+{
+	return descriptor.mass;
+}
 
-int Object :: getX()
+int Object :: getX() const
 {
 	return descriptor.x;
 }
 
-int Object :: getY()
+int Object :: getY() const
 {
 	return descriptor.y;
 }
@@ -154,22 +161,22 @@ void Object :: setXY(int x, int y)
 	descriptor.y = y;
 	
 }
-float Object :: getXvel()
+float Object :: getXvel() const
 {
 	return descriptor.xVel;
 }
 
-float Object :: getYvel()
+float Object :: getYvel() const
 {
 	return descriptor.yVel;
 }
 
-float Object :: getXacc()
+float Object :: getXacc() const
 {
 	return descriptor.xAcc;
 }
 
-float Object :: getYacc()
+float Object :: getYacc() const
 {
 	return descriptor.yAcc;
 
@@ -280,8 +287,9 @@ void Object :: setAccelVectors(bool forward)
 			}
 
 	}
-}
 //}}}
+}
+
 
 void Object :: getXY_exhaust(float &xVel, float &yVel)
 {
@@ -289,6 +297,20 @@ void Object :: getXY_exhaust(float &xVel, float &yVel)
 	yVel=exhaustY;
 }
 
+Entity_desc* Object :: PhysicsHandler(float t, float dt, 
+				Entity_desc &state_src)
+{
+	//default for of this constructor
+	integrate(descriptor, t, dt, state_src);
+	return &descriptor;
+}
+
+Entity_desc* Object :: PhysicsHandler(Entity_desc &state_dest, float t, float dt)
+{
+	//default for of this constructor
+	integrate(state_dest, t, dt, descriptor);
+	return &state_dest;
+}
 
 //void Object::buildHitBoxes_fromLayer(SDL_Surface *HB_surface)
 //{

@@ -11,6 +11,7 @@
 
 #include "Descriptors.h"
 #include "Sprite.h"
+//#include "PhysFuncs.h"
 
 #include <vector>
 #include <iostream>
@@ -18,6 +19,7 @@
 #ifndef OBJECT_H
 #define OBJECT_H
 
+//#include "PhysFuncs.h"
 using namespace std;
 
 class Object
@@ -33,12 +35,9 @@ explicit Object(string sprite_path, int start_x, int start_y, int start_mass,
 			int num_rotations, int starting_angle,
 				 float xVel, float yVel, string HC_path);
 
-//explicit Object(string sprite_path, int start_x, int start_y, int start_mass,
-//			int num_rotations, int starting_angle,
-//				 float xVel, float yVel, string HB_path);
 		~Object();
 
-		Entity_desc getDescriptor();
+		Entity_desc getDescriptor ()const;
 		void setDescriptor(Entity_desc new_desc);
 			
 		SDL_Surface *getSprite();
@@ -46,16 +45,18 @@ explicit Object(string sprite_path, int start_x, int start_y, int start_mass,
 
 
 		void setID(int id);
-		int getX();
-		int getY();
+		int getX ()const;
+		int getY ()const;
 
 		void setXY(int x, int y);
 
-		float getXvel();
-		float getYvel();
+		int getMass ()const;
 
-		float getXacc();
-		float getYacc();
+		float getXvel ()const;
+		float getYvel ()const;
+
+		float getXacc ()const;
+		float getYacc ()const;
 
 		void accelForward();	
 		void accelBackward();
@@ -95,7 +96,13 @@ explicit Object(string sprite_path, int start_x, int start_y, int start_mass,
 
 		float lastErr;
 		float rotationalErrorAccum;
-		
+
+		virtual Entity_desc* PhysicsHandler(float t, float dt,
+						Entity_desc &state_src);
+
+		virtual Entity_desc*  PhysicsHandler(Entity_desc &state_dest, 
+							float t, float dt);
+
 	protected:
 		float exhaustX, exhaustY;
 		Entity_desc descriptor;

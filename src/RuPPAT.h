@@ -91,6 +91,8 @@ class RuPPAT
 
 		void turnPlayerToCoord(int p_ID, int x, int y, int rate);
 
+		void firePlayersWeapon(int p_ID);
+
 	private:
 
 		int WIDTH, HEIGHT, 
