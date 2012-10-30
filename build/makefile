@@ -15,8 +15,8 @@ all: test
 
 test: main.o Render.o Game.o RuPPAT.o PhysFuncs.o Descriptors.o Player.o Object.o Sprite.o Missile.o Primitives.o
 	$(COMP) $(BUILD_DIR)main.o $(BUILD_DIR)Render.o $(BUILD_DIR)Game.o $(BUILD_DIR)RuPPAT.o $(SOURCE_DIR)PhysFuncs.h \
-	$(SOURCE_DIR)Descriptors.h $(BUILD_DIR)Player.o $(BUILD_DIR)Object.o $(BUILD_DIR)Sprite.o $(BUILD_DIR)Missile.o \
-	$(BUILD_DIR)Primitives.o $(CFLAGS) $(BUILD_OUT)test  
+	$(SOURCE_DIR)PhysFuncs.cpp $(SOURCE_DIR)Descriptors.h $(BUILD_DIR)Player.o $(BUILD_DIR)Object.o $(BUILD_DIR)Sprite.o \
+       	$(BUILD_DIR)Missile.o $(BUILD_DIR)Primitives.o $(CFLAGS) $(BUILD_OUT)test  
 
 main.o: $(SOURCE_DIR)main.cpp
 	$(COMP) -c $(SOURCE_DIR)main.cpp $(CFLAGS) 
@@ -31,7 +31,7 @@ RuPPAT.o: $(SOURCE_DIR)RuPPAT.cpp $(SOURCE_DIR)RuPPAT.h
 	$(COMP) -c $(SOURCE_DIR)RuPPAT.h $(SOURCE_DIR)RuPPAT.cpp $(CFLAGS)
 
 PhysFuncs.o: $(SOURCE_DIR)PhysFuncs.h
-	$(COMP) -c $(SOURCE_DIR)PhysFuncs.h $(CFLAGS) 
+	$(COMP) -c $(SOURCE_DIR)PhysFuncs.h $(SOURCE_DIR)PhysFuncs.cpp $(CFLAGS) 
 
 Descriptors.o: $(SOURCE_DIR)Descriptors.h
 	$(COMP) -c $(SOURCE_DIR)Descriptors.h $(CFLAGS) 

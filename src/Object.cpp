@@ -7,6 +7,8 @@ Object :: Object(string sprite_path, int start_x, int start_y, int start_mass)
 :sprite(sprite_path,360,0)
 {//{{{
 
+	refMax = refCounter = -1;
+
 	//set x and y
 	descriptor.x = (float)start_x;
 	descriptor.y = (float)start_y;
@@ -21,6 +23,9 @@ Object :: Object(string sprite_path, int start_x, int start_y, int start_mass,
 :sprite(sprite_path,num_rotations,starting_angle), hitCircleSprite()
 {
 //{{{
+	numRotations = num_rotations;
+
+	refMax = refCounter = -1;
 	//set x and y
 	descriptor.x = (float)start_x;
 	descriptor.y = (float)start_y;
@@ -37,7 +42,10 @@ Object::Object(string sprite_path, int start_x, int start_y, int start_mass,
 	hitCircleSprite(HC_path)
 {
 //{{{
-	cout<<"PATH:"<<HC_path<<endl;
+	//if(HC_path =! NULL)
+	//cout<<"PATH:"<<HC_path<<endl;
+
+	refMax = refCounter = -1;
 
 	//set x and y
 	descriptor.x = (float)start_x;
@@ -52,6 +60,8 @@ Object::Object(string sprite_path, int start_x, int start_y, int start_mass,
 
 	//set mass
 	descriptor.mass = start_mass;
+
+	numRotations = num_rotations;
 
 	//buildHitBoxes_fromSprite();
 //	buildHitBoxes_fromLayer(hitCircleSprite.getBaseSprite());
@@ -79,6 +89,12 @@ Entity_desc Object::getDescriptor() const
 {
 	return descriptor;
 }
+
+Entity_desc* Object::getDescriptor_ref()
+{
+	return &descriptor;
+}
+
 
 
 void Object :: setRotation_rate(float rotRate)
@@ -301,17 +317,21 @@ Entity_desc* Object :: PhysicsHandler(float t, float dt,
 				Entity_desc &state_src)
 {
 	//default for of this constructor
-	integrate(descriptor, t, dt, state_src);
+	PhysFunc::integrate(descriptor, t, dt, state_src);
 	return &descriptor;
 }
 
 Entity_desc* Object :: PhysicsHandler(Entity_desc &state_dest, float t, float dt)
 {
 	//default for of this constructor
-	integrate(state_dest, t, dt, descriptor);
+	PhysFunc::integrate(state_dest, t, dt, descriptor);
 	return &state_dest;
 }
 
+vector<Entity_desc*>* Object :: GetAuxillaryDescriptors()
+{
+	return NULL;
+}
 //void Object::buildHitBoxes_fromLayer(SDL_Surface *HB_surface)
 //{
 ////{{{

@@ -17,7 +17,7 @@ Sprite :: Sprite(string path_to_sprite)
 
 	tempSpriteOpt = SDL_DisplayFormatAlpha(tempSprite);
 
-	sprite_surf = tempSpriteOpt;
+	base_sprite = tempSpriteOpt;
 //}}}
 }
 
@@ -44,7 +44,7 @@ Sprite::Sprite(string path_to_sprite,int numRotations, int startingAngle)
 
 	tempSpriteOpt = SDL_DisplayFormatAlpha(tempSprite);
 
-	sprite_surf = tempSpriteOpt;
+	base_sprite = tempSpriteOpt;
 
 
 
@@ -55,29 +55,180 @@ Sprite::Sprite(string path_to_sprite,int numRotations, int startingAngle)
 							i*degreeIncrement,
 							1.0,0));	
 		SDL_SetAlpha(rotations.back(), 0, 0xFF);
+		//cout<<"generating rotation #"<<i<<endl;
 	}
 	
 	generateSpriteOutlines();
 
-//	clearPixelFromAll(0,1,1);
-//	clearPixelFromAll(0,2,1);
-//	clearPixelFromAll(0,1,2);
-//	clearPixelFromAll(0,2,2);
-//	clearPixelFromAll(0,3,3);
-//
-//	clearPixelFromAll(0,5,5);
-//	clearPixelFromAll(0,6,5);
-//	clearPixelFromAll(0,5,6);
-//	clearPixelFromAll(0,6,6);
-//	clearPixelFromAll(0,7,7);
 //}}}
+}
+
+Sprite::Sprite(const Sprite &src)
+{
+	SDL_Surface *tempSurf;
+	src.copyAll(tempSurf, *this);
+	//this->setBaseSprite(tempSurf);
+	this->base_sprite = SDL_ConvertSurface(src.getBaseSprite(),
+		       src.getBaseSprite()->format, SDL_SWSURFACE);
+	this->generateRotations();
+
+}
+
+Sprite & Sprite::operator=(const Sprite &src)
+{
+	//copy the right hand side to the left hand side
+	//src.copyBaseSprite(base_sprite);
+	SDL_Surface *tempSurf = NULL;
+	src.copyAll(tempSurf, *this);
+	this->setBaseSprite(tempSurf);
+	this->generateRotations();
 }
 
 Sprite::~Sprite()
 {
+//{{{
+	for(int i = 0; i < rotations.size(); i++)
+	{
+		SDL_FreeSurface(rotations[i]);
+	}
+	SDL_FreeSurface(base_sprite);
+//}}}
+}
+void Sprite :: copyAll(SDL_Surface *dest, Sprite &sprDest) const
+{
+//{{{
+	float rotation_rate, degree_increment, current_angle;
+
+	copyBaseSprite(dest);
+	
+	get_RotR_DegIncr_Angl(rotation_rate, degree_increment, current_angle);
+	cout<<"In Cop Constr!::"<<endl;
+	cout<<"rotRate: "<< rotation_rate<<endl;
+	cout<<"DegIncr: "<< degree_increment<<endl;
+	cout<<"CurrAngle: "<<current_angle<<endl;
+	sprDest.set_RotR_DegIncr_Angl(rotation_rate, degree_increment, current_angle);
+
+//}}}
+}
+
+void Sprite :: copyBaseSprite(SDL_Surface *dest) const
+{
+//{{{
+	Uint32 rmask, gmask, bmask, amask;
+	unsigned int *newPix = NULL, surfSize;
+	int w, h, bpp;
+	this->getDimensionsBpp(w,h,bpp);
+	
+	#if SDL_BYTEORDER == SDL_BIG_ENDIAN
+	    rmask = 0xff000000;
+	    gmask = 0x00ff0000;
+	    bmask = 0x0000ff00;
+	    amask = 0x000000ff;
+	#else
+	    rmask = 0x000000ff;
+	    gmask = 0x0000ff00;
+	    bmask = 0x00ff0000;
+	    amask = 0xff000000;
+	#endif    
+
+	
+	if(SDL_MUSTLOCK(base_sprite))
+		SDL_LockSurface(base_sprite);
+
+		//copy pixel data from src to the temp (returnable) sprite
+		dest = SDL_ConvertSurface(base_sprite, base_sprite->format, SDL_SWSURFACE);
+
+	if(SDL_MUSTLOCK(base_sprite))
+		SDL_UnlockSurface(base_sprite);
+
+	//destination should be assigned at this point
+	if(dest == NULL)
+	{
+		cout<<"Error creating surface in operator= of Sprite: "<<SDL_GetError()<<endl;
+	}
+
+//}}}
+}
+
+void Sprite :: get_RotR_DegIncr_Angl(float &rotateRate, float &degreeInc
+						, float &currAngle) const
+{
+//{{{
+	rotateRate = this->rotationRate;
+	degreeInc = this->degreeIncrement;
+	currAngle = this->currentAngleIndex_f;
+//}}}
+}
+
+void Sprite :: set_RotR_DegIncr_Angl(float rotateRate, float degreeInc, float currAngle)
+{
+//{{{
+
+	this->rotationRate = rotateRate;
+	this->degreeIncrement = degreeInc;
+	this->currentAngleIndex_f = currAngle;
+	this->currentAngleIndex = (int)currAngle;
+cout<<"IN SET, degree increment= "<<this->degreeIncrement<<endl;
+
+//}}}
+}
+
+void Sprite::setBaseSprite()
+{
 
 }
 
+void Sprite::setBaseSprite(string path_to_sprite)
+{
+
+}
+
+void Sprite::setBaseSprite(SDL_Surface *src)
+{
+//{{{
+	if(base_sprite != NULL)
+	{
+		SDL_FreeSurface(base_sprite);
+	}
+
+	base_sprite = src;
+//}}}
+}
+
+void Sprite :: generateRotations()
+{
+//{{{
+	rotationalErrorAccum = 0.0;
+
+	lastErr = 0.0;
+
+	int numRotations = 360.0/degreeIncrement;
+
+	SDL_Surface *tempSprite, *tempSpriteOpt;
+//
+//	tempSprite = IMG_Load((char *)sprite_path.c_str());
+//
+//	tempSpriteOpt = SDL_DisplayFormatAlpha(tempSprite);
+//
+//	base_sprite = tempSpriteOpt;
+//
+	tempSpriteOpt = SDL_DisplayFormatAlpha(base_sprite);
+
+	cout<<"Generate Rots = "<<numRotations<<endl;
+
+	for(int i = 0; i<numRotations;i++)
+	{
+		cout<<"i="<<i<<" degIncr="<<degreeIncrement<<endl;
+		rotations.push_back(
+				rotozoomSurface(tempSpriteOpt,
+							i*degreeIncrement,
+							1.0,0));	
+		SDL_SetAlpha(rotations.back(), 0, 0xFF);
+	}
+	
+	generateSpriteOutlines();
+//}}}
+}
 
 void Sprite::setRotationRate(float rotRate)
 {
@@ -141,9 +292,9 @@ void Sprite::decrementAngleIndex()
 }
 
 
-SDL_Surface* Sprite::getBaseSprite()
+SDL_Surface* Sprite::getBaseSprite() const
 {
-	return sprite_surf;
+	return base_sprite;
 }
 
 
@@ -162,8 +313,8 @@ SDL_Surface* Sprite::getSprite(int angle)
 
 Uint32 Sprite::getPixel(int x, int y)
 {
-	Uint32 *pixels = (Uint32 *)sprite_surf->pixels;
-	return pixels[ (y * sprite_surf->w) + x];
+	Uint32 *pixels = (Uint32 *)base_sprite->pixels;
+	return pixels[ (y * base_sprite->w) + x];
 }
 Uint32 Sprite::getPixel(int x, int y, int rotation_i)
 {
@@ -203,10 +354,16 @@ if (SDL_MUSTLOCK(rotations[rotation_i]))
 
 void Sprite::getDimensions(int &w, int &h)
 {
-	w = sprite_surf->w;
-	h = sprite_surf->h;
+	w = base_sprite->w;
+	h = base_sprite->h;
 }
 
+void Sprite::getDimensionsBpp(int &w, int &h, int &bpp) const
+{
+	w = base_sprite->w;
+	h = base_sprite->h;
+	bpp = base_sprite->format->BitsPerPixel;
+}
 
 void Sprite::generateSpriteOutlines()
 {

@@ -20,7 +20,34 @@ class Sprite
 		explicit Sprite(string path_to_sprite);
 		explicit Sprite(string path_to_sprite,
 				int numRotations, int startingAngle);
+
+		//copy constructor
+		Sprite(const Sprite& src);
+
+		//assignment operator
+		Sprite & operator=(const Sprite &src);
+
 		~Sprite();
+
+		void copyAll(SDL_Surface *dest, Sprite &sprDest) const;
+		void copyBaseSprite(SDL_Surface *dest) const;
+
+		void get_RotR_DegIncr_Angl(float &rotateRate, float &degreeInc
+						, float &currAngle) const;
+		
+		void set_RotR_DegIncr_Angl(float rotateRate, float degreeInc
+						, float currAngle);
+		//use prtoected sprite path member
+		void setBaseSprite();
+
+		//load sprite from path
+		void setBaseSprite(string path_to_sprite);
+
+		//copy from surface
+		void setBaseSprite(SDL_Surface *src);
+
+		//make all rotations based on protected members
+		void generateRotations();
 
 		void setRotationRate(float rotRate);
 
@@ -40,7 +67,8 @@ class Sprite
 
 		void decrementAngleIndex();
 
-		SDL_Surface * getBaseSprite();
+		SDL_Surface * getBaseSprite() const;
+
 
 		SDL_Surface * getSprite();
 
@@ -53,6 +81,7 @@ class Sprite
 		void putPixel(int x, int y, Uint32 color, int rotation_i);
 
 		void getDimensions(int &w, int &h);
+		void getDimensionsBpp(int &w, int &h, int &bpp)const;
 
 		float lastErr;
 		float rotationalErrorAccum;
@@ -63,6 +92,8 @@ class Sprite
 		void clearPixelFromAll(int start_rot_i, int x, int y);
 		void clearPixel(int rotation, int x, int y);
 
+
+
 	protected:
 		float rotationRate;
 		float degreeIncrement;
@@ -71,10 +102,10 @@ class Sprite
 		float currentAngleIndex_f;
 		
 
-		SDL_Surface *sprite_surf;
+		SDL_Surface *base_sprite;
 		vector<SDL_Surface *> rotations;	
 		
-		unsigned int ** pixMaps;
+		//unsigned int ** pixMaps;
 
 		string sprite_path;
 };

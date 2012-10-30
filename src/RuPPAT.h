@@ -53,6 +53,8 @@ class RuPPAT
 		int addPlayer(string spritePath, int numRotations, int startingAngle, 
 				float maxAccel, int x, int y, string HC_path);
 
+		void addPlayer(Player* new_player);
+
 		int addEntity(Entity_desc new_ent);
 
 		int addObject(string spritePath, int x, int y, 
@@ -92,6 +94,9 @@ class RuPPAT
 		void turnPlayerToCoord(int p_ID, int x, int y, int rate);
 
 		void firePlayersWeapon(int p_ID);
+
+		//test the x and y Coordinates, invert velocities if desired and out of bounds
+		bool testBounds(Entity_desc &testMe, bool invert);
 
 	private:
 

@@ -2,6 +2,8 @@
 //
 //
 //This is a parent class but is useable for basics 
+#ifndef OBJECT_H
+#define OBJECT_H
 
 #include "SDL/SDL.h"
 #include "SDL/SDL_gfxPrimitives.h"
@@ -16,8 +18,7 @@
 #include <vector>
 #include <iostream>
 
-#ifndef OBJECT_H
-#define OBJECT_H
+
 
 //#include "PhysFuncs.h"
 using namespace std;
@@ -38,6 +39,8 @@ explicit Object(string sprite_path, int start_x, int start_y, int start_mass,
 		~Object();
 
 		Entity_desc getDescriptor ()const;
+		Entity_desc* getDescriptor_ref();
+
 		void setDescriptor(Entity_desc new_desc);
 			
 		SDL_Surface *getSprite();
@@ -103,7 +106,11 @@ explicit Object(string sprite_path, int start_x, int start_y, int start_mass,
 		virtual Entity_desc*  PhysicsHandler(Entity_desc &state_dest, 
 							float t, float dt);
 
+		virtual vector<Entity_desc*>* GetAuxillaryDescriptors();
+
 	protected:
+		int refMax, refCounter;
+		int numRotations;
 		float exhaustX, exhaustY;
 		Entity_desc descriptor;
 };

@@ -24,6 +24,7 @@ Game::Game(vector<section> configSections)
 
 	vector<string> tempVect;	
 	vector<string> tempVect_2;
+	string missile_sprite;
 	
 	for(int i = 0; i< configSections.size(); i++)
 	{
@@ -91,14 +92,23 @@ Game::Game(vector<section> configSections)
 						== "maxAcc")
 					maxAcc = 
 					atof(configSections[i].sectionOptions[j].values[0].c_str());
+				
+				else if(configSections[i].sectionOptions[j].option
+						== "missle")
+				 missile_sprite = configSections[i].sectionOptions[j].values[0];
+
 			}
 
-			engine->addPlayer(tempVect[0],
-					  numRots,
-				  	  startingAngle,
-					  maxAcc,
-					  x, y,
-					  tempVect_2[0]);	  
+	//create the player
+	Player *tempPlayer = new Player(tempVect[0], numRots, 
+			startingAngle, maxAcc,x, y, tempVect_2[0]);
+		
+		//give player a missile
+		tempPlayer->addMissile(missile_sprite, "Explosive Grey", true,
+					100, 10);//amount, max damage
+		
+		engine->addPlayer(tempPlayer);
+		  
 		}
 
 		//Setup andy additional object requested

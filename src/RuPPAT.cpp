@@ -148,11 +148,19 @@ void RuPPAT :: parsePlayersToSurface()
    pthread_rwlock_wrlock(&object_rw_lock);
 
 	int x, y, i, j, color, size=players.size(), screenID=0;
+	int x_aux, y_aux;
+	SDL_Surface *refSurf;
 
 //use line below to use OpenMP to launch a team of threads on the vector
  //#pragma omp parallel for private(x,y,color, i, j)
 	 for( i=0 ; i< size ; i++)
 		{
+		while((refSurf = players[i]->GetNextAuxDrawInfo(x_aux, y_aux, refSurf)) != NULL)
+		{
+			mainRender->putSprite(x_aux, y_aux, refSurf);
+		}
+		
+		
 		x =	players[i]->getX();
 		y =	players[i]->getY();
 	
@@ -310,6 +318,28 @@ int RuPPAT :: addPlayer(string spritePath, int numRotations, int startingAngle,
 		pthread_rwlock_unlock(&object_rw_lock);
 
 	return size;
+//}}}
+}
+
+void RuPPAT :: addPlayer(Player* new_player)
+{
+//{{{
+	int size;
+	//	Player *new_player= 
+	//		new Player(spritePath, numRotations, startingAngle,
+	//					maxAccel, x, y, HC_path);
+
+		Object *new_object = &(*new_player);
+			new_object->setID(baseID++);
+
+
+		pthread_rwlock_wrlock(&object_rw_lock);
+			players.push_back(new_player);
+			size = players.size()-1;
+		
+			objectList.push_back(new_object);
+		pthread_rwlock_unlock(&object_rw_lock);
+
 //}}}
 }
 
@@ -487,6 +517,7 @@ void RuPPAT::RK4(float t, float dt)
 	 int num_pixels = pixelList_m.size();
 	pthread_rwlock_unlock(&pix_rw_lock);
 
+	vector<Entity_desc*> *tempAuxDesc_ref;
 	Entity_desc *obj_desc_prim , *obj_desc_sec, obj_desc_tri;
 	Pixel_desc pix_desc;
 
@@ -503,43 +534,26 @@ void RuPPAT::RK4(float t, float dt)
 	   {
 		//Runge Kutta integrator
 		pthread_rwlock_wrlock(&object_rw_lock);	
+
+			//Get the outer loop objects descriptor
 			obj_desc_tri = objectList[j]->getDescriptor();
+		
+			//Apply out loop object to the current object
 			obj_desc_prim = objectList[i]->PhysicsHandler(t,dt, obj_desc_tri);
+
+			if( (tempAuxDesc_ref = objectList[i]->GetAuxillaryDescriptors()) != NULL)
+			{
+				for(int i=0; i<tempAuxDesc_ref->size(); i++)
+				{
+					testBounds(*(*tempAuxDesc_ref)[i], true);
+				}
+			}
+
+			//check new locations are valid, reset them if not 
+			testBounds(*obj_desc_prim, true);
+
 		pthread_rwlock_unlock(&object_rw_lock);
 
-		//the following checks that the objects new location
-		//is not outside the boundry of the game. This should
-		//be replaced with function calls or object methods, as
-		//there will be many situations in which this will need
-		//to be handled differently.
-		new_x = obj_desc_prim->x;
-		new_y = obj_desc_prim->y;
-		
-		new_xVel = obj_desc_prim->xVel;
-		new_yVel = obj_desc_prim->yVel;
-			
-			//make sure the new location is within bounds
-			if(new_x<=0)
-				{new_x=1;new_xVel=new_xVel*(-1);}
-
-			if(new_x>=game_width)
-				{new_x=game_width-1;new_xVel=new_xVel*(-1);}
-
-			if(new_y<=0)
-				{new_y=1;new_yVel=new_yVel*(-1);}
-
-			if(new_y>=game_height)
-				{new_y=game_height-1;new_yVel=new_yVel*(-1);}	
-
-		//at this point, all the velocities and locations should
-		//be updated and valid, we can go ahead and set the descriptor
-		pthread_rwlock_wrlock(&object_rw_lock);
-			obj_desc_prim->xVel = new_xVel;
-			obj_desc_prim->yVel = new_yVel;
-			obj_desc_prim->x = new_x;
-			obj_desc_prim->y = new_y;
-		pthread_rwlock_unlock(&object_rw_lock);
-		
 	   }
 	}
 	//next, go through the pixel structs 
@@ -556,13 +570,8 @@ void RuPPAT::RK4(float t, float dt)
 
 			new_xVel = obj_desc_sec->xVel;
 			new_yVel = obj_desc_sec->yVel;
-			//cout<<"Pix Velocity: "<<new_xVel<<" , "<<new_yVel<<endl;
 		pthread_rwlock_unlock(&pix_rw_lock);	
 		pthread_rwlock_unlock(&object_rw_lock);
-
-			
-
-
 
 			//make sure the new location is within bounds
 			if(new_x<=0)
@@ -642,9 +651,6 @@ pC.y = 200;
 
 pD.x = 100;
 pD.y = 200;
-
-
-
 
 
 std::thread *rk4_th = new std::thread(&RuPPAT::RK4,this,t,dt);
@@ -769,7 +775,6 @@ void RuPPAT :: runPPAT(bool *mainDone, Event_desc *mainEvents
 			//then run demo->place pixels w/ attr
 			//runDemos(sel);
 			firePlayersWeapon(0);
-
 			}
 
 		//increment keypress counter
@@ -1055,6 +1060,60 @@ tempErrDiff =  angle_diff*.1 - tempErrDiff; //angle_diff - tempErrDiff;
 
 void RuPPAT :: firePlayersWeapon(int p_ID)
 {
+	players[p_ID]->fireSelectedMissile();
 
+}
 
+bool RuPPAT :: testBounds(Entity_desc &testMe, bool invert)
+{
+//{{{
+	//make sure the new location is within bounds
+	if(invert)
+	{
+		bool isOutOfBounds = false;
+
+		if(testMe.x<=0)
+			{
+				testMe.x=1;
+				testMe.xVel=testMe.xVel*(-1);
+				isOutOfBounds=true;
+			}
+
+		if(testMe.x>=game_width)
+			{
+				testMe.x=game_width-1;
+				testMe.xVel=testMe.xVel*(-1);
+				isOutOfBounds=true;
+			}
+
+		if(testMe.y<=0)
+			{
+				testMe.y=1;
+				testMe.yVel=testMe.yVel*(-1);
+				isOutOfBounds=true;
+			}
+
+		if(testMe.y>=game_height)
+			{
+				testMe.y=game_height-1;
+				testMe.yVel=testMe.yVel*(-1);
+				isOutOfBounds=true;
+			}	
+	}
+	else
+	{
+		if(testMe.x<=0)
+			return true;
+
+		if(testMe.x>=game_width)
+			return true;
+
+		if(testMe.y<=0)
+			return true;
+
+		if(testMe.y>=game_height)
+			return true;
+
+	}
+//}}}
 }

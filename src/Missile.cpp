@@ -9,3 +9,54 @@ Missile::Missile(string sprite_path, int num_rotations, int startingAngle, int m
 
 
 }
+
+Missile :: ~Missile()
+{
+
+
+}
+
+void Missile :: setName(string name)
+{
+	this->name = name;
+}
+
+string Missile :: getName()
+{
+	return name;
+}
+
+void Missile::setAmount(int amnt)
+{
+	amount = amnt;
+}
+
+int Missile::incrementAmount(int incrBy)
+{
+	amount += incrBy;
+	return amount;
+}
+
+int Missile::getAmount()
+{
+	return amount;
+}
+
+void Missile::setDamage(int dmg)
+{
+	damage = dmg;
+}
+
+int Missile::incrementDamage(int incrBy)
+{
+	damage += incrBy;
+	return damage;
+}
+
+int Missile::getDamage()
+{
+	return damage;
+}
+
+
+
