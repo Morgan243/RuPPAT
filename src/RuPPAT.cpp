@@ -625,7 +625,7 @@ float dt = 0.004;
 int engine_rate = 160;
 int interval = 1000/engine_rate;
 int nextTick = SDL_GetTicks() + interval;
-int xOrigin, yOrigin, screen_centX=WIDTH/2, screen_centY=HEIGHT/2;
+int  screen_centX=WIDTH/2, screen_centY=HEIGHT/2;
 
 char sel = 'g';
 void * select = &sel;
@@ -924,6 +924,9 @@ void RuPPAT :: turnPlayer(int p_ID, bool isLeft, int numTurns)
 void RuPPAT :: turnPlayerToCoord(int p_ID, int x, int y, int rate)
 {
 //{{{
+	x += xOrigin;
+	y += yOrigin;
+
 	float playerDegree = 0.0,deg_playerToPoint = 0.0, 
 		tempErrAccum = 0.0, tempErrDiff = 0.0, angleDifScale=.01;
 	int x_diff = 0,  y_diff=0, rateLim = 3;

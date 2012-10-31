@@ -122,7 +122,7 @@ class RuPPAT
 				  object_rw_lock;
 
 
-		int centerX, centerY=0;
+		int centerX, centerY=0, xOrigin, yOrigin;
 
 		//independent pixels on screen
 		vector<Pixel_desc> pixelList;

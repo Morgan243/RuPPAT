@@ -135,23 +135,18 @@ vector<Missile*> Player :: getFreeMissiles()
 
 Missile* Player::fireSelectedMissile()
 {
-
-
-
+//{{{	
 	Missile *firedMissile = new Missile(*selected_missile);
-
 
 	cout<<"\""<<selected_missile->getName()<<"\" fired!"<<endl;
 	cout<<"\tx,y = "<<descriptor.x<<" , "<<descriptor.y<<endl;
 
-	//firedMissile->setDescriptor(tempDesc);
-	//firedMissile->setXY(descriptor.x, descriptor.y);
 	Entity_desc tempDesc = firedMissile->getDescriptor();
 	tempDesc.x = descriptor.x;
 	tempDesc.y = descriptor.y;
 
 	GetVectors_FrontRelative(tempDesc.xVel, tempDesc.yVel,
-					0.0, 50);
+					0.0, 120);
 
 	firedMissile->setDescriptor(tempDesc);
 
@@ -159,11 +154,13 @@ Missile* Player::fireSelectedMissile()
 	auxillary_desc.push_back(firedMissile->getDescriptor_ref());
 
 	return firedMissile;
+//}}}
 }
 
 Entity_desc* Player::PhysicsHandler(float t, float dt,
 					Entity_desc &state_src)
 {
+//{{{
 	//calculate players position
 	PhysFunc::integrate(descriptor, t, dt, state_src);
 
@@ -173,13 +170,16 @@ Entity_desc* Player::PhysicsHandler(float t, float dt,
 		missiles_free[i]->PhysicsHandler(t, dt, state_src);
 	}
 	return &descriptor;
+//}}}
 }
 
 Entity_desc* Player::PhysicsHandler( Entity_desc &state_dest, 
 					float t, float dt)
 {
+//{{{
 	PhysFunc::integrate(state_dest, t, dt, descriptor);
 	return &state_dest;	
+//}}}
 }
 
 
