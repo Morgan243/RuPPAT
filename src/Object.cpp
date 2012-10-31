@@ -313,6 +313,32 @@ void Object :: getXY_exhaust(float &xVel, float &yVel)
 	yVel=exhaustY;
 }
 
+void Object :: GetVectors_FrontRelative(float &xVect, float &yVect, 	//reference return
+						float degreeOffset, float mag)
+{
+	//determine current angle of the front of sprite (zero degrees of base sprite)
+	//determine new angle given the offset
+	float angle = sprite.getAngle() + degreeOffset;
+
+	if(angle>=360)
+	{
+		angle = angle - 360;
+	}
+	else if(angle<0)
+	{
+		angle = 360 + angle;
+	}
+
+	cout<<"ANGLE="<<angle<<endl;
+	//use mag and angle to calc x and y vectors
+	
+	//convert to rads
+	angle *= 0.0174532925;
+
+	yVect = (-1)*sin(angle)*mag;
+	xVect = cos(angle)*mag;
+}
+
 Entity_desc* Object :: PhysicsHandler(float t, float dt, 
 				Entity_desc &state_src)
 {

@@ -135,16 +135,26 @@ vector<Missile*> Player :: getFreeMissiles()
 
 Missile* Player::fireSelectedMissile()
 {
-	Entity_desc tempDesc;
-		tempDesc.ID = 0;
-		tempDesc.x = descriptor.x;
-		tempDesc.y = descriptor.y;
+
+
 
 	Missile *firedMissile = new Missile(*selected_missile);
+
+
 	cout<<"\""<<selected_missile->getName()<<"\" fired!"<<endl;
 	cout<<"\tx,y = "<<descriptor.x<<" , "<<descriptor.y<<endl;
+
 	//firedMissile->setDescriptor(tempDesc);
-	firedMissile->setXY(descriptor.x, descriptor.y);
+	//firedMissile->setXY(descriptor.x, descriptor.y);
+	Entity_desc tempDesc = firedMissile->getDescriptor();
+	tempDesc.x = descriptor.x;
+	tempDesc.y = descriptor.y;
+
+	GetVectors_FrontRelative(tempDesc.xVel, tempDesc.yVel,
+					0.0, 50);
+
+	firedMissile->setDescriptor(tempDesc);
+
 	missiles_free.push_back(firedMissile);
 	auxillary_desc.push_back(firedMissile->getDescriptor_ref());
 

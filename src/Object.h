@@ -68,7 +68,8 @@ explicit Object(string sprite_path, int start_x, int start_y, int start_mass,
 
 		void getXY_exhaust(float &xVel, float &yVel);
 
-	
+		void GetVectors_FrontRelative(float &xVect, float &yVect, 	//reference return
+						float angleFromFront, float mag);
 
 		void setRotation_rate(float rotRate);
 
