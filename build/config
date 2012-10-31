@@ -16,7 +16,7 @@ Player:
 	x=100
 	y=100
 	HC=red_ship_HC.png
-	missle=white_rocket.png
+	missle=orange_circle.png
 Object:
 	x=840
 	y=550

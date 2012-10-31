@@ -142,6 +142,9 @@ Missile* Player::fireSelectedMissile()
 
 	Missile *firedMissile = new Missile(*selected_missile);
 	cout<<"\""<<selected_missile->getName()<<"\" fired!"<<endl;
+	cout<<"\tx,y = "<<descriptor.x<<" , "<<descriptor.y<<endl;
+	//firedMissile->setDescriptor(tempDesc);
+	firedMissile->setXY(descriptor.x, descriptor.y);
 	missiles_free.push_back(firedMissile);
 	auxillary_desc.push_back(firedMissile->getDescriptor_ref());
 
@@ -186,7 +189,7 @@ SDL_Surface* Player :: GetNextAuxDrawInfo(int &x, int &y, SDL_Surface *refSurf)
 		refSurf = missiles_free[refCounter]->getSprite();
 
 		x = missiles_free[refCounter]->getX();
-		y = missiles_free[refCounter]->getX();
+		y = missiles_free[refCounter]->getY();
 		return refSurf;
 	}
 	else
