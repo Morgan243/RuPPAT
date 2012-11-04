@@ -763,14 +763,11 @@ void RuPPAT :: runPPAT(bool *mainDone, Event_desc *mainEvents
 	{
 		//if space is pressed and it has been
 		//a while since it was last pressed
-		if(mainEvents->space && keyT1>60)
+		if(mainEvents->space && keyT1>20)
 			{
 
 			//reset the key tick count
 			keyT1 = 0;
-
-			//output
-			cout<<"SPACE PRESSED!!!"<<endl;	
 
 			//then run demo->place pixels w/ attr
 			//runDemos(sel);
@@ -781,8 +778,10 @@ void RuPPAT :: runPPAT(bool *mainDone, Event_desc *mainEvents
 		keyT1++;
 
 		//sleep thread, keeps CPU usage down
-		if(nextTick > SDL_GetTicks())SDL_Delay(nextTick - SDL_GetTicks());
-			nextTick = SDL_GetTicks() + interval;	
+		if(nextTick > SDL_GetTicks())
+			SDL_Delay(nextTick - SDL_GetTicks());
+			
+		nextTick = SDL_GetTicks() + interval;	
 
 	}
 
