@@ -104,7 +104,7 @@ Game::Game(vector<section> configSections)
 			startingAngle, maxAcc,x, y, tempVect_2[0]);
 		
 		//give player a missile
-		tempPlayer->addMissile(missile_sprite, "Explosive Grey", true,
+		tempPlayer->addMissile(missile_sprite, "Orange Blob", true,
 					100, 10);//amount, max damage
 		
 		engine->addPlayer(tempPlayer);
