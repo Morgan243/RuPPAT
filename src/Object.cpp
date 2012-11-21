@@ -118,9 +118,10 @@ void Object :: decrementRotation_rate()
 
 }
 
-void Object :: updateSprite()
+bool Object :: updateSprite()
 {
 	sprite.updateSprite();
+	return false;
 }
 
 float Object :: getAngle()

@@ -27,7 +27,7 @@ public:
 	Game();
 	Game(int WIDTH_cl, int HEIGHT_cl);
 
-	Game(RunOptions options);	
+	//Game(RunOptions options);	
 
 	Game(vector<section> configSection);	
 
@@ -68,7 +68,7 @@ private:
 	SDL_Event event;	
 
 	bool done;
-	bool space;//
+	bool space;
 	RuPPAT *engine;	
 
 	vector<Player *> players;
