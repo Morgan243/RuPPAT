@@ -4,6 +4,7 @@
 #include "SDL/SDL_image.h"
 #include "Descriptors.h"
 #include "Render.h"
+#include "Primitives.h"
 #include "Player.h"
 #include <vector>
 #include <queue>
@@ -98,6 +99,7 @@ class RuPPAT
 		//test the x and y Coordinates, invert velocities if desired and out of bounds
 		bool testBounds(Entity_desc &testMe, bool invert);
 
+		Primitives *primitive_maker;
 	private:
 
 		int WIDTH, HEIGHT, 

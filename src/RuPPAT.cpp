@@ -13,7 +13,7 @@
 #include <mutex>
 #include <omp.h>
 #include <unistd.h>
-#include "Primitives.h"
+
 
 using namespace std;
 
@@ -54,6 +54,9 @@ RuPPAT :: RuPPAT(int width, int height, int bpp, unsigned int flags,
 	
 		cout<<"\tReassigning..."<<bkg_paths[i]<<endl;
 		tempBkgOpt = SDL_DisplayFormatAlpha(tempBkg);
+		
+		//tempBkgOpt = rotozoomSurface(tempBkgOpt, 0.0, 1.0,0);
+		SDL_SetAlpha(tempBkgOpt, SDL_SRCALPHA, 0xFF);
 
 		SDL_FreeSurface(tempBkg);
 
@@ -61,7 +64,8 @@ RuPPAT :: RuPPAT(int width, int height, int bpp, unsigned int flags,
 		backgroundLayers.push_back(tempBkgOpt);	
 
 		
-		//SDL_SetAlpha(backgroundLayers.back(), 0, 0xFF);
+			
+		//SDL_SetAlpha(backgroundLayers.back(), SDL_SRCALPHA, 0xFF);
 	}
 
 	game_width = backgroundLayers[0]->w;
@@ -76,6 +80,7 @@ RuPPAT :: RuPPAT(int width, int height, int bpp, unsigned int flags,
 	WIDTH = width;
 	HEIGHT = height;
 
+	primitive_maker = new Primitives(1, 0x7f00ff00, mainRender->pre_surface);
 	gravitationalConstant = 22;
 
 //}}}
@@ -149,6 +154,9 @@ void RuPPAT :: parsePlayersToSurface()
 
 	int x, y, i, j, color, size=players.size(), screenID=0;
 	int x_aux, y_aux;
+	CoOrd tempCoOrd;
+	tempCoOrd.x=0;
+	tempCoOrd.y=0;
 	SDL_Surface *refSurf;
 
 //use line below to use OpenMP to launch a team of threads on the vector
@@ -165,10 +173,19 @@ void RuPPAT :: parsePlayersToSurface()
 		y =	players[i]->getY();
 	
 		centerX = x;
-		centerY = y;	
-		players[i]->updateSprite();
-	
+		centerY = y;
+		
+		if(players[i]->updateSprite())
+		{
+		mainRender->putSprite(x,y,primitive_maker->Get_Cached(i));
+		//		SDL_DisplayFormatAlpha(primitive_maker->Get_Cached(i)));
+
 		mainRender->putSprite(x,y, players[i]->getSprite());
+		
+		}
+		else
+		mainRender->putSprite(x,y, players[i]->getSprite());
+		
 		}
 
    pthread_rwlock_unlock(&object_rw_lock);
@@ -301,7 +318,8 @@ int RuPPAT :: addPlayer(string spritePath, int numRotations, int startingAngle,
 			float maxAccel, int x, int y, string HC_path)
 {
 //{{{
-	int size;
+	int size, height, width;
+	CoOrd tempCoOrd;
 		Player *new_player= 
 			new Player(spritePath, numRotations, startingAngle,
 						maxAccel, x, y, HC_path);
@@ -314,6 +332,10 @@ int RuPPAT :: addPlayer(string spritePath, int numRotations, int startingAngle,
 			players.push_back(new_player);
 			size = players.size()-1;
 		
+			new_object->sprite.getDimensions(width, height);
+
+			primitive_maker->drawCircle(tempCoOrd,19 , true);
+
 			objectList.push_back(new_object);
 		pthread_rwlock_unlock(&object_rw_lock);
 
@@ -324,7 +346,8 @@ int RuPPAT :: addPlayer(string spritePath, int numRotations, int startingAngle,
 void RuPPAT :: addPlayer(Player* new_player)
 {
 //{{{
-	int size;
+	int size, height, width;
+	CoOrd tempCoOrd;
 	//	Player *new_player= 
 	//		new Player(spritePath, numRotations, startingAngle,
 	//					maxAccel, x, y, HC_path);
@@ -338,7 +361,16 @@ void RuPPAT :: addPlayer(Player* new_player)
 			size = players.size()-1;
 		
 			objectList.push_back(new_object);
+
+			centerX = new_object->getX();
+			centerY = new_object->getY();
+
+			new_object->sprite.getDimensions(width, height);
+
+			primitive_maker->drawCircle(tempCoOrd,15 , true);
 		pthread_rwlock_unlock(&object_rw_lock);
+
+
 
 //}}}
 }
@@ -634,7 +666,7 @@ SDL_Surface *primitives =
 			SDL_CreateRGBSurface(SDL_SWSURFACE,600,600,32, 0xFF000000, 
 			0x00FF0000, 0x0000FF00, 0x000000FF); 
 
-Primitives primMaker(1,0x9f0000ff, primitives);
+Primitives primMaker(1,0x9f0000ff, mainRender->pre_surface);
 CoOrd pA, pB, pC, pD, pCenter;
 pCenter.x = 200;
 pCenter.y = 200;
@@ -667,9 +699,13 @@ std::thread *rk4_th = new std::thread(&RuPPAT::RK4,this,t,dt);
 		//blit middle layer
 		mainRender->applySurface(xOrigin,yOrigin,backgroundLayers[1]);
 		
-		rk4_th->join();	
 
-		
+
+		pCenter.x = centerX;
+		pCenter.y = centerY;
+		//primMaker.drawCircle(pCenter, 16);
+
+		rk4_th->join();	
 
 		//parse objects	
 		parseObjectsToSurface();	
@@ -680,19 +716,12 @@ std::thread *rk4_th = new std::thread(&RuPPAT::RK4,this,t,dt);
 		//parse players
 		parsePlayersToSurface();
 		
-		primMaker.drawCircle(pCenter, 25);
-		primMaker.drawLine(pCenter, pA,6, primitives);
+			//mainRender->applySurface(xOrigin, yOrigin, primitives);
+		//SDL_FillRect(primitives, NULL, 0);
+		//primMaker.drawLine(pCenter, pA,6, primitives);
 	//	primMaker.drawLine(pCenter, pB,8, mainRender->pre_surface);
 	//	primMaker.drawLine(pCenter, pC,10, mainRender->pre_surface);
 	//	primMaker.drawLine(pCenter, pD,18, mainRender->pre_surface);
-		
-
-		//std::thread rk4(&RuPPAT::RK4,this,t,dt);
-		rk4_th = new std::thread(&RuPPAT::RK4,this,t,dt);
-
-		//blit top layer
-		mainRender->applySurface(xOrigin,yOrigin,backgroundLayers[2]);
-
 		
 		//test for boundry conditions of screen centering	
 		if(centerX < screen_centX)
@@ -708,6 +737,14 @@ std::thread *rk4_th = new std::thread(&RuPPAT::RK4,this,t,dt);
 			yOrigin = game_height - HEIGHT;
 		else
 			yOrigin = centerY - screen_centY;
+		//std::thread rk4(&RuPPAT::RK4,this,t,dt);
+		rk4_th = new std::thread(&RuPPAT::RK4,this,t,dt);
+
+		//blit top layer
+		mainRender->applySurface(xOrigin,yOrigin,backgroundLayers[2]);
+
+		
+
 
 		//mainRender->putSprite(xOrigin + (WIDTH/2),yOrigin + (HEIGHT/2),primitives);
 		mainRender->OnRender(xOrigin,yOrigin);
