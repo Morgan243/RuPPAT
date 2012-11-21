@@ -7,7 +7,7 @@
 #
 Main:
 	width=980#Set the width!!
-	height=800
+	height=700
 	#backgroundLayers=bkg_massive_8k_one.png,backgroundLayers=bkg_massive_8k_two.png,backgroundLayers=bkg_massive_8k_three.png
 	backgroundLayers=bkg_one_1080.png,bkg_two_1080.png,bkg_three_1080.png
 Player:

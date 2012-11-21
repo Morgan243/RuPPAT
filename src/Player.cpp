@@ -168,6 +168,10 @@ Missile* Player::fireSelectedMissile()
 	GetVectors_FrontRelative(tempDesc.xVel, tempDesc.yVel,
 					0.0, 120);
 
+	//add velocity of player to missile
+	tempDesc.xVel += descriptor.xVel;
+	tempDesc.yVel += descriptor.yVel;
+
 	//update positional stats with descriptor
 	firedMissile->setDescriptor(tempDesc);
 
