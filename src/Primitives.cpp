@@ -19,6 +19,9 @@ Primitives::~Primitives()
 {
 	if(default_surface != NULL)
 		SDL_FreeSurface(default_surface);
+
+	for(int i = 0; i < surface_cache.size() ; i++)
+		delete(surface_cache[i]);
 }
 
 float Primitives::calcSlope(CoOrd pointA, CoOrd pointB)
@@ -27,23 +30,76 @@ float Primitives::calcSlope(CoOrd pointA, CoOrd pointB)
 	return ((float)pointA.y - (float)pointB.y)/((float)pointA.x - (float)pointB.x);
 }
 
-void Primitives::drawCircle(CoOrd center, int radius)
+int Primitives::drawCircle(CoOrd center, int radius, bool cache)
 {
+//{{{
 	int x = 0, y =0;
 	float theta = 0.0, i = 0.0;
 	Uint32 tempColor = default_lineColor;
-	for(;radius >10 ; radius--)
+	if(!cache)
 	{
-		for(theta=0.0; theta<360.0; theta+=0.1)
+		for(;radius >15 ; radius--)
 		{
-			
-			x = (radius * cos(theta)) + center.x;
-			y = (radius * sin(theta)) + center.y;
-			//cout<<"X,Y:"<<x<<","<<y<<endl;
-			putPixel(x,y,tempColor, default_surface);
+			for(theta=0.0; theta<360.0; theta+=0.1)
+			{
+				
+				x = (radius * cos(theta)) + center.x;
+				y = (radius * sin(theta)) + center.y;
+				//cout<<"X,Y:"<<x<<","<<y<<endl;
+				putPixel(x,y,tempColor, default_surface);
+			}
+			tempColor = (tempColor & 0xFFFFFF00) | ((tempColor & 0x000000FF)-15);
 		}
-		tempColor = (tempColor & 0xFFFFFF00) | ((tempColor & 0x000000FF)-15);
+		return -1;
 	}
+	else
+	{
+		center.x = radius;
+		center.y = radius;
+		Surface_Container *tempContain = new Surface_Container;
+
+		#if SDL_BYTEORDER == SDL_BIG_ENDIAN
+		tempContain->surface = SDL_CreateRGBSurface(SDL_SWSURFACE,
+					radius*2 ,radius*2,32, 
+					0xFF000000, 0x00FF0000, 0x0000FF00, 0x000000FF); 
+		cout<<"BIG ENDIAN"<<endl;
+		#else
+
+		tempContain->surface =
+		SDL_CreateRGBSurface(SDL_SWSURFACE,radius*2,radius*2,32, 0x000000FF, 
+		0x0000FF00, 0x00FF0000, 0xFF000000); 
+		cout<<"Littel Endian! Color: "<<default_lineColor<<endl;
+		
+		#endif
+
+		for(;radius >14 ; radius--)
+		{
+			for(theta=0.0; theta<360.0; theta+=0.1)
+			{
+				tempColor = (default_lineColor & 0x00FFFFff) |
+						(((unsigned int)(default_lineColor & 0xff000000)-
+							(unsigned int)(195*cos(theta))&0xff000000));
+				x = (radius * cos(theta)) + center.x;
+				y = (radius * sin(theta)) + center.y;
+
+		//		cout<<"X,Y:"<<x<<","<<y<<" with color:"<<tempColor<<endl;
+				putPixel(x,y,tempColor, tempContain->surface);
+			}
+			///tempColor = (tempColor & 0xFFFFFF00) | ((tempColor & 0x000000FF)-15);
+		}
+		tempContain->ID = surface_cache.size();
+	       	
+		
+		surface_cache.push_back(tempContain);	
+		
+		tempContain->surface = SDL_DisplayFormatAlpha(tempContain->surface);
+		tempContain->surface = rotozoomSurface(tempContain->surface,
+						0.0, 1.0,0);
+
+		SDL_SetAlpha(tempContain->surface,0,0xf0);
+		return surface_cache.size()-1;
+	}
+//}}}
 }
 
 void Primitives::drawCircle(CoOrd center, int radius, SDL_Surface *surface)
@@ -500,4 +556,9 @@ void Primitives :: putPixel(int x, int y, Uint32 color, SDL_Surface *surface)
 	if( SDL_MUSTLOCK(surface))
 		SDL_UnlockSurface(surface);
 //}}}
+}
+
+SDL_Surface* Primitives :: Get_Cached(int id)
+{
+	return surface_cache[id]->surface;
 }
