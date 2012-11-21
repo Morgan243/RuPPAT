@@ -109,10 +109,16 @@ explicit Object(string sprite_path, int start_x, int start_y, int start_mass,
 
 		virtual vector<Entity_desc*>* GetAuxillaryDescriptors();
 
+
+		unsigned int setTimeNow();
+		unsigned int getTime();
 	protected:
 		int refMax, refCounter;
 		int numRotations;
 		float exhaustX, exhaustY;
 		Entity_desc descriptor;
+
+		//generic timestamp for class
+		unsigned int thisTime;
 };
 #endif
