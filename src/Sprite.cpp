@@ -54,7 +54,7 @@ Sprite::Sprite(string path_to_sprite,int numRotations, int startingAngle)
 				rotozoomSurface(tempSpriteOpt,
 							i*degreeIncrement,
 							1.0,0));	
-		SDL_SetAlpha(rotations.back(), 0, 0xFF);
+		SDL_SetAlpha(rotations.back(),0, 0x00);
 		//cout<<"generating rotation #"<<i<<endl;
 	}
 	
@@ -218,7 +218,7 @@ void Sprite :: generateRotations()
 
 	for(int i = 0; i<numRotations;i++)
 	{
-		cout<<"i="<<i<<" degIncr="<<degreeIncrement<<endl;
+		//cout<<"i="<<i<<" degIncr="<<degreeIncrement<<endl;
 		rotations.push_back(
 				rotozoomSurface(tempSpriteOpt,
 							i*degreeIncrement,
@@ -408,6 +408,7 @@ vector<CoOrd> Sprite:: outlineSprite()
 
 void Sprite::clearPixelFromAll( int start_rot_i, int x, int y)
 {
+//{{{
 
 	int tempX = x, tempY = y, index=start_rot_i;
 	float theta, mag;
@@ -416,8 +417,10 @@ void Sprite::clearPixelFromAll( int start_rot_i, int x, int y)
 
 	mag = sqrt((float)(tempX*tempX) + (float)(tempY*tempY));
 	cout<<"mag = "<<mag<<endl;	
+	
 	//invert Y
 	tempY *= (-1.0);
+
 	//add width and height
 	tempY += (rotations[index]->h/2);
 	tempX += (rotations[index]->w/2);
@@ -479,7 +482,7 @@ void Sprite::clearPixelFromAll( int start_rot_i, int x, int y)
 		else
 			index = 0;
 	}
-
+//}}}
 }
 
 
