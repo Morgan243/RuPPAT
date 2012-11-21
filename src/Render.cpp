@@ -11,7 +11,7 @@
 //creates screen using arguments
 Render::Render(int width, int height, int bpp, Uint32 flags)
 {
-  //{{{
+ //{{{
 	//assign private members for use later
 	mainWidth = width;
 	mainHeight = height;
@@ -27,6 +27,7 @@ Render::Render(int width, int height, int bpp, Uint32 flags)
 	//finally, assign mainscreen to 
 	mainScreen = SDL_SetVideoMode(width, height, bpp, flags);
 
+	//SDL_SetAlpha(mainScreen,0, 0xFF);
 //	#if SDL_BYTEORDER == SDL_BIG_ENDIAN 
 //		pre_surface = 
 //		SDL_CreateRGBSurface(SDL_SWSURFACE,width,height,32, 0xFF000000, 
@@ -134,6 +135,8 @@ void Render::setGameArea(int w, int h)
 		SDL_CreateRGBSurface(SDL_SWSURFACE,game_width,game_height,32, 0x000000FF, 
 		0x0000FF00, 0x00FF0000, 0xFF000000); 
 	#endif 
+		//SDL_SetAlpha(pre_surface,SDL_SRCALPHA,0x00);
+		SDL_DisplayFormatAlpha(pre_surface);
 }
 
 //-----------------setMainScreen-----
@@ -150,6 +153,7 @@ void Render :: setMainScreen(int color)
 void Render::OnRender()
 {
 	//applySurface(0,0,sprite_surface);
+	//pre_surface = rotozoomSurface(pre_surface, 0.0,1.0,0);
 	applySurface(0,0,pre_surface);
 
 	
@@ -246,9 +250,12 @@ void Render :: putSprite(int x, int y, SDL_Surface* sprite)
 	if(SDL_MUSTLOCK(pre_surface))
 		SDL_LockSurface(pre_surface);
 
+		///SDL_SetAlpha(sprite, 0, sprite->format->alpha);
 		//finally blit the source onto main at (x,y) on main
 		SDL_BlitSurface(sprite,NULL,pre_surface,&imagePosition);
 
+		//SDL_SetAlpha(pre_surface, SDL_SRCALPHA , pre_surface->format->alpha);
+		
 	if(SDL_MUSTLOCK(pre_surface))
 		SDL_UnlockSurface(pre_surface);
 
