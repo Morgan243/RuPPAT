@@ -38,6 +38,8 @@ class Player : public Object
 					string HC_path);
 		~Player();
 
+		bool updateSprite();
+
 		//add a missile, auto sets the sprite path to the default sprite
 		void addMissile(string sprite_path, string name, bool makeSelected,
 					int amnt, int mxDamage);
@@ -64,6 +66,7 @@ class Player : public Object
 						Entity_desc &state_src);
 		
 		vector<Entity_desc*>* GetAuxillaryDescriptors();
+
 		SDL_Surface* GetNextAuxDrawInfo(int &x, int &y, SDL_Surface *refSurf);
 	protected:
 		//what missile will be fired if trigger is pulled
@@ -75,7 +78,11 @@ class Player : public Object
 		//Missiles free, or fired, by player
 		//allows multiple missles to be launched at once
 		vector<Missile*> missiles_free;
+
+		//Any "extra" descriptors: missiles, effects
 		vector<Entity_desc*> auxillary_desc;
+
+		bool isSelected;
 };
 
 #endif

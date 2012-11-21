@@ -79,7 +79,7 @@ explicit Object(string sprite_path, int start_x, int start_y, int start_mass,
 
 		void decrementRotation_rate();
 
-		void updateSprite();
+		virtual bool updateSprite();
 
 		float getAngle();
 

@@ -16,6 +16,8 @@ Player :: Player(string sprite_path, int num_rotations, int startingAngle)
 	descriptor.mass=1000;
 	descriptor.noDrawEffect = false;
 
+	isSelected = true;
+
 }
 //}}}
 
@@ -30,6 +32,8 @@ Player :: Player(string sprite_path, int num_rotations, int startingAngle,
 	descriptor.yAcc = 0;
 	descriptor.maxAccel = maxaccel;
 	descriptor.noDrawEffect = false;
+
+	isSelected = true;
 }
 //}}}
 
@@ -44,6 +48,8 @@ Player :: Player(string sprite_path, int num_rotations, int startingAngle,
 	descriptor.yAcc = 0;
 	descriptor.maxAccel = maxaccel;
 	descriptor.noDrawEffect = false;
+
+	isSelected = true;
 }
 //}}}
 
@@ -85,6 +91,16 @@ cout<<"rots:"<<numRotations<<endl;
 	if(makeSelected)
 		selected_missile = missiles.back();
 //}}}
+}
+
+bool Player :: updateSprite()
+{
+	sprite.updateSprite();
+
+	if(isSelected)
+		return true;
+	else
+		return false;
 }
 
 //select a missile and return a pointer to it
@@ -141,16 +157,24 @@ Missile* Player::fireSelectedMissile()
 	cout<<"\""<<selected_missile->getName()<<"\" fired!"<<endl;
 	cout<<"\tx,y = "<<descriptor.x<<" , "<<descriptor.y<<endl;
 
+	//get the descriptor from the new missile
 	Entity_desc tempDesc = firedMissile->getDescriptor();
+
+	//set the descriptors coordinates to the Player location
 	tempDesc.x = descriptor.x;
 	tempDesc.y = descriptor.y;
 
+	//get velocity vectors using 
 	GetVectors_FrontRelative(tempDesc.xVel, tempDesc.yVel,
 					0.0, 120);
 
+	//update positional stats with descriptor
 	firedMissile->setDescriptor(tempDesc);
 
+	//Missile is free, add it to vector
 	missiles_free.push_back(firedMissile);
+
+	//copy over reference to fired missiles descriptor
 	auxillary_desc.push_back(firedMissile->getDescriptor_ref());
 
 	return firedMissile;
