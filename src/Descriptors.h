@@ -1,5 +1,6 @@
 #include <vector>
 #include <iostream>
+#include <string>
 #include "SDL/SDL.h"
 #ifndef __DESC_H
 #define __DESC_H
@@ -11,22 +12,37 @@
 
 using namespace std;
 
+//basic conatiner for surface, group with name and ID number
+//a more basic form of the Sprite class
+struct Surface_Container
+{
+	SDL_Surface* surface;
+	int ID;
+	string name;
+};
+
+//floating point coordinates
 struct CoOrd_fl
 {
 	float x,y;
 };
 
+//integer coordinates
 struct CoOrd
 {
 	int x,y;
 };
 
+//individual option, EX: width
+//with value EX: 800
 struct optionSet
 {
 	std::string option;
 	std::vector<std::string> values;
 };
 
+//individual section, block of options
+//EX main or objects
 struct section
 {
 	std::string title;
@@ -34,28 +50,14 @@ struct section
 };
 
 
-struct RunOptions
-{
-	int width;
-	int height;
-	std::string selection;	
-	std::string option;
-
-	std::string background_spritePaths[3];
-
-	std::string player_spritePath;
-	std::string player_HCpath;
-
-	std::vector <std::string> objects_spritePath;
-	std::vector <std::string> objects_HCpath;
-};
-
+//container for circle info
 struct Circle_desc
 {
 	int x,y;
 	unsigned int r;
 };
 
+//Base descriptor for all entities, or on screen moving things
 struct Entity_desc
 {
 	float x;
@@ -70,10 +72,10 @@ struct Entity_desc
 
 	int hitCircle_radius;
 	bool noDrawEffect;
-	
-	//std::vector<Circle_desc> hitCircles;
 };
 
+//easily pass an event container where it is needed
+//pass by reference to use properly
 struct Event_desc
 {
 	bool space;
@@ -81,8 +83,6 @@ struct Event_desc
 	bool up,left,down,right;
 	bool enter;
 	bool rightCtrl, leftCtrl;
-
-
 };
 
 //A little different than entities; the idea being that these
@@ -105,6 +105,8 @@ struct Pixel_desc : public Entity_desc
 
 	bool deleteMe;
 };
+
+//container for accel and velocities
 struct Derivative
 {
 	//velocities
