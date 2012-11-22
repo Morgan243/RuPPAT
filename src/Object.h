@@ -121,8 +121,8 @@ explicit Object(string sprite_path, int start_x, int start_y, int start_mass,
 		float exhaustX, exhaustY;
 		Entity_desc descriptor;
 
-		unsigned int timeCreated;
+		unsigned float timeCreated;
 		//generic timestamp for class
-		unsigned int thisTime;
+		unsigned float thisTime;
 };
 #endif

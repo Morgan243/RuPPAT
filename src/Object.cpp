@@ -376,6 +376,8 @@ void Object :: GetVectors_FrontRelative(float &xVect, float &yVect, 	//reference
 Entity_desc* Object :: PhysicsHandler(float t, float dt, 
 				Entity_desc &state_src)
 {
+	thisTime = t;
+
 	//default for of this constructor
 	PhysFunc::integrate(descriptor, t, dt, state_src);
 	return &descriptor;
@@ -383,6 +385,7 @@ Entity_desc* Object :: PhysicsHandler(float t, float dt,
 
 Entity_desc* Object :: PhysicsHandler(Entity_desc &state_dest, float t, float dt)
 {
+	thisTime = t;
 	//default for of this constructor
 	PhysFunc::integrate(state_dest, t, dt, descriptor);
 	return &state_dest;

@@ -45,7 +45,7 @@ class Missile : public Object
 
 		void SetLaunchForceDuration(int duration);
 
-		void SetLifespan(int seconds);
+		void SetLifespan(float seconds);
 
 		bool IsBeyondLifeSpan();
 
@@ -54,8 +54,9 @@ class Missile : public Object
 		int amount,
 		damage,	//whats the max damage
 		launchForce,//launch force (actually aceleration...for now)
-		launchForceDuration,//how long to apply the launch force
-		lifespan;//how long will it stick around, in seconds
+		launchForceDuration;//how long to apply the launch force
+		
+		float lifespan;//how long will it stick around, in seconds
 
 		string name;
 };

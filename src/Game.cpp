@@ -27,7 +27,8 @@ Game::Game(vector<section> configSections)
 
 	//default missle sprite
 	string missile_sprite, missile_name;
-	int missile_amnt, missile_dmg, missile_vel, missile_life;
+	int missile_amnt, missile_dmg;
+        float missile_vel, missile_life;
 	
 	for(int i = 0; i< configSections.size(); i++)
 	{
@@ -107,9 +108,9 @@ Game::Game(vector<section> configSections)
 				 missile_dmg = 
 					atoi(configSections[i].sectionOptions[j].values[3].c_str());
 				 missile_vel = 
-					atoi(configSections[i].sectionOptions[j].values[4].c_str());
+					atof(configSections[i].sectionOptions[j].values[4].c_str());
 				 missile_life = 
-					atoi(configSections[i].sectionOptions[j].values[5].c_str());
+					atof(configSections[i].sectionOptions[j].values[5].c_str());
 
 				}
 

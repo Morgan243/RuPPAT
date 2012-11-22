@@ -69,9 +69,9 @@ void Missile::SetLaunchForceDuration(int duration)
 	launchForceDuration = duration;
 }
 
-void Missile::SetLifespan(int seconds)
+void Missile::SetLifespan(float seconds)
 {
-	lifespan = seconds * 1000;//convert to ms
+	lifespan = seconds;//convert to ms
 }
 
 bool Missile::IsBeyondLifeSpan()

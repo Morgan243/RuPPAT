@@ -70,7 +70,7 @@ Player :: ~Player()
 }
 
 void Player :: addMissile(string sprite_path, string name, bool makeSelected,
-				int amnt, int mxDamage, int velocity, int lifespan)
+				int amnt, int mxDamage, float velocity, float lifespan)
 {
 //{{{
 cout<<"Adding missile:"<<endl;
@@ -187,6 +187,7 @@ vector<Missile*> Player :: getFreeMissiles()
 Missile* Player::fireSelectedMissile()
 {
 //{{{	
+
 		Missile *firedMissile = new Missile(*selected_missile);
 
 		cout<<"\""<<selected_missile->getName()<<"\" fired!"<<endl;
@@ -229,6 +230,8 @@ Entity_desc* Player::PhysicsHandler(float t, float dt,
 					Entity_desc &state_src)
 {
 //{{{
+	thisTime = t;
+
 	//calculate players position
 	PhysFunc::integrate(descriptor, t, dt, state_src);
 
@@ -245,6 +248,7 @@ Entity_desc* Player::PhysicsHandler( Entity_desc &state_dest,
 					float t, float dt)
 {
 //{{{
+	thisTime = t;
 	PhysFunc::integrate(state_dest, t, dt, descriptor);
 	return &state_dest;	
 //}}}
