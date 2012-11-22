@@ -252,7 +252,7 @@ void readConfigFile(string filename, vector<section>& configSections)
 		//get line from inFile into line
 		getline( inFile , line );
 		
-		//find a hastage that marks comments
+		//find a hashtag that marks comments
 		int commentIndex = line.find('#',0);
 
 		place = line.find(':',0);
@@ -271,7 +271,7 @@ void readConfigFile(string filename, vector<section>& configSections)
 			int tempPlace = place+1;
 		
 			//make sure there are some values (not all commented out)	
-			if(commentIndex>tempPlace || commentIndex == -1 && place != -1)
+			if(commentIndex > tempPlace || commentIndex == -1 && place != -1)
 			{
   		  	    //go ahead and create new option
   		  	    optionSet nextOptionSet;
