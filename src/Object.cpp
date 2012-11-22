@@ -15,6 +15,8 @@ Object :: Object(string sprite_path, int start_x, int start_y, int start_mass)
 
 	//set mass
 	descriptor.mass = start_mass;
+
+	timeCreated = SDL_GetTicks();
 		
 }//}}}
 
@@ -32,6 +34,8 @@ Object :: Object(string sprite_path, int start_x, int start_y, int start_mass,
 
 	//set mass
 	descriptor.mass = start_mass;
+	
+	timeCreated = SDL_GetTicks();
 //}}}
 }
 
@@ -63,6 +67,8 @@ Object::Object(string sprite_path, int start_x, int start_y, int start_mass,
 
 	numRotations = num_rotations;
 
+	timeCreated = SDL_GetTicks();
+
 	//buildHitBoxes_fromSprite();
 //	buildHitBoxes_fromLayer(hitCircleSprite.getBaseSprite());
 //}}}
@@ -70,12 +76,13 @@ Object::Object(string sprite_path, int start_x, int start_y, int start_mass,
 
 void Object::setID(int id)
 {
-descriptor.ID = id;
+	descriptor.ID = id;
 }
 
 Object::Object(const Object &src)
 	:sprite(src.sprite)
 {
+//{{{
 	refMax = src.refMax;
 	refCounter = src.refCounter;
 
@@ -86,13 +93,17 @@ Object::Object(const Object &src)
 
 	descriptor = src.descriptor;
 
-	timeCreated = src.timeCreated;
+	timeCreated = SDL_GetTicks();
 
+	cout<<"Copy created at:"<<timeCreated<<endl;
+//}}}
 }
 
 Object & Object::operator=(const Object &src)
 {
 	sprite.operator=(src.sprite);
+
+	//TODO: need to create new Object and return it	
 }
 
 Object :: ~Object()

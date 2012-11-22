@@ -73,3 +73,14 @@ void Missile::SetLifespan(int seconds)
 {
 	lifespan = seconds * 1000;//convert to ms
 }
+
+bool Missile::IsBeyondLifeSpan()
+{
+//{{{
+	if( (SDL_GetTicks() - timeCreated) > lifespan)
+	{
+		return true;
+	}else
+		return false;
+//}}}
+}

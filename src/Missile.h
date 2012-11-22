@@ -47,6 +47,8 @@ class Missile : public Object
 
 		void SetLifespan(int seconds);
 
+		bool IsBeyondLifeSpan();
+
 	protected:
 		//how many of this missile do we have
 		int amount,
