@@ -16,7 +16,8 @@ Player:
 	x=100
 	y=100
 	HC=red_ship_HC.png
-	missle=orange_circle.png
+# 		sprite path, missile name, amount,damage, speed, life
+	missle=orange_circle.png,Orange Blob,100,10,40,4
 Object:
 	x=840
 	y=550

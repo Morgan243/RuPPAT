@@ -24,7 +24,10 @@ Game::Game(vector<section> configSections)
 
 	vector<string> tempVect;	
 	vector<string> tempVect_2;
-	string missile_sprite;
+
+	//default missle sprite
+	string missile_sprite, missile_name;
+	int missile_amnt, missile_dmg, missile_vel, missile_life;
 	
 	for(int i = 0; i< configSections.size(); i++)
 	{
@@ -95,7 +98,20 @@ Game::Game(vector<section> configSections)
 				
 				else if(configSections[i].sectionOptions[j].option
 						== "missle")
+				{
 				 missile_sprite = configSections[i].sectionOptions[j].values[0];
+				 missile_name = configSections[i].sectionOptions[j].values[1];
+
+				 missile_amnt =
+					atoi(configSections[i].sectionOptions[j].values[2].c_str());
+				 missile_dmg = 
+					atoi(configSections[i].sectionOptions[j].values[3].c_str());
+				 missile_vel = 
+					atoi(configSections[i].sectionOptions[j].values[4].c_str());
+				 missile_life = 
+					atoi(configSections[i].sectionOptions[j].values[5].c_str());
+
+				}
 
 			}
 
@@ -103,10 +119,14 @@ Game::Game(vector<section> configSections)
 	Player *tempPlayer = new Player(tempVect[0], numRots, 
 			startingAngle, maxAcc,x, y, tempVect_2[0]);
 		
-		//give player a missile
-		tempPlayer->addMissile(missile_sprite, "Orange Blob", true,
-					100, 10);//amount, max damage
-		
+		//add default missile	
+		tempPlayer->addMissile(missile_sprite, missile_name, 
+					true,//make this the selected missile?
+					missile_amnt,
+					missile_dmg,
+					missile_vel,
+					missile_life);
+
 		engine->addPlayer(tempPlayer);
 		  
 		}

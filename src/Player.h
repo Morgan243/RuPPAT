@@ -42,6 +42,9 @@ class Player : public Object
 
 		//add a missile, auto sets the sprite path to the default sprite
 		void addMissile(string sprite_path, string name, bool makeSelected,
+					int amnt, int mxDamage, int velocity, int lifespan);
+
+		void addMissile(string sprite_path, string name, bool makeSelected,
 					int amnt, int mxDamage);
 		
 		Missile* selectMissile_byName(string name);

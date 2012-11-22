@@ -70,6 +70,39 @@ Player :: ~Player()
 }
 
 void Player :: addMissile(string sprite_path, string name, bool makeSelected,
+				int amnt, int mxDamage, int velocity, int lifespan)
+{
+//{{{
+cout<<"Adding missile:"<<endl;
+cout<<"Path:"<<sprite_path<<endl;
+cout<<"rots:"<<numRotations<<endl;
+
+	missiles.push_back(
+			new Missile(sprite_path, numRotations, 0, 1, 10.0, 
+			descriptor.x, descriptor.y, descriptor.xVel, descriptor.yVel, sprite_path
+			));
+
+	missiles.back()->setName(name);
+
+	missiles.back()->setAmount(amnt);
+
+	missiles.back()->setDamage(mxDamage);
+
+	missiles.back()->SetLifespan(lifespan);
+
+	missiles.back()->SetLaunchForce(velocity);
+
+	//not actually configurable yet, hard coded
+	missiles.back()->SetLaunchForceDuration(1);
+
+	if(makeSelected)
+		selected_missile = missiles.back();
+//}}}
+}
+
+
+
+void Player :: addMissile(string sprite_path, string name, bool makeSelected,
 				int amnt, int mxDamage)
 {
 //{{{
@@ -95,12 +128,14 @@ cout<<"rots:"<<numRotations<<endl;
 
 bool Player :: updateSprite()
 {
+//{{{
 	sprite.updateSprite();
 
 	if(isSelected)
 		return true;
 	else
 		return false;
+//}}}
 }
 
 //select a missile and return a pointer to it
@@ -152,6 +187,7 @@ vector<Missile*> Player :: getFreeMissiles()
 Missile* Player::fireSelectedMissile()
 {
 //{{{	
+	//if(missiles_free.back()->
 	Missile *firedMissile = new Missile(*selected_missile);
 
 	cout<<"\""<<selected_missile->getName()<<"\" fired!"<<endl;

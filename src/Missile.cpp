@@ -7,7 +7,8 @@ Missile::Missile(string sprite_path, int num_rotations, int startingAngle, int m
 			startingAngle,xVel,yVel,HC_path)
 {
 
-
+	timeCreated = SDL_GetTicks();
+	cout<<"created at:"<<timeCreated<<endl;
 }
 
 Missile :: ~Missile()
@@ -58,5 +59,17 @@ int Missile::getDamage()
 	return damage;
 }
 
+void Missile::SetLaunchForce(int force)
+{
+	launchForce = force;
+}	
 
+void Missile::SetLaunchForceDuration(int duration)
+{
+	launchForceDuration = duration;
+}
 
+void Missile::SetLifespan(int seconds)
+{
+	lifespan = seconds * 1000;//convert to ms
+}

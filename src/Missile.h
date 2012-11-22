@@ -41,15 +41,20 @@ class Missile : public Object
 
 		int getDamage();
 
+		void SetLaunchForce(int force);
+
+		void SetLaunchForceDuration(int duration);
+
+		void SetLifespan(int seconds);
 
 	protected:
 		//how many of this missile do we have
-		int amount;
-
-		//whats the max damage
-		int damage;
+		int amount,
+		damage,	//whats the max damage
+		launchForce,//launch force (actually aceleration...for now)
+		launchForceDuration,//how long to apply the launch force
+		lifespan;//how long will it stick around, in seconds
 
 		string name;
-
 };
 #endif
