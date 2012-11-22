@@ -381,6 +381,17 @@ vector<Entity_desc*>* Object :: GetAuxillaryDescriptors()
 {
 	return NULL;
 }
+
+unsigned int Object::setTimeNow()
+{
+	thisTime = SDL_GetTicks();
+	return thisTime;
+}
+
+unsigned int Object::getTime()
+{
+	return thisTime;
+}
 //void Object::buildHitBoxes_fromLayer(SDL_Surface *HB_surface)
 //{
 ////{{{

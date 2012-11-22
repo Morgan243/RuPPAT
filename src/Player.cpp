@@ -187,33 +187,41 @@ vector<Missile*> Player :: getFreeMissiles()
 Missile* Player::fireSelectedMissile()
 {
 //{{{	
-	//if(missiles_free.back()->
-	Missile *firedMissile = new Missile(*selected_missile);
+		Missile *firedMissile = new Missile(*selected_missile);
 
-	cout<<"\""<<selected_missile->getName()<<"\" fired!"<<endl;
-	cout<<"\tx,y = "<<descriptor.x<<" , "<<descriptor.y<<endl;
+		cout<<"\""<<selected_missile->getName()<<"\" fired!"<<endl;
+		cout<<"\tx,y = "<<descriptor.x<<" , "<<descriptor.y<<endl;
 
-	//get the descriptor from the new missile
-	Entity_desc tempDesc = firedMissile->getDescriptor();
+		//get the descriptor from the new missile
+		Entity_desc tempDesc = firedMissile->getDescriptor();
 
-	//set the descriptors coordinates to the Player location
-	tempDesc.x = descriptor.x;
-	tempDesc.y = descriptor.y;
+		//set the descriptors coordinates to the Player location
+		tempDesc.x = descriptor.x;
+		tempDesc.y = descriptor.y;
 
-	//get velocity vectors using 
-	GetVectors_FrontRelative(tempDesc.xVel, tempDesc.yVel,
-					0.0, 120);
+		//get velocity vectors using 
+		GetVectors_FrontRelative(tempDesc.xVel, tempDesc.yVel,
+						0.0, 120);
 
-	//update positional stats with descriptor
-	firedMissile->setDescriptor(tempDesc);
+		//add velocity of player to missile
+		tempDesc.xVel += descriptor.xVel;
+		tempDesc.yVel += descriptor.yVel;
 
-	//Missile is free, add it to vector
-	missiles_free.push_back(firedMissile);
+		//update positional stats with descriptor
+		firedMissile->setDescriptor(tempDesc);
 
-	//copy over reference to fired missiles descriptor
-	auxillary_desc.push_back(firedMissile->getDescriptor_ref());
+		//firedMissile->setTimeNow();
+		//setTimeNow();
 
-	return firedMissile;
+		//Missile is free, add it to vector
+		missiles_free.push_back(firedMissile);
+
+		//copy over reference to fired missiles descriptor
+		auxillary_desc.push_back(firedMissile->getDescriptor_ref());
+
+			
+
+		return firedMissile;
 //}}}
 }
 
