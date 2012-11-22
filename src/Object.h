@@ -36,6 +36,9 @@ explicit Object(string sprite_path, int start_x, int start_y, int start_mass,
 			int num_rotations, int starting_angle,
 				 float xVel, float yVel, string HC_path);
 
+		Object(const Object& src);
+		Object &operator=(const Object &src);
+
 		~Object();
 
 		Entity_desc getDescriptor ()const;
@@ -114,5 +117,7 @@ explicit Object(string sprite_path, int start_x, int start_y, int start_mass,
 		int numRotations;
 		float exhaustX, exhaustY;
 		Entity_desc descriptor;
+
+		unsigned int timeCreated;
 };
 #endif

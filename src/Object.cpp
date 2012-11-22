@@ -73,6 +73,28 @@ void Object::setID(int id)
 descriptor.ID = id;
 }
 
+Object::Object(const Object &src)
+	:sprite(src.sprite)
+{
+	refMax = src.refMax;
+	refCounter = src.refCounter;
+
+	numRotations = src.numRotations;
+
+	exhaustX = src.exhaustX;
+	exhaustY = src.exhaustY;
+
+	descriptor = src.descriptor;
+
+	timeCreated = src.timeCreated;
+
+}
+
+Object & Object::operator=(const Object &src)
+{
+	sprite.operator=(src.sprite);
+}
+
 Object :: ~Object()
 {
 
