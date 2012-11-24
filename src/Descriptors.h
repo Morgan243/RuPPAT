@@ -106,6 +106,13 @@ struct Pixel_desc : public Entity_desc
 	bool deleteMe;
 };
 
+struct Renderables_Cont
+{
+	vector<Surface_Container> sprites;
+	vector<Pixel_desc> pixels;
+	vector<Entity_desc> entities;
+};
+
 //container for accel and velocities
 struct Derivative
 {

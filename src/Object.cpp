@@ -450,6 +450,11 @@ void Object::GameDestroy()
 
 }
 
+bool Object::GetRenderables(Renderables_Cont &renderables)
+{
+
+}
+
 //void Object::buildHitBoxes_fromLayer(SDL_Surface *HB_surface)
 //{
 ////{{{

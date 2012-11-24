@@ -97,8 +97,10 @@ class Player : public Object
 
 		SDL_Surface* GetNextAuxDrawInfo(int &x,
 			       			int &y,
-					       	SDL_Surface *refSurf);
+					       	SDL_Surface* &refSurf,
+						vector<Renderables_Cont> &renderables);
 
+		bool GetRenderables(Renderables_Cont &renderables);
 
 	protected:
 		//what missile will be fired if trigger is pulled

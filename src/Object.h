@@ -129,6 +129,8 @@ class Object
 
 		virtual vector<Entity_desc*>* GetAuxillaryDescriptors();
 
+		virtual bool GetRenderables(Renderables_Cont &renderables);
+
 		//destroy the object in game (destruction animation/effects
 		//initialization begins here) not a destructor operation
 		virtual void GameDestroy();

@@ -319,7 +319,8 @@ vector<Entity_desc*>* Player :: GetAuxillaryDescriptors()
 
 SDL_Surface* Player :: GetNextAuxDrawInfo(int &x,
 	       				int &y,
-				       	SDL_Surface *refSurf)
+				       	SDL_Surface* &refSurf,
+					vector<Renderables_Cont> &renderables)
 {
 //{{{
 	refCounter++;
@@ -339,4 +340,9 @@ SDL_Surface* Player :: GetNextAuxDrawInfo(int &x,
 		return NULL;
 	}
 //}}}
+}
+
+bool Player::GetRenderables(Renderables_Cont &Renderables_Cont)
+{
+
 }

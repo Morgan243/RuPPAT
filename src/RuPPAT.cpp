@@ -155,6 +155,7 @@ void RuPPAT :: parsePlayersToSurface()
 	int x, y, i, j, color, size=players.size(), screenID=0;
 	int x_aux, y_aux;
 	CoOrd tempCoOrd;
+	vector<Renderables_Cont> tempRenderables;
 	tempCoOrd.x=0;
 	tempCoOrd.y=0;
 	SDL_Surface *refSurf;
@@ -163,10 +164,16 @@ void RuPPAT :: parsePlayersToSurface()
  //#pragma omp parallel for private(x,y,color, i, j)
 	 for( i=0 ; i< size ; i++)
 		{
-		while((refSurf = players[i]->GetNextAuxDrawInfo(x_aux, y_aux, refSurf)) != NULL)
-		{
-			mainRender->putSprite(x_aux, y_aux, refSurf);
-		}
+		while((players[i]-> GetNextAuxDrawInfo(x_aux,
+							 y_aux, 
+							 refSurf,
+						 tempRenderables)
+			) != NULL)
+			{
+				mainRender->putSprite(x_aux,
+					       		y_aux,
+						       	refSurf);
+			}
 		
 		
 		x =	players[i]->getX();
@@ -177,10 +184,11 @@ void RuPPAT :: parsePlayersToSurface()
 		
 		if(players[i]->updateSprite())
 		{
-		mainRender->putSprite(x,y,primitive_maker->Get_Cached(i));
-		//		SDL_DisplayFormatAlpha(primitive_maker->Get_Cached(i)));
+		mainRender->
+			putSprite(x,y,primitive_maker->Get_Cached(i));
 
-		mainRender->putSprite(x,y, players[i]->getSprite());
+		mainRender->
+			putSprite(x,y, players[i]->getSprite());
 		
 		}
 		else
