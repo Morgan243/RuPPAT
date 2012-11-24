@@ -52,9 +52,13 @@ class Missile : public Object
 
 		void SetLaunchForceDuration(int duration);
 
+		void SetTimeCreated(float gameTime);
+
 		void SetLifespan(float seconds);
 
 		bool IsBeyondLifeSpan();
+
+		bool IsBeyondLifeSpan(float gameTime);
 
 	protected:
 		//how many of this missile do we have

@@ -137,8 +137,9 @@ class Object
 		float getTime();
 
 		Sprite sprite, hitCircleSprite;
-
+		bool killMe;
 	protected:
+		
 		int refMax, refCounter;
 		int numRotations;
 		float exhaustX, exhaustY;

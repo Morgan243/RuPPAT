@@ -22,7 +22,8 @@ Missile::Missile(string sprite_path,
 		HC_path)
 {
 
-	timeCreated = SDL_GetTicks();
+	killMe = false;
+	timeCreated = 0;//SDL_GetTicks();
 	cout<<"created at:"<<timeCreated<<endl;
 }
 
@@ -84,6 +85,11 @@ void Missile::SetLaunchForceDuration(int duration)
 	launchForceDuration = duration;
 }
 
+void Missile::SetTimeCreated(float gameTime)
+{
+	timeCreated = gameTime;
+}
+
 void Missile::SetLifespan(float gameTime)
 {
 	lifespan = gameTime;
@@ -92,10 +98,23 @@ void Missile::SetLifespan(float gameTime)
 bool Missile::IsBeyondLifeSpan()
 {
 //{{{
-	if( (SDL_GetTicks() - timeCreated) > lifespan)
-	{
+	if( (thisTime - timeCreated) > lifespan)
 		return true;
-	}else
+	else
+		return false;
+//}}}
+}
+
+bool Missile::IsBeyondLifeSpan(float gameTime)
+{
+//{{{
+	thisTime = gameTime;
+
+	cout<<"Been alive: "<< (thisTime - timeCreated)<<endl;
+
+	if( (thisTime - timeCreated) > lifespan)
+		return true;
+	else
 		return false;
 //}}}
 }

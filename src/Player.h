@@ -98,6 +98,8 @@ class Player : public Object
 		SDL_Surface* GetNextAuxDrawInfo(int &x,
 			       			int &y,
 					       	SDL_Surface *refSurf);
+
+
 	protected:
 		//what missile will be fired if trigger is pulled
 		Missile* selected_missile;

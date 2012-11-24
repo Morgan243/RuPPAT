@@ -17,7 +17,7 @@ using namespace std;
 struct Surface_Container
 {
 	SDL_Surface* surface;
-	int ID;
+	int ID, x, y;
 	string name;
 };
 

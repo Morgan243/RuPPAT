@@ -245,6 +245,8 @@ Missile* Player::fireSelectedMissile()
 		//update positional stats with descriptor
 		firedMissile->setDescriptor(tempDesc);
 
+		firedMissile->SetTimeCreated(thisTime);
+		firedMissile->SetLifespan(1.0);
 		//firedMissile->setTimeNow();
 		//setTimeNow();
 
@@ -265,15 +267,34 @@ Entity_desc* Player::PhysicsHandler(float t,
 					Entity_desc &state_src)
 {
 //{{{
+	int size = missiles_free.size();
 	thisTime = t;
 
+	//cout<<"time: "<<thisTime<<endl;
 	//calculate players position
 	PhysFunc::integrate(descriptor, t, dt, state_src);
 
 	//calculate fire or free missiles position
-	for(int i = 0; i< missiles_free.size(); i++)
+	for(int i = 0; i < size; i++)
 	{
-		missiles_free[i]->PhysicsHandler(t, dt, state_src);
+		if(missiles_free[i]->killMe)
+		{
+			//cout<<"Missile being killed!"<<endl;
+			missiles_free.erase(
+					missiles_free.begin()+i);
+			i--;
+			size--;
+		}
+		else if(missiles_free[i]->IsBeyondLifeSpan(thisTime))
+		{
+			cout<<"Missile being game destroyed!"<<endl;
+			missiles_free[i]->GameDestroy();
+		}
+		else	
+			//cout<<"Just handling physics!"<<endl;
+			missiles_free[i]->PhysicsHandler(t,
+							dt,
+						       	state_src);
 	}
 	return &descriptor;
 //}}}
