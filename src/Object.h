@@ -84,8 +84,7 @@ class Object
 
 		void getXY_exhaust(float &xVel, float &yVel);
 
-		void GetVectors_FrontRelative(
-						float &xVect,
+		void GetVectors_FrontRelative(float &xVect,
 						float &yVect,
 						float angleFromFront,
 						float mag);
