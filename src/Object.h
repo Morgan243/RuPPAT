@@ -1,6 +1,5 @@
 //Object is the base class for moveable Entities
 //
-//
 //This is a parent class but is useable for basics 
 #ifndef OBJECT_H
 #define OBJECT_H
@@ -71,8 +70,9 @@ explicit Object(string sprite_path, int start_x, int start_y, int start_mass,
 
 		void getXY_exhaust(float &xVel, float &yVel);
 
-		void GetVectors_FrontRelative(float &xVect, float &yVect, 	//reference return
-						float angleFromFront, float mag);
+		void GetVectors_FrontRelative(
+				float &xVect, float &yVect,//reference return
+				float angleFromFront, float mag);
 
 		void setRotation_rate(float rotRate);
 
@@ -99,8 +99,6 @@ explicit Object(string sprite_path, int start_x, int start_y, int start_mass,
 		bool checkHits(float &xVel, float &yVel, Entity_desc &check_ent);
 
 
-		Sprite sprite, hitCircleSprite;
-
 		float lastErr;
 		float rotationalErrorAccum;
 
@@ -112,17 +110,23 @@ explicit Object(string sprite_path, int start_x, int start_y, int start_mass,
 
 		virtual vector<Entity_desc*>* GetAuxillaryDescriptors();
 
+		//destroy the object in game (destruction animation/effects
+		//initialization begins here) not a destructor operation
+		virtual void GameDestroy();
 
-		unsigned int setTimeNow();
-		unsigned int getTime();
+		float setTimeNow(float time);
+		float getTime();
+
+		Sprite sprite, hitCircleSprite;
+
 	protected:
 		int refMax, refCounter;
 		int numRotations;
 		float exhaustX, exhaustY;
 		Entity_desc descriptor;
 
-		unsigned float timeCreated;
+		float timeCreated;
 		//generic timestamp for class
-		unsigned float thisTime;
+		float thisTime;
 };
 #endif

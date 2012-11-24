@@ -5,7 +5,8 @@ using namespace std;
 
 
 //-----CONSTRUCTOR: configSections holds vector of config sections
-// 			   sections hold vectors of options, which have vectors of values 
+// 			   sections hold vectors of options, 
+// 			   which have vectors of values 
 Game::Game(vector<section> configSections)
 {
 //{{{

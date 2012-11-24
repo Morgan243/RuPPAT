@@ -23,29 +23,51 @@
 
 
 using namespace std;
-
+		
 //Player inherits from object
 class Player : public Object
 {
 	public:
-		explicit Player(string sprite_path, int num_rotations, int startingAngle);
 
-		explicit Player(string sprite_path, int num_rotations, int startingAngle,
-					float maxaccel, int startX, int startY);
+		explicit Player(string sprite_path, 
+				int num_rotations,
+			       	int startingAngle);
 
-		explicit Player(string sprite_path, int num_rotations, int startingAngle,
-					float maxaccel, int startX, int startY, 
-					string HC_path);
+		explicit Player(string sprite_path,
+			       	int num_rotations,
+			       	int startingAngle,
+				float maxaccel,
+			       	int startX,
+			       	int startY);
+
+		explicit Player(string sprite_path,
+			       	int num_rotations,
+			       	int startingAngle,
+				float maxaccel,
+			       	int startX,
+			       	int startY, 
+				string HC_path);
 		~Player();
+
 
 		bool updateSprite();
 
-		//add a missile, auto sets the sprite path to the default sprite
-		void addMissile(string sprite_path, string name, bool makeSelected,
-					int amnt, int mxDamage, float velocity, float lifespan);
+		//add a missile, auto sets the sprite path to the 
+		//default sprite
+		void addMissile(string sprite_path,
+			       	string name,
+			       	bool makeSelected,
+				int amnt,
+			       	int mxDamage,
+			       	float velocity,
+			       	float lifespan);
 
-		void addMissile(string sprite_path, string name, bool makeSelected,
-					int amnt, int mxDamage);
+		//load sprite and create a new Missile object
+		void addMissile(string sprite_path,
+			       	string name,
+			       	bool makeSelected,
+				int amnt,
+			       	int mxDamage);
 		
 		Missile* selectMissile_byName(string name);
 
@@ -53,7 +75,8 @@ class Player : public Object
 	
 		Missile* getSelectedMissile();
 
-		//check to see if engine needs to handle weapons physics,collisions, etc
+		//check to see if engine needs to handle
+		//weapons physics,collisions, etc
 		bool areMissilesFree();
 
 		//return all missiles that have been launched
@@ -63,14 +86,18 @@ class Player : public Object
 		Missile* fireSelectedMissile();
 		
 		Entity_desc *PhysicsHandler(Entity_desc &state_dest,
-						float t, float dt);
+						float t,
+					       	float dt);
 
-		Entity_desc *PhysicsHandler(float t, float dt,
+		Entity_desc *PhysicsHandler(float t,
+			       			float dt,
 						Entity_desc &state_src);
 		
 		vector<Entity_desc*>* GetAuxillaryDescriptors();
 
-		SDL_Surface* GetNextAuxDrawInfo(int &x, int &y, SDL_Surface *refSurf);
+		SDL_Surface* GetNextAuxDrawInfo(int &x,
+			       			int &y,
+					       	SDL_Surface *refSurf);
 	protected:
 		//what missile will be fired if trigger is pulled
 		Missile* selected_missile;
@@ -85,6 +112,7 @@ class Player : public Object
 		//Any "extra" descriptors: missiles, effects
 		vector<Entity_desc*> auxillary_desc;
 
+		//User has selected this unit; not currently in use
 		bool isSelected;
 };
 

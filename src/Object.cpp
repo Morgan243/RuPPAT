@@ -3,7 +3,10 @@
 #include "Object.h"
 #include "PhysFuncs.h"
 
-Object :: Object(string sprite_path, int start_x, int start_y, int start_mass)
+Object :: Object(string sprite_path, 
+		int start_x,
+	       	int start_y,
+	       	int start_mass)
 :sprite(sprite_path,360,0)
 {//{{{
 
@@ -20,9 +23,16 @@ Object :: Object(string sprite_path, int start_x, int start_y, int start_mass)
 		
 }//}}}
 
-Object :: Object(string sprite_path, int start_x, int start_y, int start_mass,
-			int num_rotations, int starting_angle)
-:sprite(sprite_path,num_rotations,starting_angle), hitCircleSprite()
+Object :: Object(string sprite_path,
+	       	int start_x, 
+		int start_y,
+	       	int start_mass,
+		int num_rotations,
+	       	int starting_angle)
+	:sprite(sprite_path,
+		num_rotations,
+		starting_angle), 
+	hitCircleSprite()
 {
 //{{{
 	numRotations = num_rotations;
@@ -39,10 +49,18 @@ Object :: Object(string sprite_path, int start_x, int start_y, int start_mass,
 //}}}
 }
 
-Object::Object(string sprite_path, int start_x, int start_y, int start_mass,
-			int num_rotations, int starting_angle,
-				 float xVel, float yVel, string HC_path)
-:sprite(sprite_path,num_rotations,starting_angle), 
+Object::Object(string sprite_path,
+	       int start_x,
+	       int start_y,
+	       int start_mass,
+	       int num_rotations,
+	       int starting_angle,
+	       float xVel,
+	       float yVel,
+	       string HC_path)
+	:sprite(sprite_path,
+		num_rotations,
+		starting_angle), 
 	hitCircleSprite(HC_path)
 {
 //{{{
@@ -347,9 +365,12 @@ void Object :: getXY_exhaust(float &xVel, float &yVel)
 	yVel=exhaustY;
 }
 
-void Object :: GetVectors_FrontRelative(float &xVect, float &yVect, 	//reference return
-						float degreeOffset, float mag)
+void Object :: GetVectors_FrontRelative(float &xVect,
+	       				float &yVect, 	//reference return
+					float degreeOffset,
+				       	float mag)
 {
+///{{{
 	//determine current angle of the front of sprite (zero degrees of base sprite)
 	//determine new angle given the offset
 	float angle = sprite.getAngle() + degreeOffset;
@@ -371,24 +392,33 @@ void Object :: GetVectors_FrontRelative(float &xVect, float &yVect, 	//reference
 
 	yVect = (-1)*sin(angle)*mag;
 	xVect = cos(angle)*mag;
+//}}}
 }
 
-Entity_desc* Object :: PhysicsHandler(float t, float dt, 
-				Entity_desc &state_src)
+Entity_desc* Object :: PhysicsHandler(float t,
+	       				float dt, 
+					Entity_desc &state_src)
 {
+//{{{
 	thisTime = t;
 
 	//default for of this constructor
 	PhysFunc::integrate(descriptor, t, dt, state_src);
 	return &descriptor;
+//}}}
 }
 
-Entity_desc* Object :: PhysicsHandler(Entity_desc &state_dest, float t, float dt)
+Entity_desc* Object :: PhysicsHandler(Entity_desc &state_dest, 
+					float t, 
+					float dt)
 {
+//{{{
 	thisTime = t;
+	
 	//default for of this constructor
 	PhysFunc::integrate(state_dest, t, dt, descriptor);
 	return &state_dest;
+//}}}
 }
 
 vector<Entity_desc*>* Object :: GetAuxillaryDescriptors()
@@ -396,16 +426,31 @@ vector<Entity_desc*>* Object :: GetAuxillaryDescriptors()
 	return NULL;
 }
 
-unsigned int Object::setTimeNow()
+float Object::setTimeNow(float time)
 {
-	thisTime = SDL_GetTicks();
+//{{{
+	//pass in -1 to just use ticks
+	if(time >= 0)
+		thisTime = time;
+	else
+		thisTime = SDL_GetTicks();
+
+	//returns the time thats been set
+	return thisTime;
+//}}}
+}
+
+float Object::getTime()
+{
 	return thisTime;
 }
 
-unsigned int Object::getTime()
+void Object::GameDestroy()
 {
-	return thisTime;
+
+
 }
+
 //void Object::buildHitBoxes_fromLayer(SDL_Surface *HB_surface)
 //{
 ////{{{
