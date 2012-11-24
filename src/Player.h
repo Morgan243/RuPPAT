@@ -98,7 +98,7 @@ class Player : public Object
 		SDL_Surface* GetNextAuxDrawInfo(int &x,
 			       			int &y,
 					       	SDL_Surface* &refSurf,
-						vector<Renderables_Cont> &renderables);
+					Renderables_Cont &renderables);
 
 		bool GetRenderables(Renderables_Cont &renderables);
 

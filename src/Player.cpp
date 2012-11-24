@@ -320,18 +320,21 @@ vector<Entity_desc*>* Player :: GetAuxillaryDescriptors()
 SDL_Surface* Player :: GetNextAuxDrawInfo(int &x,
 	       				int &y,
 				       	SDL_Surface* &refSurf,
-					vector<Renderables_Cont> &renderables)
+					Renderables_Cont &renderables)
 {
 //{{{
 	refCounter++;
 	if(refCounter < missiles_free.size())
 	{
-		missiles_free[refCounter]->updateSprite();
-		
-		refSurf = missiles_free[refCounter]->getSprite();
 
-		x = missiles_free[refCounter]->getX();
-		y = missiles_free[refCounter]->getY();
+		Surface_Container tmpSurfCon
+			= missiles_free[refCounter]->
+						UpdateAndGetRenderables(renderables);
+		refSurf = tmpSurfCon.surface;
+		x = tmpSurfCon.x;
+		y = tmpSurfCon.y;
+		
+
 		return refSurf;
 	}
 	else

@@ -60,6 +60,9 @@ class Missile : public Object
 
 		bool IsBeyondLifeSpan(float gameTime);
 
+		Surface_Container UpdateAndGetRenderables(
+						Renderables_Cont &rnder);
+
 	protected:
 		//how many of this missile do we have
 		int amount,

@@ -455,6 +455,12 @@ bool Object::GetRenderables(Renderables_Cont &renderables)
 
 }
 
+Surface_Container Object::UpdateAndGetRenderables(Renderables_Cont rnder)
+{
+
+}
+
+
 //void Object::buildHitBoxes_fromLayer(SDL_Surface *HB_surface)
 //{
 ////{{{

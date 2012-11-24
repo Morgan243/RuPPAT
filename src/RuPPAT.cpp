@@ -155,7 +155,7 @@ void RuPPAT :: parsePlayersToSurface()
 	int x, y, i, j, color, size=players.size(), screenID=0;
 	int x_aux, y_aux;
 	CoOrd tempCoOrd;
-	vector<Renderables_Cont> tempRenderables;
+	Renderables_Cont tempRenderables;
 	tempCoOrd.x=0;
 	tempCoOrd.y=0;
 	SDL_Surface *refSurf;

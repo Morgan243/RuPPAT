@@ -119,17 +119,23 @@ class Object
 		float lastErr;
 		float rotationalErrorAccum;
 
-		virtual Entity_desc* PhysicsHandler(float t,
+		virtual Entity_desc* PhysicsHandler(
+							float t,
 			       				float dt,
-							Entity_desc &state_src);
+						Entity_desc &state_src);
 
-		virtual Entity_desc*  PhysicsHandler(Entity_desc &state_dest, 
+		virtual Entity_desc*  PhysicsHandler(
+						Entity_desc &state_dest, 
 							float t,
 						       	float dt);
 
 		virtual vector<Entity_desc*>* GetAuxillaryDescriptors();
 
 		virtual bool GetRenderables(Renderables_Cont &renderables);
+
+		virtual Surface_Container UpdateAndGetRenderables(
+					Renderables_Cont rnder);
+
 
 		//destroy the object in game (destruction animation/effects
 		//initialization begins here) not a destructor operation
@@ -150,5 +156,7 @@ class Object
 		float timeCreated;
 		//generic timestamp for class
 		float thisTime;
+
+		Renderables_Cont to_render;
 };
 #endif
