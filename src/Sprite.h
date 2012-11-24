@@ -87,6 +87,10 @@ class Sprite
 		float rotationalErrorAccum;
 
 		void generateSpriteOutlines();
+		void generatePixelSprite(bool print);
+
+		vector<Pixel_desc> getPixelSprite();
+
 		vector<CoOrd> outlineSprite();
 
 		void clearPixelFromAll(int start_rot_i, int x, int y);
@@ -101,12 +105,9 @@ class Sprite
 		int currentAngleIndex;
 		float currentAngleIndex_f;
 		
-
 		SDL_Surface *base_sprite;
 		vector<SDL_Surface *> rotations;	
-		
-		//unsigned int ** pixMaps;
-
+		vector<Pixel_desc> pixel_sprite;
 		string sprite_path;
 };
 #endif

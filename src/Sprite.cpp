@@ -47,7 +47,6 @@ Sprite::Sprite(string path_to_sprite,int numRotations, int startingAngle)
 	base_sprite = tempSpriteOpt;
 
 
-
 	for(int i = 0; i<numRotations;i++)
 	{
 		rotations.push_back(
@@ -58,8 +57,7 @@ Sprite::Sprite(string path_to_sprite,int numRotations, int startingAngle)
 		//cout<<"generating rotation #"<<i<<endl;
 	}
 	
-	generateSpriteOutlines();
-
+	generatePixelSprite(true);
 //}}}
 }
 
@@ -67,6 +65,7 @@ Sprite::Sprite(const Sprite &src)
 {
 	SDL_Surface *tempSurf;
 	src.copyAll(tempSurf, *this);
+
 	//this->setBaseSprite(tempSurf);
 	this->base_sprite = SDL_ConvertSurface(src.getBaseSprite(),
 		       src.getBaseSprite()->format, SDL_SWSURFACE);
@@ -108,6 +107,7 @@ void Sprite :: copyAll(SDL_Surface *dest, Sprite &sprDest) const
 	cout<<"CurrAngle: "<<current_angle<<endl;
 	sprDest.set_RotR_DegIncr_Angl(rotation_rate, degree_increment, current_angle);
 
+	sprDest.pixel_sprite = this->pixel_sprite;
 //}}}
 }
 
@@ -392,6 +392,52 @@ void Sprite::generateSpriteOutlines()
 ///}}}
 }
 
+void Sprite::generatePixelSprite(bool print)
+{
+//{{{	
+
+Pixel_desc tmpPix;
+	tmpPix.accelLength = tmpPix.dimFactor = tmpPix.dimTimer = 0;
+	tmpPix.deleteMe = tmpPix.updatedG = false;
+
+	tmpPix.xVel = tmpPix.xAcc = tmpPix.yVel = tmpPix.yAcc = 0.0;
+
+	for(int k = 0; k < rotations.size(); k++)
+	{
+		//unsigned int pixVal[rotations[k]->w][rotations[k]->h]; 
+
+		for(int i = 0; i < rotations[k]->h; i++)
+		{
+			for(int j = 0; j < rotations[k]->w; j++)
+			{
+
+				if(((tmpPix.color = getPixel(j,i)) != 0) && (k == 0))
+				{
+					tmpPix.x = j;
+					tmpPix.y = i;
+					pixel_sprite.push_back(tmpPix);
+
+					printf("1 [%u]", tmpPix.color);
+				}
+				else if (k==0)
+				{	
+					printf("_ ");
+				}
+			}
+			if(!k)
+			printf("\n");
+			//pixMaps.push_back(&pixVal);
+
+		}
+	}
+///}}}
+}
+
+vector<Pixel_desc> Sprite::getPixelSprite()
+{
+		cout<<"pixel sprite size of "<< pixel_sprite.size()<<endl;
+	return pixel_sprite;
+}
 
 vector<CoOrd> Sprite:: outlineSprite()
 {

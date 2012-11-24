@@ -146,7 +146,10 @@ class Object
 
 		Sprite sprite, hitCircleSprite;
 		bool killMe;
+		bool isDestroying;
+
 	protected:
+		
 		
 		int refMax, refCounter;
 		int numRotations;
@@ -158,5 +161,6 @@ class Object
 		float thisTime;
 
 		Renderables_Cont to_render;
+		vector<Pixel_desc> pixelSprite_cache;
 };
 #endif

@@ -100,6 +100,8 @@ class Player : public Object
 					       	SDL_Surface* &refSurf,
 					Renderables_Cont &renderables);
 
+		SDL_Surface* GetNextAuxDrawInfo(Renderables_Cont &renderables);
+
 		bool GetRenderables(Renderables_Cont &renderables);
 
 	protected:

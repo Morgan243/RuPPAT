@@ -87,8 +87,12 @@ Object::Object(string sprite_path,
 
 	timeCreated = SDL_GetTicks();
 
+	pixelSprite_cache = sprite.getPixelSprite();
+
+	cout<<"pixel Sprite_cache in object is :"<< pixelSprite_cache.size()<<endl;
+	isDestroying = false;
 	//buildHitBoxes_fromSprite();
-//	buildHitBoxes_fromLayer(hitCircleSprite.getBaseSprite());
+	//BuildHitBoxes_fromLayer(hitCircleSprite.getBaseSprite());
 //}}}
 }
 
@@ -110,6 +114,8 @@ Object::Object(const Object &src)
 	exhaustY = src.exhaustY;
 
 	descriptor = src.descriptor;
+	
+	pixelSprite_cache = src.pixelSprite_cache;
 
 	timeCreated = SDL_GetTicks();
 
@@ -401,8 +407,17 @@ Entity_desc* Object :: PhysicsHandler(float t,
 //{{{
 	thisTime = t;
 
-	//default for of this constructor
-	PhysFunc::integrate(descriptor, t, dt, state_src);
+	//integrate the sprite location
+	if(!isDestroying)
+		PhysFunc::integrate(descriptor, t, dt, state_src);
+
+	for(int i = 0; i < to_render.pixels.size(); i++)
+	{
+		cout<<"integrating pixel of color "<<
+			(to_render.pixels[i].color)<<endl;
+		PhysFunc::integrate(to_render.pixels[i], t, dt, state_src);
+	}
+
 	return &descriptor;
 //}}}
 }
@@ -446,8 +461,23 @@ float Object::getTime()
 
 void Object::GameDestroy()
 {
+	cout<<"in default game destroy"<<endl;
+	cout<<"pixel sprite cache is "<<pixelSprite_cache.size()<<endl;
+	//should append in case there are pixels already here
+	to_render.pixels = pixelSprite_cache;
 
-
+	//set the correct coordinates
+	for(int i = 0; i < to_render.pixels.size(); i++)
+	{
+		cout<<i<<" pixel, color "<<to_render.pixels[i].color<<endl;
+		to_render.pixels[i].x += descriptor.x;
+		to_render.pixels[i].y += descriptor.y;
+		to_render.pixels[i].xVel = descriptor.xVel
+						+ rand()%50 - rand()%50;
+		to_render.pixels[i].yVel = descriptor.yVel
+						+ rand()%50 - rand()%50;
+	}
+	isDestroying = true;
 }
 
 bool Object::GetRenderables(Renderables_Cont &renderables)

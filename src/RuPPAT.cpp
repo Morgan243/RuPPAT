@@ -164,36 +164,35 @@ void RuPPAT :: parsePlayersToSurface()
  //#pragma omp parallel for private(x,y,color, i, j)
 	 for( i=0 ; i< size ; i++)
 		{
-		while((players[i]-> GetNextAuxDrawInfo(x_aux,
-							 y_aux, 
-							 refSurf,
-						 tempRenderables)
-			) != NULL)
+		while((players[i]->GetNextAuxDrawInfo(tempRenderables)) != NULL)
 			{
-				mainRender->putSprite(x_aux,
-					       		y_aux,
-						       	refSurf);
+				mainRender->putSprite(tempRenderables.sprites);
+
+				mainRender->putPixel(tempRenderables.pixels);
 			}
 		
 		
-		x =	players[i]->getX();
-		y =	players[i]->getY();
+		x = players[i]->getX();
+		y = players[i]->getY();
 	
 		centerX = x;
 		centerY = y;
 		
 		if(players[i]->updateSprite())
 		{
-		mainRender->
-			putSprite(x,y,primitive_maker->Get_Cached(i));
+			mainRender->putSprite(x,
+									y,
+									primitive_maker->Get_Cached(i));
 
-		mainRender->
-			putSprite(x,y, players[i]->getSprite());
+			mainRender->putSprite(x,
+									y,
+									players[i]->getSprite());
 		
 		}
 		else
-		mainRender->putSprite(x,y, players[i]->getSprite());
-		
+			mainRender->putSprite(x,
+									y,
+									players[i]->getSprite());
 		}
 
    pthread_rwlock_unlock(&object_rw_lock);

@@ -182,6 +182,14 @@ Uint32 Render::getPixel(int x, int y, int screenID)
 	return pixels[ ( y * pre_surface->w ) + x ];
 }
 
+void Render::putPixel(vector<Pixel_desc> pixels)
+{
+	for(int i = 0; i < pixels.size(); i++)
+	{
+		putPixel(pixels[i].x, pixels[i].y, pixels[i].color, 0);
+	}
+}
+
 
 //-----------------putPixel--------
 //place a pixel of color and location as
@@ -236,6 +244,7 @@ void Render :: putPixel2(int x, int y, Uint8 r, Uint8 g, Uint8 b)
 //place sprite at position 
 void Render :: putSprite(int x, int y, SDL_Surface* sprite)
 {
+//{{{
 	SDL_Rect imagePosition;
 
 	imagePosition.x = x - (sprite->w/2);
@@ -261,7 +270,19 @@ void Render :: putSprite(int x, int y, SDL_Surface* sprite)
 
 //	if(SDL_MUSTLOCK(mainScreen))
 //		SDL_UnlockSurface(mainScreen);
+//}}}
 }
+//
+//-----------------putSprite-------
+//Put multiple sprites to the screen 
+void Render :: putSprite(vector<Surface_Container> sprites)
+{
+	for(int i = 0; i < sprites.size(); i++)
+	{
+		putSprite(sprites[i].x, sprites[i].y, sprites[i].surface);
+	}
+}
+
 //blit a surface onto the main screen, good for backgrounds and testing sprites
 void Render::applySurface(int x, int y, SDL_Surface* source)
 {

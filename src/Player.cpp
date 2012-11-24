@@ -285,17 +285,24 @@ Entity_desc* Player::PhysicsHandler(float t,
 			i--;
 			size--;
 		}
-		else if(missiles_free[i]->IsBeyondLifeSpan(thisTime))
+		else if(missiles_free[i]->IsBeyondLifeSpan(thisTime) 
+				&& !missiles_free[i]->isDestroying)
 		{
 			cout<<"Missile being game destroyed!"<<endl;
 			missiles_free[i]->GameDestroy();
 		}
-		else	
+		else 
 			//cout<<"Just handling physics!"<<endl;
 			missiles_free[i]->PhysicsHandler(t,
 							dt,
 						       	state_src);
 	}
+
+//	for(int i = 0; i < to_render.pixels.size(); i++)
+//	{
+//		PhysFunc::integrate(to_render.pixels[i], t, dt, state_src);
+//	}
+
 	return &descriptor;
 //}}}
 }
@@ -344,6 +351,31 @@ SDL_Surface* Player :: GetNextAuxDrawInfo(int &x,
 	}
 //}}}
 }
+
+
+SDL_Surface* Player :: GetNextAuxDrawInfo(Renderables_Cont &renderables)
+{
+//{{{
+	refCounter++;
+	if(refCounter < missiles_free.size())
+	{
+
+		Surface_Container tmpSurfCon = missiles_free[refCounter]->
+						UpdateAndGetRenderables(renderables);
+
+		renderables.sprites.push_back(tmpSurfCon);
+
+		return tmpSurfCon.surface;
+	}
+	else
+	{
+		refCounter = -1;
+		return NULL;
+	}
+//}}}
+}
+
+
 
 bool Player::GetRenderables(Renderables_Cont &Renderables_Cont)
 {

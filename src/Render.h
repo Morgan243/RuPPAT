@@ -29,9 +29,13 @@ class Render
 
 		void putPixel(int x, int y, Uint32 color, int screenID);
 		
+		void putPixel(vector<Pixel_desc> pixels);
+
 		void putSprite(int x, int y, Entity_desc* entityDetails);
 
 		void putSprite(int x, int y, SDL_Surface* sprite);
+
+		void putSprite(vector<Surface_Container> sprites);
 
 		void putPixel2(int x, int y, Uint8 r, Uint8 g, Uint8 b);
 

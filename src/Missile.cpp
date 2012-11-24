@@ -110,7 +110,7 @@ bool Missile::IsBeyondLifeSpan(float gameTime)
 //{{{
 	thisTime = gameTime;
 
-	cout<<"Been alive: "<< (thisTime - timeCreated)<<endl;
+	//cout<<"Been alive: "<< (thisTime - timeCreated)<<endl;
 
 	if( (thisTime - timeCreated) > lifespan)
 		return true;
@@ -121,6 +121,7 @@ bool Missile::IsBeyondLifeSpan(float gameTime)
 
 Surface_Container Missile::UpdateAndGetRenderables(Renderables_Cont &rnder)
 {
+//{{{
 	this->updateSprite();
 
 	Surface_Container ret_surface;
@@ -131,4 +132,5 @@ Surface_Container Missile::UpdateAndGetRenderables(Renderables_Cont &rnder)
 	rnder = to_render;
 
 	return ret_surface;
+//}}}
 }
