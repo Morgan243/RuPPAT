@@ -26,19 +26,33 @@ class Object
 {
 	public:
 
-explicit Object(string sprite_path, int start_x, int start_y, int start_mass);
+		explicit Object(string sprite_path,
+			       	int start_x,
+			       	int start_y,
+			       	int start_mass);
 
-explicit Object(string sprite_path, int start_x, int start_y, int start_mass,
-			int num_rotations, int starting_angle);
+		explicit Object(string sprite_path,
+			       	int start_x,
+			       	int start_y,
+			       	int start_mass,
+				int num_rotations,
+			       	int starting_angle);
 
-explicit Object(string sprite_path, int start_x, int start_y, int start_mass,
-			int num_rotations, int starting_angle,
-				 float xVel, float yVel, string HC_path);
+		explicit Object(string sprite_path,
+			       	int start_x,
+			       	int start_y,
+			       	int start_mass,
+				int num_rotations,
+			       	int starting_angle,
+				float xVel,
+			       	float yVel,
+			       	string HC_path);
 
 		Object(const Object& src);
 		Object &operator=(const Object &src);
 
 		~Object();
+
 
 		Entity_desc getDescriptor ()const;
 		Entity_desc* getDescriptor_ref();
@@ -71,8 +85,10 @@ explicit Object(string sprite_path, int start_x, int start_y, int start_mass,
 		void getXY_exhaust(float &xVel, float &yVel);
 
 		void GetVectors_FrontRelative(
-				float &xVect, float &yVect,//reference return
-				float angleFromFront, float mag);
+						float &xVect,
+						float &yVect,
+						float angleFromFront,
+						float mag);
 
 		void setRotation_rate(float rotRate);
 
@@ -96,17 +112,21 @@ explicit Object(string sprite_path, int start_x, int start_y, int start_mass,
 
 		void buildHitBoxes_fromLayer(SDL_Surface* hitBoxLayout);
 
-		bool checkHits(float &xVel, float &yVel, Entity_desc &check_ent);
+		bool checkHits(float &xVel,
+			       	float &yVel,
+			       	Entity_desc &check_ent);
 
 
 		float lastErr;
 		float rotationalErrorAccum;
 
-		virtual Entity_desc* PhysicsHandler(float t, float dt,
-						Entity_desc &state_src);
+		virtual Entity_desc* PhysicsHandler(float t,
+			       				float dt,
+							Entity_desc &state_src);
 
 		virtual Entity_desc*  PhysicsHandler(Entity_desc &state_dest, 
-							float t, float dt);
+							float t,
+						       	float dt);
 
 		virtual vector<Entity_desc*>* GetAuxillaryDescriptors();
 

@@ -5,9 +5,15 @@
 
 //secondary-CONSTRUCTOR: leave many attributes statically defined by literals,
 //good for any quick tests
-Player :: Player(string sprite_path, int num_rotations, int startingAngle) 
-	: Object(sprite_path, 200,200,1,num_rotations,startingAngle)
-	//, sprite(sprite_path, num_rotations, startingAngle)
+Player :: Player(string sprite_path,
+	       	int num_rotations,
+	       	int startingAngle) 
+	: Object(sprite_path,
+		       	200,
+			200,
+			1,
+			num_rotations,
+			startingAngle)
 //{{{
 {
 	descriptor.xAcc = 0;
@@ -22,10 +28,18 @@ Player :: Player(string sprite_path, int num_rotations, int startingAngle)
 //}}}
 
 //Constructor with more options
-Player :: Player(string sprite_path, int num_rotations, int startingAngle,
-		float maxaccel, int startX, int startY) 
-		: Object(sprite_path,startX,startY,1,num_rotations,startingAngle)
-//		, sprite(sprite_path,num_rotations,startingAngle)
+Player :: Player(string sprite_path,
+	       	int num_rotations,
+	       	int startingAngle,
+		float maxaccel,
+	       	int startX,
+	       	int startY) 
+	: Object(sprite_path,
+			startX,
+			startY,
+			1,
+			num_rotations,
+			startingAngle)
 //{{{
 {
 	descriptor.xAcc = 0;
@@ -38,10 +52,22 @@ Player :: Player(string sprite_path, int num_rotations, int startingAngle,
 //}}}
 
 //Constructor with more options
-Player :: Player(string sprite_path, int num_rotations, int startingAngle,
-		float maxaccel, int startX, int startY, string HC_path) 
-		: Object(sprite_path,startX,startY,1, num_rotations,startingAngle,0,0,HC_path)
-	//, sprite(sprite_path, num_rotations,startingAngle)
+Player :: Player(string sprite_path,
+	       	int num_rotations,
+	       	int startingAngle,
+		float maxaccel,
+	       	int startX,
+	       	int startY,
+	       	string HC_path) 
+	: Object(sprite_path,
+			startX,
+			startY,
+			1,
+		       	num_rotations,
+			startingAngle,
+			0,
+			0,
+			HC_path)
 //{{{
 {
 	descriptor.xAcc = 0;
@@ -69,8 +95,13 @@ Player :: ~Player()
 //}}}
 }
 
-void Player :: addMissile(string sprite_path, string name, bool makeSelected,
-				int amnt, int mxDamage, float velocity, float lifespan)
+void Player :: addMissile(string sprite_path,
+	       			string name,
+			       	bool makeSelected,
+				int amnt,
+			       	int mxDamage,
+			       	float velocity,
+			       	float lifespan)
 {
 //{{{
 cout<<"Adding missile:"<<endl;
@@ -102,8 +133,11 @@ cout<<"rots:"<<numRotations<<endl;
 
 
 
-void Player :: addMissile(string sprite_path, string name, bool makeSelected,
-				int amnt, int mxDamage)
+void Player :: addMissile(string sprite_path,
+	       			string name,
+			       	bool makeSelected,
+				int amnt,
+			       	int mxDamage)
 {
 //{{{
 cout<<"Adding missile:"<<endl;
@@ -226,7 +260,8 @@ Missile* Player::fireSelectedMissile()
 //}}}
 }
 
-Entity_desc* Player::PhysicsHandler(float t, float dt,
+Entity_desc* Player::PhysicsHandler(float t,
+	       				float dt,
 					Entity_desc &state_src)
 {
 //{{{
@@ -245,7 +280,8 @@ Entity_desc* Player::PhysicsHandler(float t, float dt,
 }
 
 Entity_desc* Player::PhysicsHandler( Entity_desc &state_dest, 
-					float t, float dt)
+					float t, 
+					float dt)
 {
 //{{{
 	thisTime = t;
@@ -260,7 +296,9 @@ vector<Entity_desc*>* Player :: GetAuxillaryDescriptors()
 	return &auxillary_desc;	
 }
 
-SDL_Surface* Player :: GetNextAuxDrawInfo(int &x, int &y, SDL_Surface *refSurf)
+SDL_Surface* Player :: GetNextAuxDrawInfo(int &x,
+	       				int &y,
+				       	SDL_Surface *refSurf)
 {
 //{{{
 	refCounter++;

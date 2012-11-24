@@ -126,7 +126,6 @@ Object & Object::operator=(const Object &src)
 
 Object :: ~Object()
 {
-
 }
 
 
