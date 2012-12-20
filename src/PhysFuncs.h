@@ -39,12 +39,9 @@ void integrate_ent (Entity_desc &state, float t, float dt,
 //-------------------vvvv GENERALIZED FOR OBJECTS vvvvv------------
 Derivative evaluate(Entity_desc &initial,float t, float dt,const Derivative &d,
 			const Entity_desc &init_src);
-	//const float objMass, const float point_x, const float point_y)
 
 
 void integrate (Entity_desc &state, float t, float dt, 
 			Entity_desc &state_src);
-		//	Object &state_src)	
-		//const float objMass, const float point_x, const float point_y )
 }
 #endif

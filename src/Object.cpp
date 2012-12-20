@@ -268,7 +268,8 @@ void Object :: accelBackward()
 }
 
 void Object :: setAccelVectors(bool forward)
-{//{{{
+{
+//{{{
 
 		float heading = sprite.getAngle();
 	if(forward)
@@ -417,6 +418,7 @@ Entity_desc* Object :: PhysicsHandler(float t,
 			(unsigned int)(to_render.pixels[i].color)<<endl;
 		cout<<"\tlocation:"<<to_render.pixels[i].x<<", "<<
 			to_render.pixels[i].y<<endl;
+
 		PhysFunc::integrate(to_render.pixels[i], t, dt, state_src);
 	}
 
@@ -474,11 +476,7 @@ void Object::GameDestroy()
 	for(int i = 0; i < to_render.pixels.size(); i++)
 	{
 		cout<<i<<" pixel, color "<<hex<<(unsigned int)to_render.pixels[i].color<<endl;
-//		tmpColor = ((to_render.pixels[i].color>>24) & 0x000000FF)
-//			|  ((to_render.pixels[i].color>>8) & 0x0000FF00)
-//			|  ((to_render.pixels[i].color<<8) & 0x00FF0000)
-//			|  ((to_render.pixels[i].color<<24) | 0xFF000000);
-		//to_render.pixels[i].color = tmpColor;
+
 		to_render.pixels[i].x += descriptor.x;
 		to_render.pixels[i].y += descriptor.y;
 		to_render.pixels[i].xVel = descriptor.xVel
