@@ -187,8 +187,7 @@ void Render::putPixel(vector<Pixel_desc> pixels)
 	unsigned int color = 0;
 	for(int i = 0; i < pixels.size(); i++)
 	{
-		//putPixel(pixels[i].x, pixels[i].y, 0xff0063b0, 0);
-		//putPixel(pixels[i].x, pixels[i].y, pixels[i].color, 0);
+		//revers the endianess
 		color = pixels[i].color;
 		color = ((color&0x00ff0000)>>16)
 				| ((color&0x0000ff00))

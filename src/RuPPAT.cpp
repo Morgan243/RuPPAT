@@ -80,7 +80,9 @@ RuPPAT :: RuPPAT(int width, int height, int bpp, unsigned int flags,
 	WIDTH = width;
 	HEIGHT = height;
 
-primitive_maker = new Primitives(1, 0x5ffff000, mainRender->pre_surface);
+	primitive_maker = new Primitives(1,
+		   							0x55efe000,
+								   	mainRender->pre_surface);
 	gravitationalConstant = 22;
 
 //}}}
@@ -532,8 +534,8 @@ void RuPPAT :: runDemos(void *selection)
 	   }
  }
 
-}//END <runDemos>
 //}}}
+}
 
 //-------------RK4--------------
 // 	A new implementation of the
@@ -642,7 +644,6 @@ void RuPPAT::RK4(float t, float dt)
 		pthread_rwlock_unlock(&pix_rw_lock);
 
 	}
-	
  }
 //}}}
 }
@@ -707,7 +708,6 @@ std::thread *rk4_th = new std::thread(&RuPPAT::RK4,this,t,dt);
 		mainRender->applySurface(xOrigin,yOrigin,backgroundLayers[1]);
 		
 
-
 		pCenter.x = centerX;
 		pCenter.y = centerY;
 		//primMaker.drawCircle(pCenter, 16);
@@ -723,13 +723,7 @@ std::thread *rk4_th = new std::thread(&RuPPAT::RK4,this,t,dt);
 		//parse players
 		parsePlayersToSurface();
 		
-			//mainRender->applySurface(xOrigin, yOrigin, primitives);
-		//SDL_FillRect(primitives, NULL, 0);
-		//primMaker.drawLine(pCenter, pA,6, primitives);
-	//	primMaker.drawLine(pCenter, pB,8, mainRender->pre_surface);
-	//	primMaker.drawLine(pCenter, pC,10, mainRender->pre_surface);
-	//	primMaker.drawLine(pCenter, pD,18, mainRender->pre_surface);
-		
+
 		//test for boundry conditions of screen centering	
 		if(centerX < screen_centX)
 			xOrigin = 0;
@@ -750,8 +744,6 @@ std::thread *rk4_th = new std::thread(&RuPPAT::RK4,this,t,dt);
 		//blit top layer
 		mainRender->applySurface(xOrigin,yOrigin,backgroundLayers[2]);
 
-		
-
 
 		//mainRender->putSprite(xOrigin + (WIDTH/2),yOrigin + (HEIGHT/2),primitives);
 		mainRender->OnRender(xOrigin,yOrigin);
@@ -768,7 +760,7 @@ std::thread *rk4_th = new std::thread(&RuPPAT::RK4,this,t,dt);
 //||||||||||||||||||||||||||||||||||||\\
 //-------------------------------------\\
 //	RuPPAT Entry Point
-//spawn threads to do work
+//spawn threads to do work and handle events
 //
 void RuPPAT :: runPPAT(bool *mainDone, Event_desc *mainEvents
 			, string selection, string option)
@@ -903,17 +895,14 @@ void RuPPAT :: accelPlayer(int p_ID, bool isForward)
 		players[p_ID]->getXY_exhaust(t_pix.xVel, t_pix.yVel);
 	pthread_rwlock_unlock(&object_rw_lock);
 		
-		//color start red
+		//exhaust color starts red
 		t_pix.color=0x9f0000ff;
 		t_pix.xAcc = 0;
 		t_pix.yAcc = 0;
 		t_pix.accelLength = 2;
 		t_pix.dimFactor = 2;
-
 		t_pix.dimTimer = 0;
-
 		t_pix.deleteMe = false;
-
 		t_pix.updated = 0;
 
 	
@@ -943,7 +932,6 @@ void RuPPAT :: turnPlayer(int p_ID, bool isLeft, int numTurns)
 	{
 		if(isLeft)
 		{
-			
 			pthread_rwlock_wrlock(&object_rw_lock);
 				players[p_ID]->incrementRotation_rate();
 			pthread_rwlock_unlock(&object_rw_lock);
@@ -1145,6 +1133,8 @@ bool RuPPAT :: testBounds(Entity_desc &testMe, bool invert)
 				testMe.yVel=testMe.yVel*(-1);
 				isOutOfBounds=true;
 			}	
+
+		return isOutOfBounds;
 	}
 	else
 	{
