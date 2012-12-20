@@ -60,15 +60,15 @@ int Primitives::drawCircle(CoOrd center, int radius, bool cache)
 
 		#if SDL_BYTEORDER == SDL_BIG_ENDIAN
 		tempContain->surface = SDL_CreateRGBSurface(SDL_SWSURFACE,
-					radius*2 ,radius*2,32, 
-					0xFF000000, 0x00FF0000, 0x0000FF00, 0x000000FF); 
-		cout<<"BIG ENDIAN"<<endl;
+							radius*2 ,radius*2,32, 
+							0xFF000000, 0x00FF0000, 0x0000FF00, 0x000000FF); 
+				cout<<"BIG ENDIAN"<<endl;
 		#else
 
 		tempContain->surface =
-		SDL_CreateRGBSurface(SDL_SWSURFACE,radius*2,radius*2,32, 0x000000FF, 
-		0x0000FF00, 0x00FF0000, 0xFF000000); 
-		cout<<"Littel Endian! Color: "<<default_lineColor<<endl;
+				SDL_CreateRGBSurface(SDL_SWSURFACE,radius*2,radius*2,32, 0x000000FF, 
+										0x0000FF00, 0x00FF0000, 0xFF000000); 
+				cout<<"Littel Endian! Color: "<<default_lineColor<<endl;
 		
 		#endif
 
@@ -96,7 +96,7 @@ int Primitives::drawCircle(CoOrd center, int radius, bool cache)
 		tempContain->surface = rotozoomSurface(tempContain->surface,
 						0.0, 1.0,0);
 
-		SDL_SetAlpha(tempContain->surface,0,0xf0);
+		SDL_SetAlpha(tempContain->surface,0,0xff);
 		return surface_cache.size()-1;
 	}
 //}}}

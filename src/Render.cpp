@@ -90,8 +90,8 @@ Render::Render(int width, int height, int bpp, Uint32 flags,
 		0x00FF0000, 0x0000FF00, 0x000000FF); 
 	#else 
 		sprite_surface = 
-		SDL_CreateRGBSurface(SDL_SWSURFACE,width,height,32, 0xFF000000, 
-		0x00FF0000, 0x0000FF00, 0x000000FF); 
+		SDL_CreateRGBSurface(SDL_SWSURFACE,width,height,32, 0x000000FF, 
+		0x0000FF00, 0x00FF0000, 0xFF000000); 
 
 		pre_surface = 
 		SDL_CreateRGBSurface(SDL_SWSURFACE,width,height,32, 0x000000FF, 
@@ -184,9 +184,20 @@ Uint32 Render::getPixel(int x, int y, int screenID)
 
 void Render::putPixel(vector<Pixel_desc> pixels)
 {
+	unsigned int color = 0;
 	for(int i = 0; i < pixels.size(); i++)
 	{
-		putPixel(pixels[i].x, pixels[i].y, pixels[i].color, 0);
+		//putPixel(pixels[i].x, pixels[i].y, 0xff0063b0, 0);
+		//putPixel(pixels[i].x, pixels[i].y, pixels[i].color, 0);
+		color = pixels[i].color;
+		color = ((color&0x00ff0000)>>16)
+				| ((color&0x0000ff00))
+				| ((color&0x000000ff)<<16)
+				| (color&0xff000000);
+
+		putPixel(pixels[i].x, pixels[i].y,color, 0);
+
+						
 	}
 }
 

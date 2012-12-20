@@ -53,7 +53,8 @@ Sprite::Sprite(string path_to_sprite,int numRotations, int startingAngle)
 				rotozoomSurface(tempSpriteOpt,
 							i*degreeIncrement,
 							1.0,0));	
-		SDL_SetAlpha(rotations.back(),0, 0x00);
+		//SDL_DisplayFormatAlpha(rotations.back());
+		SDL_SetAlpha(rotations.back(),0, 0xff);
 		//cout<<"generating rotation #"<<i<<endl;
 	}
 	
@@ -147,6 +148,7 @@ void Sprite :: copyBaseSprite(SDL_Surface *dest) const
 		cout<<"Error creating surface in operator= of Sprite: "<<SDL_GetError()<<endl;
 	}
 
+		SDL_DisplayFormatAlpha(dest);
 //}}}
 }
 
@@ -318,8 +320,37 @@ Uint32 Sprite::getPixel(int x, int y)
 }
 Uint32 Sprite::getPixel(int x, int y, int rotation_i)
 {
-	Uint32 *pixels = (Uint32 *)rotations[rotation_i]->pixels;
-	return pixels[ (y * rotations[rotation_i]->w) + x];
+//	Uint32 *pixels = (Uint32 *)rotations[rotation_i]->pixels;
+//	return pixels[ (y * rotations[rotation_i]->w) + x];
+
+int bpp = rotations[rotation_i]->format->BytesPerPixel;
+    /*  Here p is the address to the pixel we want to retrieve */
+    Uint8 *p = (Uint8 *)rotations[rotation_i]->pixels + y * 
+										rotations[rotation_i]->pitch + x * bpp;
+	
+	    switch(bpp) {
+				    case 1:
+							return *p;
+							break;
+
+					case 2:
+							return *(Uint16*)p;
+							break;
+					
+					case 3:
+							if(SDL_BYTEORDER == SDL_BIG_ENDIAN)
+									return p[0] << 16 | p[1] << 8 | p[2];
+							else
+									return p[0] | p[1] << 8 | p[2] << 16;
+							break;
+
+					case 4:
+							return *(Uint32 *)p;
+							break;
+
+					default:
+							return 0;
+		}
 }
 
 void Sprite::putPixel(int x, int y, Uint32 color, int rotation_i)
@@ -411,7 +442,7 @@ Pixel_desc tmpPix;
 			for(int j = 0; j < rotations[k]->w; j++)
 			{
 
-				if(((tmpPix.color = getPixel(j,i)) != 0) && (k == 0))
+				if(((tmpPix.color = getPixel(j,i,k)) != 0) && (k == 0))
 				{
 					tmpPix.x = j;
 					tmpPix.y = i;

@@ -211,8 +211,12 @@ Game ::~Game()
 }
 
 //keep track of button presses
-bool k_UP=false, k_DOWN=false, k_LEFT=false, k_RIGHT=false,
-	k_lCTRL=false, k_lMOUSE;
+bool k_UP=false,
+	 k_DOWN=false,
+	 k_LEFT=false,
+	 k_RIGHT=false,
+	 k_lCTRL=false,
+	 k_lMOUSE;
 
 //mouse position
 int mouse_x, mouse_y;

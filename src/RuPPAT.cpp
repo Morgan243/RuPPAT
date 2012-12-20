@@ -80,7 +80,7 @@ RuPPAT :: RuPPAT(int width, int height, int bpp, unsigned int flags,
 	WIDTH = width;
 	HEIGHT = height;
 
-	primitive_maker = new Primitives(1, 0x7f00ff00, mainRender->pre_surface);
+primitive_maker = new Primitives(1, 0x5ffff000, mainRender->pre_surface);
 	gravitationalConstant = 22;
 
 //}}}
