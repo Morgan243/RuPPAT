@@ -419,6 +419,12 @@ Entity_desc* Object :: PhysicsHandler(float t,
 		cout<<"\tlocation:"<<to_render.pixels[i].x<<", "<<
 			to_render.pixels[i].y<<endl;
 
+		Common::ApplyDimming(to_render.pixels[i]);
+
+		if(to_render.pixels[i].deleteMe)
+			to_render.pixels.erase(to_render.pixels.begin()+i);
+
+		Common::TestBounds(to_render.pixels[i], true);
 		PhysFunc::integrate(to_render.pixels[i], t, dt, state_src);
 	}
 
@@ -441,7 +447,10 @@ Entity_desc* Object :: PhysicsHandler(Entity_desc &state_dest,
 
 vector<Entity_desc*>* Object :: GetAuxillaryDescriptors()
 {
-	return NULL;
+	if(to_render.entities.size())
+		return &this->to_render.entities;
+	else
+		return NULL;
 }
 
 float Object::setTimeNow(float time)
@@ -474,8 +483,8 @@ void Object::GameDestroy()
 	//set the correct coordinates
 	for(int i = 0; i < to_render.pixels.size(); i++)
 	{
-		//cout<<i<<" pixel, color "<<hex<<(unsigned int)to_render.pixels[i].color<<endl;
-
+		to_render.pixels[i].dimFactor = 2;
+		to_render.pixels[i].dimTimer = 0;
 		to_render.pixels[i].x += descriptor.x;
 		to_render.pixels[i].y += descriptor.y;
 		to_render.pixels[i].xVel = descriptor.xVel
@@ -489,6 +498,11 @@ void Object::GameDestroy()
 bool Object::GetRenderables(Renderables_Cont &renderables)
 {
 	renderables = this->to_render;
+}
+
+Renderables_Cont* Object::GetRenderables()
+{
+	return &to_render;
 }
 
 Surface_Container Object::UpdateAndGetRenderables(Renderables_Cont rnder)

@@ -8,6 +8,7 @@
 #include "RuPPAT.h"
 //#include "PhysFuncs.h"
 #include "Object.h"
+#include "Common.h"
 #include <pthread.h>
 #include <thread>
 #include <mutex>
@@ -44,6 +45,8 @@ RuPPAT :: RuPPAT(int width, int height, int bpp, unsigned int flags,
 
 	
 	mainRender = new Render(width, height, BPP, flags);
+
+
 	for( int i = 0; i< bkg_paths.size(); i++)
 	{
 		SDL_Surface *tempBkg, * tempBkgOpt;
@@ -70,6 +73,8 @@ RuPPAT :: RuPPAT(int width, int height, int bpp, unsigned int flags,
 
 	game_width = backgroundLayers[0]->w;
 	game_height = backgroundLayers[0]->h;
+
+	Common::SetDimensions(game_width, game_height);
 
 	printf("game width = %d, game height = %d\n", game_width, game_height);
 	mainRender->setGameArea(backgroundLayers[0]->w, backgroundLayers[0]->h);
@@ -558,6 +563,7 @@ void RuPPAT::RK4(float t, float dt)
 	 int num_pixels = pixelList_m.size();
 	pthread_rwlock_unlock(&pix_rw_lock);
 
+	Renderables_Cont* renderables;
 	vector<Entity_desc*> *tempAuxDesc_ref;
 	Entity_desc *obj_desc_prim , *obj_desc_sec, obj_desc_tri;
 	Pixel_desc pix_desc;
@@ -572,7 +578,7 @@ void RuPPAT::RK4(float t, float dt)
 	{
 	  //make sure not to apply the grav to objects self
 	  if(i!=j)
-	   {
+	  {
 		//Runge Kutta integrator
 		pthread_rwlock_wrlock(&object_rw_lock);	
 
@@ -582,11 +588,12 @@ void RuPPAT::RK4(float t, float dt)
 			//Apply out loop object to the current object
 			obj_desc_prim = objectList[i]->PhysicsHandler(t,dt, obj_desc_tri);
 
-			if( (tempAuxDesc_ref = objectList[i]->GetAuxillaryDescriptors()) != NULL)
+			//if( (tempAuxDesc_ref = objectList[i]->GetAuxillaryDescriptors()) != NULL)
+			if((renderables = objectList[i]->GetRenderables()) != NULL)
 			{
-				for(int i=0; i<tempAuxDesc_ref->size(); i++)
+				for(int i=0; i<renderables->entities.size(); i++)
 				{
-					testBounds(*(*tempAuxDesc_ref)[i], true);
+					testBounds(*renderables->entities[i], true);
 				}
 			}
 
@@ -594,8 +601,7 @@ void RuPPAT::RK4(float t, float dt)
 			testBounds(*obj_desc_prim, true);
 
 		pthread_rwlock_unlock(&object_rw_lock);
-
-	   }
+	  }
 	}
 	//next, go through the pixel structs 
 	for(int j = 0; j<num_pixels; j++)
@@ -635,7 +641,8 @@ void RuPPAT::RK4(float t, float dt)
 			
 		
 			//pixelList_m[j] = obj_desc_sec;
-			if(pixelList_m[j].dimFactor){applyDimming(pixelList_m[j]);}
+			if(pixelList_m[j].dimFactor)//{applyDimming(pixelList_m[j]);}
+				Common::ApplyDimming(pixelList_m[j]);
 			if(pixelList_m[j].deleteMe)
 				{
 					handleDelete(j);
@@ -1101,6 +1108,7 @@ void RuPPAT :: firePlayersWeapon(int p_ID)
 bool RuPPAT :: testBounds(Entity_desc &testMe, bool invert)
 {
 //{{{
+
 	//make sure the new location is within bounds
 	if(invert)
 	{

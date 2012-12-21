@@ -12,6 +12,7 @@
 
 #include "Descriptors.h"
 #include "Sprite.h"
+#include "Common.h"
 //#include "PhysFuncs.h"
 
 #include <vector>
@@ -132,6 +133,8 @@ class Object
 		virtual vector<Entity_desc*>* GetAuxillaryDescriptors();
 
 		virtual bool GetRenderables(Renderables_Cont &renderables);
+
+		virtual Renderables_Cont* GetRenderables();
 
 		virtual Surface_Container UpdateAndGetRenderables(
 					Renderables_Cont rnder);

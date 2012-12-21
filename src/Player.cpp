@@ -39,7 +39,7 @@ Player :: Player(string sprite_path,
 			startY,
 			1,
 			num_rotations,
-			startingAngle)
+		startingAngle)
 //{{{
 {
 	descriptor.xAcc = 0;
