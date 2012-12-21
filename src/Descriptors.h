@@ -110,7 +110,7 @@ struct Renderables_Cont
 {
 	vector<Surface_Container> sprites;
 	vector<Pixel_desc> pixels;
-	vector<Entity_desc> entities;
+	vector<Entity_desc*> entities;
 };
 
 //container for accel and velocities

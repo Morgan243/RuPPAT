@@ -467,15 +467,14 @@ void Object::GameDestroy()
 {
 	cout<<"in default game destroy"<<endl;
 	cout<<"pixel sprite cache is "<<pixelSprite_cache.size()<<endl;
+	
 	//should append in case there are pixels already here
 	to_render.pixels = pixelSprite_cache;
-
-	Uint32 tmpColor = 0xff00ff00;
 
 	//set the correct coordinates
 	for(int i = 0; i < to_render.pixels.size(); i++)
 	{
-		cout<<i<<" pixel, color "<<hex<<(unsigned int)to_render.pixels[i].color<<endl;
+		//cout<<i<<" pixel, color "<<hex<<(unsigned int)to_render.pixels[i].color<<endl;
 
 		to_render.pixels[i].x += descriptor.x;
 		to_render.pixels[i].y += descriptor.y;
@@ -489,7 +488,7 @@ void Object::GameDestroy()
 
 bool Object::GetRenderables(Renderables_Cont &renderables)
 {
-
+	renderables = this->to_render;
 }
 
 Surface_Container Object::UpdateAndGetRenderables(Renderables_Cont rnder)

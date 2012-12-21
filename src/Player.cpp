@@ -254,8 +254,8 @@ Missile* Player::fireSelectedMissile()
 		missiles_free.push_back(firedMissile);
 
 		//copy over reference to fired missiles descriptor
-		auxillary_desc.push_back(firedMissile->getDescriptor_ref());
-
+		//auxillary_desc.push_back(firedMissile->getDescriptor_ref());
+		this->to_render.entities.push_back(firedMissile->getDescriptor_ref());
 			
 
 		return firedMissile;
@@ -321,7 +321,8 @@ Entity_desc* Player::PhysicsHandler( Entity_desc &state_dest,
 
 vector<Entity_desc*>* Player :: GetAuxillaryDescriptors()
 {
-	return &auxillary_desc;	
+	//return &auxillary_desc;	
+	return &this->to_render.entities;
 }
 
 SDL_Surface* Player :: GetNextAuxDrawInfo(int &x,
