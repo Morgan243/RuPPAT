@@ -1,3 +1,8 @@
+// 			[Class] Primitives
+//--------------------------------------------------------------------
+//| 	Draws and caches basic primitives such as lines, circles, and 
+//|squares, you can then use them later.
+//--------------------------------------------------------------------
 #include "SDL/SDL.h"
 #include "SDL/SDL_gfxPrimitives.h"
 #include "SDL/SDL_rotozoom.h"

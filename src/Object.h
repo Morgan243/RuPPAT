@@ -1,6 +1,8 @@
-//Object is the base class for moveable Entities
-//
-//This is a parent class but is useable for basics 
+// 			[Class] Object
+//--------------------------------------------------------------------
+//| 	Object is the base class for moveable Entities. This is a 
+//|intended as a parent class but is useable for basic moving sprites.
+//--------------------------------------------------------------------
 #ifndef OBJECT_H
 #define OBJECT_H
 
@@ -13,7 +15,6 @@
 #include "Descriptors.h"
 #include "Sprite.h"
 #include "Common.h"
-//#include "PhysFuncs.h"
 
 #include <vector>
 #include <iostream>

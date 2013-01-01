@@ -1,13 +1,11 @@
-/* 	Missile
- *  This object represent the missile wepon 
- *  in action. It derives from the object class
- *  and adds functionality present in projectile
- *  based weapons
- */
+// 			[Class]	Missile
+//--------------------------------------------------------------------
+//| 	This object represent the missile weapon in action. It derives from
+//|the object class and adds functionality present in projectile
+//|based weapons.
+//--------------------------------------------------------------------
 
-//#include "Descriptors.h"
 #include "Object.h"
-//#include "Sprite.h"
 
 #include <vector>
 #include <iostream>

@@ -1,4 +1,7 @@
-//Class used to handle all the sprite generation and manipulation
+// 				[Class] Sprite
+//--------------------------------------------------------------------
+// 		Handles all the sprite generation and manipulation.
+//--------------------------------------------------------------------
 
 #include "SDL/SDL.h"
 #include "SDL/SDL_gfxPrimitives.h"

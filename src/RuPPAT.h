@@ -1,3 +1,8 @@
+// 			[Class] RuPPAT
+//--------------------------------------------------------------------
+//| 	The primary class that brings everything together by handling
+//|objects, pixels, players and their manipulations/control.
+//--------------------------------------------------------------------
 #include "SDL/SDL.h"
 #include "SDL/SDL_gfxPrimitives.h"
 #include "SDL/SDL_rotozoom.h"

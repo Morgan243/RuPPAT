@@ -1,3 +1,8 @@
+// 			[Class]	Game
+//--------------------------------------------------------------------
+//| 	Basic logic for gameplay should exist here. Things like handling
+//|player input and initializing game specific events.
+//--------------------------------------------------------------------
 #include "SDL/SDL.h"
 #include "SDL/SDL_gfxPrimitives.h"
 #include "SDL/SDL_rotozoom.h"

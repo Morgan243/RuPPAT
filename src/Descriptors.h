@@ -1,3 +1,8 @@
+// 				Descriptors
+//--------------------------------------------------------------------
+//| 	A set of definitions of "Descriptors": structs used as simple
+//|data containers, intended to make data passing efficient and easy
+//--------------------------------------------------------------------
 #include <vector>
 #include <iostream>
 #include <string>

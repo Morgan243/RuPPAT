@@ -1,3 +1,9 @@
+// 			[Class] Render
+//--------------------------------------------------------------------
+//| 	Methods and surfaces of the primary screens/buffers. Everything
+//|that ends up on the screen eventually must go through one of these
+//|methods.
+//--------------------------------------------------------------------
 #include "SDL/SDL.h"
 #include "SDL/SDL_gfxPrimitives.h"
 #include "SDL/SDL_rotozoom.h"

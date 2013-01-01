@@ -1,9 +1,8 @@
-/*		Player 
- *	this objects represents a Player; any entity that that is 
- * to be controlled by a person/player or AI.
- *
- */
-
+//			[Class] Player 
+//--------------------------------------------------------------------
+//| 	This objects represents a Player; any entity that is to be 
+//|controlled by a person/player or AI. Derived from Object.
+//--------------------------------------------------------------------
 #ifndef PLAYER_H
 #define PLAYER_H
 #include "SDL/SDL.h"
