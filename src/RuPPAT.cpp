@@ -20,8 +20,11 @@ using namespace std;
 
 
 //------------CONSTRUCTOR--------
-RuPPAT :: RuPPAT(int width, int height, int bpp, unsigned int flags,
-		 vector<string> bkg_paths)
+RuPPAT :: RuPPAT(int width,
+	   				int height,
+				   	int bpp,
+				   	unsigned int flags,
+		 			vector<string> bkg_paths)
 {
 //{{{
 	//init all the locks--ERROR CHECK too 
@@ -328,8 +331,13 @@ int RuPPAT :: applyDimming(Pixel_desc &pix_t)
 }
 
 
-int RuPPAT :: addPlayer(string spritePath, int numRotations, int startingAngle,
-			float maxAccel, int x, int y, string HC_path)
+int RuPPAT :: addPlayer(string spritePath,
+	   					int numRotations,
+					   	int startingAngle,
+						float maxAccel,
+					   	int x,
+					   	int y,
+					   	string HC_path)
 {
 //{{{
 	int size, height, width;
@@ -390,8 +398,14 @@ void RuPPAT :: addPlayer(Player* new_player)
 }
 
 
-int RuPPAT :: addObject(string spritePath, int x, int y, int mass, float rotationRate,
-				float xVel, float yVel, string HB_path)
+int RuPPAT :: addObject(string spritePath,
+	   					int x,
+					   	int y,
+					   	int mass,
+					   	float rotationRate,
+						float xVel,
+					   	float yVel,
+					   	string HB_path)
 {
 //{{{
 	int size;
@@ -769,8 +783,10 @@ std::thread *rk4_th = new std::thread(&RuPPAT::RK4,this,t,dt);
 //	RuPPAT Entry Point
 //spawn threads to do work and handle events
 //
-void RuPPAT :: runPPAT(bool *mainDone, Event_desc *mainEvents
-			, string selection, string option)
+void RuPPAT :: runPPAT(bool *mainDone,
+	   					Event_desc *mainEvents,
+					   	string selection,
+					   	string option)
 
 {
 //{{{
