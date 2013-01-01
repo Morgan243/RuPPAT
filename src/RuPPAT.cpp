@@ -6,7 +6,6 @@
 */
 
 #include "RuPPAT.h"
-//#include "PhysFuncs.h"
 #include "Object.h"
 #include "Common.h"
 #include <pthread.h>
@@ -27,7 +26,7 @@ RuPPAT :: RuPPAT(int width,
 		 			vector<string> bkg_paths)
 {
 //{{{
-	//init all the locks--ERROR CHECK too 
+	//init all the locks with error check
 	if(pthread_rwlock_init(&pix_rw_lock, NULL))
 		{cout<<"ERROR initializing pixel rw lock: "<<endl;}
 
@@ -61,17 +60,13 @@ RuPPAT :: RuPPAT(int width,
 		cout<<"\tReassigning..."<<bkg_paths[i]<<endl;
 		tempBkgOpt = SDL_DisplayFormatAlpha(tempBkg);
 		
-		//tempBkgOpt = rotozoomSurface(tempBkgOpt, 0.0, 1.0,0);
 		SDL_SetAlpha(tempBkgOpt, SDL_SRCALPHA, 0xFF);
 
 		SDL_FreeSurface(tempBkg);
 
 		cout<<"\tPushing back..."<<bkg_paths[i]<<endl;
 		backgroundLayers.push_back(tempBkgOpt);	
-
-		
 			
-		//SDL_SetAlpha(backgroundLayers.back(), SDL_SRCALPHA, 0xFF);
 	}
 
 	game_width = backgroundLayers[0]->w;
@@ -82,8 +77,6 @@ RuPPAT :: RuPPAT(int width,
 	printf("game width = %d, game height = %d\n", game_width, game_height);
 	mainRender->setGameArea(backgroundLayers[0]->w, backgroundLayers[0]->h);
 
-	//mainRender = new Render(width, height, BPP, flags,
-	//		backgroundLayers[0]->w, backgroundLayers[0]->h);
 
 	WIDTH = width;
 	HEIGHT = height;
@@ -102,6 +95,7 @@ RuPPAT :: RuPPAT(int width,
 RuPPAT :: ~RuPPAT()
 {
 //{{{
+	//destroy mutexes
 	pthread_mutex_destroy(&pix_list_lock_2);
 	pthread_rwlock_destroy(&pix_rw_lock);
 	pthread_rwlock_destroy(&mass_rw_lock);
@@ -142,11 +136,11 @@ void RuPPAT :: parseSelectPixToSurface()
  //#pragma omp parallel for private(x,y,color, i, j)
 	 for( i=0 ; i< size ; i++)
 		{
-		x =	pixelList_m[i].x;// - centerX;
-		y =	pixelList_m[i].y;// - centerY;
-		color =	pixelList_m[i].color;
+			x =	pixelList_m[i].x;// - centerX;
+			y =	pixelList_m[i].y;// - centerY;
+			color =	pixelList_m[i].color;
 	
-		mainRender->putPixel(x,y,color,screenID);
+			mainRender->putPixel(x,y,color,screenID);
 		}
 
    pthread_rwlock_unlock(&pix_rw_lock);
@@ -170,14 +164,12 @@ void RuPPAT :: parsePlayersToSurface()
 	tempCoOrd.y=0;
 	SDL_Surface *refSurf;
 
-//use line below to use OpenMP to launch a team of threads on the vector
  //#pragma omp parallel for private(x,y,color, i, j)
 	 for( i=0 ; i< size ; i++)
 		{
 		while((players[i]->GetNextAuxDrawInfo(tempRenderables)) != NULL)
 			{
 				mainRender->putSprite(tempRenderables.sprites);
-
 				mainRender->putPixel(tempRenderables.pixels);
 			}
 		
@@ -191,18 +183,18 @@ void RuPPAT :: parsePlayersToSurface()
 		if(players[i]->updateSprite())
 		{
 			mainRender->putSprite(x,
-									y,
-									primitive_maker->Get_Cached(i));
+								y,
+								primitive_maker->Get_Cached(i));
 
 			mainRender->putSprite(x,
-									y,
-									players[i]->getSprite());
+								y,
+								players[i]->getSprite());
 		
 		}
 		else
 			mainRender->putSprite(x,
-									y,
-									players[i]->getSprite());
+								y,
+								players[i]->getSprite());
 		}
 
    pthread_rwlock_unlock(&object_rw_lock);
@@ -221,8 +213,6 @@ void RuPPAT :: parseObjectsToSurface()
 		{
 			x = objectList[i]->getX();
 			y = objectList[i]->getY();	
-	
-		//	objectList[i]->setXY(x,y);
 
 			objectList[i]->sprite.updateSprite();
 			mainRender->putSprite(x,y,objectList[i]->getSprite());
@@ -285,52 +275,10 @@ void RuPPAT :: handleDelete(int k)
 }
 
 
-//------------applyDimming--------------NEED WORK
-//Pixels fade to black when they should be using
-//some kind of alpha blending or blending with
-//the backgroun
-//
-//dims a pixel struct, returns 1 if it is deleted do to dimming out
-int RuPPAT :: applyDimming(Pixel_desc &pix_t)
-{
-//{{{
-
-// cout<<"COLOR: "<<pix_t.color<<endl;
-
- const int dim_scale = 1; //bring this up to increase max dim length
- int dimFactor = pix_t.dimFactor;
- int current_color = pix_t.color;
- unsigned int dimTimer= pix_t.dimTimer;
-	unsigned int tmpA; 
-	
-	//if pixel is to be dimmed and dimTimer is over factor
-	if(dimFactor &&  (++dimTimer>dimFactor))
-	{
-		//reset the dimtimer
-		dimTimer = 0;
-
-
-		tmpA= (Uint8)((current_color & 0xFF000000)>>24);
-		tmpA -=5;
-
-		//cout<<"alpha is now: "<<tmpA<<endl;
-		//recombine the colors
-		//pix_t.color = ( (tmpA<<24) | (tmpR<<16) | (tmpG<<8) | tmpB);
-		pix_t.color = ( (tmpA<<24) | (0x00FFFFFF&current_color));
-	}
-	//reassign timer
-	pix_t.dimTimer = dimTimer;
-
-	//cout<<"tmpA is: "<<tmpA<<endl;
-	//if the color is really dark, just remove the pixel
-	if(tmpA<10)
-		{
-			pix_t.deleteMe = true;
-		}
-//}}}
-}
-
-
+//------------addPlayer----------------
+//Using arguments, create a new player
+//object and add it to players and add
+//its base object class to objects
 int RuPPAT :: addPlayer(string spritePath,
 	   					int numRotations,
 					   	int startingAngle,
@@ -370,9 +318,6 @@ void RuPPAT :: addPlayer(Player* new_player)
 //{{{
 	int size, height, width;
 	CoOrd tempCoOrd;
-	//	Player *new_player= 
-	//		new Player(spritePath, numRotations, startingAngle,
-	//					maxAccel, x, y, HC_path);
 
 		Object *new_object = &(*new_player);
 			new_object->setID(baseID++);
@@ -432,127 +377,6 @@ int RuPPAT :: addObject(string spritePath,
 	pthread_rwlock_unlock(&object_rw_lock);
 
 	return size;
-//}}}
-}
-
-
-//-----------runDemos-------
-//just puts pixels with different attributes
-//depending on the selection argument
-void RuPPAT :: runDemos(void *selection)
-{
-//{{{
-	float theta;
-	int xPos=300, yPos=300, radius=4;	
-	int xCent=400, yCent=400;
-	char *select = (char*)selection;
-	cout<<"Selection is: "<<*select<<endl;
-
-	//Create our temporary pixel
-	Pixel_desc t_pix;
-
-	//t_pix.mass = 10;
-	t_pix.color=0xffff00ff;
-	t_pix.xAcc = 0;
-	t_pix.yAcc = 0;
-	t_pix.accelLength = 2;
-	t_pix.dimFactor = 0;
-
-	t_pix.dimTimer = 0;
-
-	t_pix.deleteMe = false;
-
-	t_pix.updated = 0;
-
-	switch (*select)
-	 {
-	   case 'g':
-	   {
-			t_pix.color = (rand()%0xffffff)|0xFF000000;
-		int count = 0;
-			t_pix.x = 700;
-			t_pix.yVel = 70;
-			t_pix.xVel = 20;
-			t_pix.xAcc = 0;
-			t_pix.dimFactor = 1000;
-		while(count<50 && !done)
-		{  
-			t_pix.y = 584;
-			t_pix.x-=1;
-			createPixElement(&t_pix);
-			t_pix.y = t_pix.y +rand()%26 - rand()%36;
-			createPixElement(&t_pix);	
-			t_pix.y = t_pix.y +rand()%19 - rand()%16;
-			createPixElement(&t_pix);	
-			t_pix.yVel-=.3;
-		count++;
-		}
-	    break;
-	   }
-
-
-	   case 'r':
-	   {	int count=0;
-		while(count<5 && !done)
-		{
-		  for(int i = 0; i<WIDTH ; i+=2)
-			{	
-			t_pix.color=0xff0000;
-			t_pix.x = i;
-			t_pix.y = 1;
-
-			t_pix.xAcc = 0.0;
-			t_pix.xVel = 0.0;
-					
-			t_pix.yAcc =0; //(t_pix.y-yCent)*409+rand()%3000-rand()%3000;
-			t_pix.yVel = 100;
-		
-			t_pix.dimFactor = 0;
-			createPixElement(&t_pix);	
-		
-			}
-		  for(int i = 0; i<HEIGHT ; i+=2)
-			{
-			t_pix.color = 0x00ff00;
-			t_pix.x = 1;
-			t_pix.y =i;
-			
-			t_pix.xAcc = 0;
-			t_pix.xVel = 100;
-
-			t_pix.yAcc =0; //(t_pix.y-yCent)*409+rand()%3000-rand()%3000;
-			t_pix.yVel = 0;
-		
-			t_pix.dimFactor = 0;
-			createPixElement(&t_pix);	
-		
-			}
-			int i =0;
-			while(i++<900000);
-			count++;
-		}
-	    break;
-	   }
-	   case 'e':
-	   {
-		t_pix.dimFactor = 40;		
-
-		  for(theta = 0.0; theta<6.30 ; theta+=.1)
-			{
-			t_pix.x = xCent + cos(theta)*radius;
-			t_pix.y = yCent + sin(theta)*radius;
-		
-			t_pix.xVel = (t_pix.x-xCent)*40+rand()%30-rand()%30;
-			t_pix.yVel = (t_pix.y-yCent)*40+rand()%30-rand()%30;
-		
-			//t_pix.dimFactor = 9+rand()%30;
-			createPixElement(&t_pix);	
-		}
-
-	    break;
-	   }
- }
-
 //}}}
 }
 
@@ -796,19 +620,10 @@ void RuPPAT :: runPPAT(bool *mainDone,
 
 	char select;
 	
-	//set the demo selection
-	if(selection == "gwell")select='g';
-	else if(selection == "explode")select = 'e';
-	else if(selection == "boxin")select = 'r';
-	else select='r';
-
-
 	//launch thread into rk4 parse
 	std::thread RK4_parse_th(&RuPPAT::RK4_parse, this);
 	
 	void *sel = &select;
-
-
 
 	int FPS=1000;
 	unsigned int keyT1, keyT2;
@@ -1118,6 +933,4 @@ tempErrDiff =  angle_diff*.1 - tempErrDiff; //angle_diff - tempErrDiff;
 void RuPPAT :: firePlayersWeapon(int p_ID)
 {
 	players[p_ID]->fireSelectedMissile();
-
 }
-
