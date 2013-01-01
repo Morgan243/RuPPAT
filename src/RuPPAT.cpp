@@ -607,12 +607,12 @@ void RuPPAT::RK4(float t, float dt)
 			{
 				for(int i=0; i<renderables->entities.size(); i++)
 				{
-					testBounds(*renderables->entities[i], true);
+					Common::TestBounds(*renderables->entities[i], true);
 				}
 			}
 
 			//check new locations are valid, reset them if not 
-			testBounds(*obj_desc_prim, true);
+			Common::TestBounds(*obj_desc_prim, true);
 
 		pthread_rwlock_unlock(&object_rw_lock);
 	  }
@@ -1121,59 +1121,3 @@ void RuPPAT :: firePlayersWeapon(int p_ID)
 
 }
 
-bool RuPPAT :: testBounds(Entity_desc &testMe, bool invert)
-{
-//{{{
-
-	//make sure the new location is within bounds
-	if(invert)
-	{
-		bool isOutOfBounds = false;
-
-		if(testMe.x<=0)
-			{
-				testMe.x=1;
-				testMe.xVel=testMe.xVel*(-1);
-				isOutOfBounds=true;
-			}
-
-		if(testMe.x>=game_width)
-			{
-				testMe.x=game_width-1;
-				testMe.xVel=testMe.xVel*(-1);
-				isOutOfBounds=true;
-			}
-
-		if(testMe.y<=0)
-			{
-				testMe.y=1;
-				testMe.yVel=testMe.yVel*(-1);
-				isOutOfBounds=true;
-			}
-
-		if(testMe.y>=game_height)
-			{
-				testMe.y=game_height-1;
-				testMe.yVel=testMe.yVel*(-1);
-				isOutOfBounds=true;
-			}	
-
-		return isOutOfBounds;
-	}
-	else
-	{
-		if(testMe.x<=0)
-			return true;
-
-		if(testMe.x>=game_width)
-			return true;
-
-		if(testMe.y<=0)
-			return true;
-
-		if(testMe.y>=game_height)
-			return true;
-
-	}
-//}}}
-}
