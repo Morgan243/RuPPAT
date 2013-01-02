@@ -58,7 +58,7 @@ Sprite::Sprite(string path_to_sprite,int numRotations, int startingAngle)
 		//cout<<"generating rotation #"<<i<<endl;
 	}
 	
-	generatePixelSprite(true);
+	generatePixelSprite(false);
 //}}}
 }
 
@@ -67,11 +67,10 @@ Sprite::Sprite(const Sprite &src)
 	SDL_Surface *tempSurf;
 	src.copyAll(tempSurf, *this);
 
-	//this->setBaseSprite(tempSurf);
 	this->base_sprite = SDL_ConvertSurface(src.getBaseSprite(),
-		       src.getBaseSprite()->format, SDL_SWSURFACE);
+										   src.getBaseSprite()->format,
+										   SDL_SWSURFACE);
 	this->generateRotations();
-
 }
 
 Sprite & Sprite::operator=(const Sprite &src)
@@ -91,6 +90,7 @@ Sprite::~Sprite()
 	{
 		SDL_FreeSurface(rotations[i]);
 	}
+
 	SDL_FreeSurface(base_sprite);
 //}}}
 }
@@ -103,9 +103,9 @@ void Sprite :: copyAll(SDL_Surface *dest, Sprite &sprDest) const
 	
 	get_RotR_DegIncr_Angl(rotation_rate, degree_increment, current_angle);
 	cout<<"In Cop Constr!::"<<endl;
-	cout<<"rotRate: "<< rotation_rate<<endl;
-	cout<<"DegIncr: "<< degree_increment<<endl;
-	cout<<"CurrAngle: "<<current_angle<<endl;
+	cout<<"Rotation Rate: "<< rotation_rate<<endl;
+	cout<<"Degree Incr: "<< degree_increment<<endl;
+	cout<<"Current Angle: "<<current_angle<<endl;
 	sprDest.set_RotR_DegIncr_Angl(rotation_rate, degree_increment, current_angle);
 
 	sprDest.pixel_sprite = this->pixel_sprite;
@@ -170,7 +170,7 @@ void Sprite :: set_RotR_DegIncr_Angl(float rotateRate, float degreeInc, float cu
 	this->degreeIncrement = degreeInc;
 	this->currentAngleIndex_f = currAngle;
 	this->currentAngleIndex = (int)currAngle;
-cout<<"IN SET, degree increment= "<<this->degreeIncrement<<endl;
+	cout<<"IN SET, degree increment= "<<this->degreeIncrement<<endl;
 
 //}}}
 }
@@ -207,24 +207,18 @@ void Sprite :: generateRotations()
 	int numRotations = 360.0/degreeIncrement;
 
 	SDL_Surface *tempSprite, *tempSpriteOpt;
-//
-//	tempSprite = IMG_Load((char *)sprite_path.c_str());
-//
-//	tempSpriteOpt = SDL_DisplayFormatAlpha(tempSprite);
-//
-//	base_sprite = tempSpriteOpt;
-//
+
 	tempSpriteOpt = SDL_DisplayFormatAlpha(base_sprite);
 
 	cout<<"Generate Rots = "<<numRotations<<endl;
 
 	for(int i = 0; i<numRotations;i++)
 	{
-		//cout<<"i="<<i<<" degIncr="<<degreeIncrement<<endl;
 		rotations.push_back(
-				rotozoomSurface(tempSpriteOpt,
+							rotozoomSurface(tempSpriteOpt,
 							i*degreeIncrement,
 							1.0,0));	
+
 		SDL_SetAlpha(rotations.back(), 0, 0xFF);
 	}
 	
@@ -320,11 +314,9 @@ Uint32 Sprite::getPixel(int x, int y)
 }
 Uint32 Sprite::getPixel(int x, int y, int rotation_i)
 {
-//	Uint32 *pixels = (Uint32 *)rotations[rotation_i]->pixels;
-//	return pixels[ (y * rotations[rotation_i]->w) + x];
 
-int bpp = rotations[rotation_i]->format->BytesPerPixel;
-    /*  Here p is the address to the pixel we want to retrieve */
+	int bpp = rotations[rotation_i]->format->BytesPerPixel;
+
     Uint8 *p = (Uint8 *)rotations[rotation_i]->pixels + y * 
 										rotations[rotation_i]->pitch + x * bpp;
 	
@@ -399,7 +391,6 @@ void Sprite::getDimensionsBpp(int &w, int &h, int &bpp) const
 void Sprite::generateSpriteOutlines()
 {
 //{{{	
-
 	for(int k = 0; k < rotations.size(); k++)
 	{
 		unsigned int pixVal[rotations[k]->w][rotations[k]->h]; 
@@ -416,8 +407,7 @@ void Sprite::generateSpriteOutlines()
 					printf("_ ");
 			}
 			if(!k)
-			printf("\n");
-			//pixMaps.push_back(&pixVal);
+				printf("\n");
 		}
 	}
 ///}}}
@@ -427,7 +417,7 @@ void Sprite::generatePixelSprite(bool print)
 {
 //{{{	
 
-Pixel_desc tmpPix;
+	Pixel_desc tmpPix;
 	tmpPix.accelLength = tmpPix.dimFactor = tmpPix.dimTimer = 0;
 	tmpPix.deleteMe = tmpPix.updatedG = false;
 
@@ -435,8 +425,6 @@ Pixel_desc tmpPix;
 
 	for(int k = 0; k < rotations.size(); k++)
 	{
-		//unsigned int pixVal[rotations[k]->w][rotations[k]->h]; 
-
 		for(int i = 0; i < rotations[k]->h; i++)
 		{
 			for(int j = 0; j < rotations[k]->w; j++)
@@ -448,17 +436,16 @@ Pixel_desc tmpPix;
 					tmpPix.y = i;
 					pixel_sprite.push_back(tmpPix);
 
-					printf("1 [%u]", tmpPix.color);
+					if(print)
+						printf("1 [%u] ", tmpPix.color);
 				}
-				else if (k==0)
+				else if (k==0 && print)
 				{	
 					printf("_ ");
 				}
 			}
-			if(!k)
-			printf("\n");
-			//pixMaps.push_back(&pixVal);
-
+			if(!k && print)
+				printf("\n");
 		}
 	}
 ///}}}

@@ -1,23 +1,22 @@
 # Configuration for RuPPAT Demo
 # 	Morgan Stuart, 2012
 #
-#This Config is in testing now, it is read but not used.
-#If this file is not in the directory of the exe, the program
-#not run.
-#
+# 	This Config is required for the proper operation of this
+#demonstration program.
+
 Main:
 	width=980#Set the width!!
-	height=700
-	#backgroundLayers=bkg_massive_8k_one.png,backgroundLayers=bkg_massive_8k_two.png,backgroundLayers=bkg_massive_8k_three.png
+	height=900
 	backgroundLayers=bkg_one_1080.png,bkg_two_1080.png,bkg_three_1080.png
 Player:
-	sprite=red_ship.png
+	sprite=red_ship_wraith.png
 	#sprite=arch_logo.png
 	x=100
 	y=100
 	HC=red_ship_HC.png
-# 		sprite path, missile name, amount,damage, speed, life
+# 	sprite path, missile name, amount,damage, speed, life
 	missle=orange_circle.png,Orange Blob,100,10,40,4
+	#missle=white_rocket.png,White Rocket,100,10,40,4
 Object:
 	x=840
 	y=550

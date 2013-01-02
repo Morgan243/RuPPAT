@@ -321,6 +321,8 @@ void RuPPAT :: parsePlayersToSurface()
  //#pragma omp parallel for private(x,y,color, i, j)
 	 for( i=0 ; i< size ; i++)
 		{
+
+		//Get renderable set from player (ex: missiles)
 		while((players[i]->GetNextAuxDrawInfo(tempRenderables)) )
 			{
 				mainRender->putSprite(tempRenderables.sprites);

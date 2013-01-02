@@ -8,7 +8,8 @@ Object :: Object(string sprite_path,
 	       	int start_y,
 	       	int start_mass)
 :sprite(sprite_path,360,0)
-{//{{{
+{
+//{{{
 
 	refMax = refCounter = -1;
 
@@ -20,18 +21,18 @@ Object :: Object(string sprite_path,
 	descriptor.mass = start_mass;
 
 	timeCreated = SDL_GetTicks();
-		
-}//}}}
+//}}}	
+}
 
 Object :: Object(string sprite_path,
 	       	int start_x, 
-		int start_y,
+			int start_y,
 	       	int start_mass,
-		int num_rotations,
+			int num_rotations,
 	       	int starting_angle)
 	:sprite(sprite_path,
-		num_rotations,
-		starting_angle), 
+			num_rotations,
+			starting_angle), 
 	hitCircleSprite()
 {
 //{{{
@@ -372,8 +373,8 @@ void Object :: getXY_exhaust(float &xVel, float &yVel)
 }
 
 void Object :: GetVectors_FrontRelative(float &xVect,
-	       				float &yVect, 	//reference return
-					float degreeOffset,
+	       				float &yVect, 	
+						float degreeOffset,
 				       	float mag)
 {
 ///{{{
@@ -486,14 +487,14 @@ void Object::GameDestroy()
 	//set the correct coordinates
 	for(int i = 0; i < to_render.pixels.size(); i++)
 	{
-		to_render.pixels[i].dimFactor = 2;
+		to_render.pixels[i].dimFactor = 8;
 		to_render.pixels[i].dimTimer = 0;
 		to_render.pixels[i].x += descriptor.x;
 		to_render.pixels[i].y += descriptor.y;
 		to_render.pixels[i].xVel = descriptor.xVel
-						+ rand()%50 - rand()%50;
+						+ rand()%75 - rand()%75;
 		to_render.pixels[i].yVel = descriptor.yVel
-						+ rand()%50 - rand()%50;
+						+ rand()%75 - rand()%75;
 	}
 	isDestroying = true;
 //}}}
@@ -511,9 +512,7 @@ Renderables_Cont* Object::GetRenderables()
 
 bool Object::UpdateAndGetRenderables(Renderables_Cont rnder)
 {
-
 }
-
 
 //void Object::buildHitBoxes_fromLayer(SDL_Surface *HB_surface)
 //{

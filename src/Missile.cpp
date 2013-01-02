@@ -1,36 +1,33 @@
 #include "Missile.h"
 
 Missile::Missile(string sprite_path, 
-		int num_rotations,
+			int num_rotations,
 	       	int startingAngle,
 	       	int mass,
-		float maxaccel,
+			float maxaccel,
 	       	int startX, 
-		int startY,
-		float xVel,
+			int startY,
+			float xVel,
 	       	float yVel,
 	       	string HC_path)
 
 	:Object(sprite_path,
-		startX,
+			startX,
 	       	startY,
 	       	mass,
 	       	num_rotations, 
-		startingAngle,
-		xVel,
-		yVel,
-		HC_path)
+			startingAngle,
+			xVel,
+			yVel,
+			HC_path)
 {
-
 	killMe = false;
-	timeCreated = 0;//SDL_GetTicks();
+	timeCreated = 0;
 	cout<<"created at:"<<timeCreated<<endl;
 }
 
 Missile :: ~Missile()
 {
-
-
 }
 
 void Missile :: setName(string name)
@@ -95,6 +92,7 @@ void Missile::SetLifespan(float gameTime)
 	lifespan = gameTime;
 }
 
+//check lifespan
 bool Missile::IsBeyondLifeSpan()
 {
 //{{{
@@ -105,12 +103,11 @@ bool Missile::IsBeyondLifeSpan()
 //}}}
 }
 
+//Set time and check lifespan 
 bool Missile::IsBeyondLifeSpan(float gameTime)
 {
 //{{{
 	thisTime = gameTime;
-
-	//cout<<"Been alive: "<< (thisTime - timeCreated)<<endl;
 
 	if( (thisTime - timeCreated) > lifespan)
 		return true;
@@ -124,13 +121,9 @@ bool Missile::UpdateAndGetRenderables(Renderables_Cont &rnder)
 //{{{
 	this->updateSprite();
 
-//	Surface_Container ret_surface;
-//		ret_surface.x = descriptor.x;
-//		ret_surface.y = descriptor.y;
-//		ret_surface.surface = this->getSprite();
-
 	rnder = to_render;
 
+	//only add the sprite if the missile is active
 	if(!isDestroying)
 	{
 		Surface_Container tmpSurfCont;
@@ -138,11 +131,10 @@ bool Missile::UpdateAndGetRenderables(Renderables_Cont &rnder)
 		tmpSurfCont.x = descriptor.x;
 		tmpSurfCont.y = descriptor.y;
 		rnder.sprites.push_back(tmpSurfCont);
-	}
-	else
-	{
 
+		return true;
 	}
-	//return ret_surface;
+
+	return false;
 //}}}
 }

@@ -14,8 +14,8 @@ Player :: Player(string sprite_path,
 			1,
 			num_rotations,
 			startingAngle)
-//{{{
 {
+//{{{
 	descriptor.xAcc = 0;
 	descriptor.yAcc = 0;
 	descriptor.maxAccel = 1;
@@ -24,14 +24,14 @@ Player :: Player(string sprite_path,
 
 	isSelected = true;
 
-}
 //}}}
+}
 
 //Constructor with more options
 Player :: Player(string sprite_path,
 	       	int num_rotations,
 	       	int startingAngle,
-		float maxaccel,
+			float maxaccel,
 	       	int startX,
 	       	int startY) 
 	: Object(sprite_path,
@@ -39,23 +39,23 @@ Player :: Player(string sprite_path,
 			startY,
 			1,
 			num_rotations,
-		startingAngle)
-//{{{
+			startingAngle)
 {
+//{{{
 	descriptor.xAcc = 0;
 	descriptor.yAcc = 0;
 	descriptor.maxAccel = maxaccel;
 	descriptor.noDrawEffect = false;
 
 	isSelected = true;
-}
 //}}}
+}
 
 //Constructor with more options
 Player :: Player(string sprite_path,
 	       	int num_rotations,
 	       	int startingAngle,
-		float maxaccel,
+			float maxaccel,
 	       	int startX,
 	       	int startY,
 	       	string HC_path) 
@@ -63,21 +63,22 @@ Player :: Player(string sprite_path,
 			startX,
 			startY,
 			1,
-		       	num_rotations,
+			num_rotations,
 			startingAngle,
 			0,
 			0,
 			HC_path)
-//{{{
+
 {
+//{{{
 	descriptor.xAcc = 0;
 	descriptor.yAcc = 0;
 	descriptor.maxAccel = maxaccel;
 	descriptor.noDrawEffect = false;
 
 	isSelected = true;
-}
 //}}}
+}
 
 //Deconstructor 
 Player :: ~Player()
@@ -95,19 +96,21 @@ Player :: ~Player()
 //}}}
 }
 
+//add a usable missile to the players arsenal
 void Player :: addMissile(string sprite_path,
 	       			string name,
 			       	bool makeSelected,
-				int amnt,
+					int amnt,
 			       	int mxDamage,
 			       	float velocity,
 			       	float lifespan)
 {
 //{{{
-cout<<"Adding missile:"<<endl;
-cout<<"Path:"<<sprite_path<<endl;
-cout<<"rots:"<<numRotations<<endl;
+	cout<<"Adding missile:"<<endl;
+	cout<<"Path:"<<sprite_path<<endl;
+	cout<<"rots:"<<numRotations<<endl;
 
+	//init and add missile
 	missiles.push_back(
 			new Missile(sprite_path, numRotations, 0, 1, 10.0, 
 			descriptor.x, descriptor.y, descriptor.xVel, descriptor.yVel, sprite_path
@@ -131,18 +134,16 @@ cout<<"rots:"<<numRotations<<endl;
 //}}}
 }
 
-
-
 void Player :: addMissile(string sprite_path,
 	       			string name,
 			       	bool makeSelected,
-				int amnt,
+					int amnt,
 			       	int mxDamage)
 {
 //{{{
-cout<<"Adding missile:"<<endl;
-cout<<"Path:"<<sprite_path<<endl;
-cout<<"rots:"<<numRotations<<endl;
+	cout<<"Adding missile:"<<endl;
+	cout<<"Path:"<<sprite_path<<endl;
+	cout<<"rots:"<<numRotations<<endl;
 
 	missiles.push_back(
 			new Missile(sprite_path, numRotations, 0, 1, 10.0, 
@@ -226,7 +227,6 @@ Missile* Player::fireSelectedMissile()
 		Missile *firedMissile = new Missile(*selected_missile);
 
 		cout<<"\""<<selected_missile->getName()<<"\" fired!"<<endl;
-		cout<<"\tx,y = "<<descriptor.x<<" , "<<descriptor.y<<endl;
 
 		//get the descriptor from the new missile
 		Entity_desc tempDesc = firedMissile->getDescriptor();
@@ -237,7 +237,7 @@ Missile* Player::fireSelectedMissile()
 
 		//get velocity vectors of the player 
 		GetVectors_FrontRelative(tempDesc.xVel, tempDesc.yVel,
-						0.0, 120);
+									0.0, 120);
 
 		//add velocity of player to missile
 		tempDesc.xVel += descriptor.xVel;
@@ -248,8 +248,6 @@ Missile* Player::fireSelectedMissile()
 
 		firedMissile->SetTimeCreated(thisTime);
 		firedMissile->SetLifespan(1.0);
-		//firedMissile->setTimeNow();
-		//setTimeNow();
 
 		//Missile is free, add it to vector of fired missiles
 		missiles_free.push_back(firedMissile);
@@ -279,7 +277,6 @@ Entity_desc* Player::PhysicsHandler(float t,
 		//is the missile completely finished? (no longer relevant)
 		if(missiles_free[i]->killMe)
 		{
-			cout<<"Missile removed from free vector!"<<endl;
 			//remove from the fired list
 			missiles_free.erase(missiles_free.begin()+i);
 
@@ -287,12 +284,14 @@ Entity_desc* Player::PhysicsHandler(float t,
 			i--;
 			size--;
 		}
+		//is its time through?
 		else if(missiles_free[i]->IsBeyondLifeSpan(thisTime) 
 				&& !missiles_free[i]->isDestroying)
 		{
-			cout<<"Missile being game destroyed!"<<endl;
+			//initiate destruction
 			missiles_free[i]->GameDestroy();
 		}
+		//integrate
 		else 
 			missiles_free[i]->PhysicsHandler(t,
 							dt,
@@ -308,8 +307,12 @@ Entity_desc* Player::PhysicsHandler( Entity_desc &state_dest,
 					float dt)
 {
 //{{{
+	//set time
 	thisTime = t;
+
+	//integrate: apply gravitational force from this onto state_dest
 	PhysFunc::integrate(state_dest, t, dt, descriptor);
+
 	return &state_dest;	
 //}}}
 }
@@ -317,31 +320,33 @@ Entity_desc* Player::PhysicsHandler( Entity_desc &state_dest,
 
 vector<Entity_desc*>* Player :: GetAuxillaryDescriptors()
 {
-	//return &auxillary_desc;	
 	return &this->to_render.entities;
 }
 
 bool Player :: GetNextAuxDrawInfo(Renderables_Cont &renderables)
 {
 //{{{
-	
-
-
+	//check bounds of the missiles_free vector
 	if(refCounter < missiles_free.size())
 	{
+		//Call update functions and get what needs rendering
 		missiles_free[refCounter]->UpdateAndGetRenderables(renderables);
+
+		//increment the index: access next missile on next access
 		refCounter++;
 		return true;
 	}
+	//all done
 	else
 	{
+		//reset refcount
 		refCounter = 0;
+
+		//indicate finished
 		return false;
 	}
 //}}}
 }
-
-
 
 bool Player::GetRenderables(Renderables_Cont &Renderables_Cont)
 {
