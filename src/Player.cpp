@@ -260,8 +260,8 @@ Missile* Player::fireSelectedMissile()
 }
 
 Entity_desc* Player::PhysicsHandler(float t,
-	       				float dt,
-					Entity_desc &state_src)
+									float dt,
+									Entity_desc &state_src)
 {
 //{{{
 	//size is how many missiles player has out and about

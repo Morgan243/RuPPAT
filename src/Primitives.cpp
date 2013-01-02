@@ -72,13 +72,14 @@ int Primitives::drawCircle(CoOrd center, int radius, bool cache)
 		
 		#endif
 
+				tempColor = default_lineColor;
 		for(;radius >14 ; radius--)
 		{
 			for(theta=0.0; theta<360.0; theta+=0.1)
 			{
-				tempColor = (default_lineColor & 0x00FFFFff) |
-						(((unsigned int)(default_lineColor & 0xff000000)-
-							(unsigned int)(195*cos(theta))&0xff000000));
+//				tempColor = (default_lineColor & 0x00FFFFff) |
+//						(((unsigned int)(default_lineColor & 0xff000000)-
+//							(unsigned int)(195*cos(theta))&0xff000000));
 				x = (radius * cos(theta)) + center.x;
 				y = (radius * sin(theta)) + center.y;
 
@@ -92,7 +93,7 @@ int Primitives::drawCircle(CoOrd center, int radius, bool cache)
 		
 		surface_cache.push_back(tempContain);	
 		
-		tempContain->surface = SDL_DisplayFormatAlpha(tempContain->surface);
+		//tempContain->surface = SDL_DisplayFormatAlpha(tempContain->surface);
 		tempContain->surface = rotozoomSurface(tempContain->surface,
 						0.0, 1.0,0);
 

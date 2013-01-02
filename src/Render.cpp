@@ -135,8 +135,8 @@ void Render::setGameArea(int w, int h)
 		SDL_CreateRGBSurface(SDL_SWSURFACE,game_width,game_height,32, 0x000000FF, 
 		0x0000FF00, 0x00FF0000, 0xFF000000); 
 	#endif 
-		//SDL_SetAlpha(pre_surface,SDL_SRCALPHA,0x00);
-		SDL_DisplayFormatAlpha(pre_surface);
+		SDL_SetAlpha(pre_surface,SDL_SRCALPHA,0xFF);
+		//SDL_DisplayFormatAlpha(pre_surface);
 }
 
 //-----------------setMainScreen-----

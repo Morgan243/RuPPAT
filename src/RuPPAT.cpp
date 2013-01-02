@@ -335,6 +335,7 @@ void RuPPAT :: parsePlayersToSurface()
 		centerX = x;
 		centerY = y;
 		
+		//put a selection primitive around sprite if selected
 		if(players[i]->updateSprite())
 		{
 			mainRender->putSprite(x,
@@ -547,6 +548,7 @@ std::thread *rk4_th = new std::thread(&RuPPAT::RK4,this,t,dt);
 		//blit middle layer
 		mainRender->applySurface(xOrigin,yOrigin,backgroundLayers[1]);
 		
+		SDL_SetAlpha(mainRender->mainScreen, SDL_SRCALPHA, 0xFF);
 
 		pCenter.x = centerX;
 		pCenter.y = centerY;
