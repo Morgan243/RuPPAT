@@ -222,6 +222,7 @@ Missile* Player::fireSelectedMissile()
 {
 //{{{	
 
+		//create new missile: copy from selected 
 		Missile *firedMissile = new Missile(*selected_missile);
 
 		cout<<"\""<<selected_missile->getName()<<"\" fired!"<<endl;
@@ -234,7 +235,7 @@ Missile* Player::fireSelectedMissile()
 		tempDesc.x = descriptor.x;
 		tempDesc.y = descriptor.y;
 
-		//get velocity vectors using 
+		//get velocity vectors of the player 
 		GetVectors_FrontRelative(tempDesc.xVel, tempDesc.yVel,
 						0.0, 120);
 
@@ -242,7 +243,7 @@ Missile* Player::fireSelectedMissile()
 		tempDesc.xVel += descriptor.xVel;
 		tempDesc.yVel += descriptor.yVel;
 
-		//update positional stats with descriptor
+		//update positional stats with descriptor: set descriptor
 		firedMissile->setDescriptor(tempDesc);
 
 		firedMissile->SetTimeCreated(thisTime);
@@ -250,13 +251,11 @@ Missile* Player::fireSelectedMissile()
 		//firedMissile->setTimeNow();
 		//setTimeNow();
 
-		//Missile is free, add it to vector
+		//Missile is free, add it to vector of fired missiles
 		missiles_free.push_back(firedMissile);
 
 		//copy over reference to fired missiles descriptor
-		//auxillary_desc.push_back(firedMissile->getDescriptor_ref());
 		this->to_render.entities.push_back(firedMissile->getDescriptor_ref());
-			
 
 		return firedMissile;
 //}}}
@@ -267,21 +266,24 @@ Entity_desc* Player::PhysicsHandler(float t,
 					Entity_desc &state_src)
 {
 //{{{
+	//size is how many missiles player has out and about
 	int size = missiles_free.size();
 	thisTime = t;
 
-	//cout<<"time: "<<thisTime<<endl;
 	//calculate players position
 	PhysFunc::integrate(descriptor, t, dt, state_src);
 
-	//calculate fire or free missiles position
+	//calculate fired (free) missiles position
 	for(int i = 0; i < size; i++)
 	{
+		//is the missile completely finished? (no longer relevant)
 		if(missiles_free[i]->killMe)
 		{
-			//cout<<"Missile being killed!"<<endl;
-			missiles_free.erase(
-					missiles_free.begin()+i);
+			cout<<"Missile removed from free vector!"<<endl;
+			//remove from the fired list
+			missiles_free.erase(missiles_free.begin()+i);
+
+			//decrement index and size
 			i--;
 			size--;
 		}
@@ -292,16 +294,10 @@ Entity_desc* Player::PhysicsHandler(float t,
 			missiles_free[i]->GameDestroy();
 		}
 		else 
-			//cout<<"Just handling physics!"<<endl;
 			missiles_free[i]->PhysicsHandler(t,
 							dt,
-						       	state_src);
+						    state_src);
 	}
-
-//	for(int i = 0; i < to_render.pixels.size(); i++)
-//	{
-//		PhysFunc::integrate(to_render.pixels[i], t, dt, state_src);
-//	}
 
 	return &descriptor;
 //}}}
@@ -325,53 +321,22 @@ vector<Entity_desc*>* Player :: GetAuxillaryDescriptors()
 	return &this->to_render.entities;
 }
 
-SDL_Surface* Player :: GetNextAuxDrawInfo(int &x,
-	       				int &y,
-				       	SDL_Surface* &refSurf,
-					Renderables_Cont &renderables)
+bool Player :: GetNextAuxDrawInfo(Renderables_Cont &renderables)
 {
 //{{{
-	refCounter++;
+	
+
+
 	if(refCounter < missiles_free.size())
 	{
-
-		Surface_Container tmpSurfCon
-			= missiles_free[refCounter]->
-						UpdateAndGetRenderables(renderables);
-		refSurf = tmpSurfCon.surface;
-		x = tmpSurfCon.x;
-		y = tmpSurfCon.y;
-		
-
-		return refSurf;
+		missiles_free[refCounter]->UpdateAndGetRenderables(renderables);
+		refCounter++;
+		return true;
 	}
 	else
 	{
-		refCounter = -1;
-		return NULL;
-	}
-//}}}
-}
-
-
-SDL_Surface* Player :: GetNextAuxDrawInfo(Renderables_Cont &renderables)
-{
-//{{{
-	refCounter++;
-	if(refCounter < missiles_free.size())
-	{
-
-		Surface_Container tmpSurfCon = missiles_free[refCounter]->
-						UpdateAndGetRenderables(renderables);
-
-		renderables.sprites.push_back(tmpSurfCon);
-
-		return tmpSurfCon.surface;
-	}
-	else
-	{
-		refCounter = -1;
-		return NULL;
+		refCounter = 0;
+		return false;
 	}
 //}}}
 }

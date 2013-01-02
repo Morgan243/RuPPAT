@@ -119,18 +119,30 @@ bool Missile::IsBeyondLifeSpan(float gameTime)
 //}}}
 }
 
-Surface_Container Missile::UpdateAndGetRenderables(Renderables_Cont &rnder)
+bool Missile::UpdateAndGetRenderables(Renderables_Cont &rnder)
 {
 //{{{
 	this->updateSprite();
 
-	Surface_Container ret_surface;
-		ret_surface.x = descriptor.x;
-		ret_surface.y = descriptor.y;
-		ret_surface.surface = this->getSprite();
+//	Surface_Container ret_surface;
+//		ret_surface.x = descriptor.x;
+//		ret_surface.y = descriptor.y;
+//		ret_surface.surface = this->getSprite();
 
 	rnder = to_render;
 
-	return ret_surface;
+	if(!isDestroying)
+	{
+		Surface_Container tmpSurfCont;
+		tmpSurfCont.surface = this->getSprite();
+		tmpSurfCont.x = descriptor.x;
+		tmpSurfCont.y = descriptor.y;
+		rnder.sprites.push_back(tmpSurfCont);
+	}
+	else
+	{
+
+	}
+	//return ret_surface;
 //}}}
 }

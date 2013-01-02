@@ -137,7 +137,7 @@ class Object
 
 		virtual Renderables_Cont* GetRenderables();
 
-		virtual Surface_Container UpdateAndGetRenderables(
+		virtual bool UpdateAndGetRenderables(
 					Renderables_Cont rnder);
 
 

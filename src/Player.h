@@ -11,10 +11,7 @@
 #include "SDL/SDL_image.h"
 #include "math.h"
 
-//#include "PhysFuncs.h"
-//#include "Descriptors.h"
 #include "Object.h"
-//#include "Sprite.h"
 #include "Missile.h"
 
 #include <vector>
@@ -99,7 +96,7 @@ class Player : public Object
 					       	SDL_Surface* &refSurf,
 					Renderables_Cont &renderables);
 
-		SDL_Surface* GetNextAuxDrawInfo(Renderables_Cont &renderables);
+		bool GetNextAuxDrawInfo(Renderables_Cont &renderables);
 
 		bool GetRenderables(Renderables_Cont &renderables);
 

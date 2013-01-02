@@ -403,30 +403,35 @@ void Object :: GetVectors_FrontRelative(float &xVect,
 
 Entity_desc* Object :: PhysicsHandler(float t,
 	       				float dt, 
-					Entity_desc &state_src)
+						Entity_desc &state_src)
 {
 //{{{
 	thisTime = t;
 
-	//integrate the sprite location
+	//integrate the sprite location if its alive
 	if(!isDestroying)
 		PhysFunc::integrate(descriptor, t, dt, state_src);
 
+	//handle pixels related/tied to object
 	for(int i = 0; i < to_render.pixels.size(); i++)
 	{
-		cout<<"integrating pixel of color "<<hex<<
-			(unsigned int)(to_render.pixels[i].color)<<endl;
-		cout<<"\tlocation:"<<to_render.pixels[i].x<<", "<<
-			to_render.pixels[i].y<<endl;
-
+		//dim the pixel
 		Common::ApplyDimming(to_render.pixels[i]);
 
+		//if dimmed out, erase from vector
 		if(to_render.pixels[i].deleteMe)
 			to_render.pixels.erase(to_render.pixels.begin()+i);
 
+		//bounce off game bounds
 		Common::TestBounds(to_render.pixels[i], true);
+
+		//integrate to find new position
 		PhysFunc::integrate(to_render.pixels[i], t, dt, state_src);
 	}
+
+	//make sure this missile is removed if no longer used
+	if(!to_render.pixels.size() && !to_render.sprites.size() && isDestroying)
+		this->killMe = true;
 
 	return &descriptor;
 //}}}
@@ -474,9 +479,7 @@ float Object::getTime()
 
 void Object::GameDestroy()
 {
-	cout<<"in default game destroy"<<endl;
-	cout<<"pixel sprite cache is "<<pixelSprite_cache.size()<<endl;
-	
+//{{{
 	//should append in case there are pixels already here
 	to_render.pixels = pixelSprite_cache;
 
@@ -493,6 +496,7 @@ void Object::GameDestroy()
 						+ rand()%50 - rand()%50;
 	}
 	isDestroying = true;
+//}}}
 }
 
 bool Object::GetRenderables(Renderables_Cont &renderables)
@@ -505,7 +509,7 @@ Renderables_Cont* Object::GetRenderables()
 	return &to_render;
 }
 
-Surface_Container Object::UpdateAndGetRenderables(Renderables_Cont rnder)
+bool Object::UpdateAndGetRenderables(Renderables_Cont rnder)
 {
 
 }

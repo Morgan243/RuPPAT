@@ -122,106 +122,6 @@ void RuPPAT :: createPixElement(Pixel_desc *pixel )
 //}}}
 }
 
-
-//------------parseSelectPixToSurface--TS
-//takes everything in the pixel list and
-//places it to the surface
-void RuPPAT :: parseSelectPixToSurface()
-{
-//{{{
-   pthread_rwlock_rdlock(&pix_rw_lock);
-
-	int x, y, i, j,  size=pixelList_m.size(), screenID=0;
-	Uint32 color;	
- //#pragma omp parallel for private(x,y,color, i, j)
-	 for( i=0 ; i< size ; i++)
-		{
-			x =	pixelList_m[i].x;// - centerX;
-			y =	pixelList_m[i].y;// - centerY;
-			color =	pixelList_m[i].color;
-	
-			mainRender->putPixel(x,y,color,screenID);
-		}
-
-   pthread_rwlock_unlock(&pix_rw_lock);
-//}}}
-}
-
-
-//------------parsePlayersTo Surface--TS
-//tkaes all the player object in the player vector
-//and places them to the screen (at appropriate coords)
-void RuPPAT :: parsePlayersToSurface()
-{
-//{{{
-   pthread_rwlock_wrlock(&object_rw_lock);
-
-	int x, y, i, j, color, size=players.size(), screenID=0;
-	int x_aux, y_aux;
-	CoOrd tempCoOrd;
-	Renderables_Cont tempRenderables;
-	tempCoOrd.x=0;
-	tempCoOrd.y=0;
-	SDL_Surface *refSurf;
-
- //#pragma omp parallel for private(x,y,color, i, j)
-	 for( i=0 ; i< size ; i++)
-		{
-		while((players[i]->GetNextAuxDrawInfo(tempRenderables)) != NULL)
-			{
-				mainRender->putSprite(tempRenderables.sprites);
-				mainRender->putPixel(tempRenderables.pixels);
-			}
-		
-		
-		x = players[i]->getX();
-		y = players[i]->getY();
-	
-		centerX = x;
-		centerY = y;
-		
-		if(players[i]->updateSprite())
-		{
-			mainRender->putSprite(x,
-								y,
-								primitive_maker->Get_Cached(i));
-
-			mainRender->putSprite(x,
-								y,
-								players[i]->getSprite());
-		
-		}
-		else
-			mainRender->putSprite(x,
-								y,
-								players[i]->getSprite());
-		}
-
-   pthread_rwlock_unlock(&object_rw_lock);
-//}}}
-}
-
-
-void RuPPAT :: parseObjectsToSurface()
-{
-//{{{
-	int x, y, i;
-   pthread_rwlock_rdlock(&object_rw_lock);
-	int size=objectList.size();
-
-	for(i=0; i<size;i++)
-		{
-			x = objectList[i]->getX();
-			y = objectList[i]->getY();	
-
-			objectList[i]->sprite.updateSprite();
-			mainRender->putSprite(x,y,objectList[i]->getSprite());
-		}
-   pthread_rwlock_unlock(&object_rw_lock);
-//}}}
-}
-
-
 //------------setUpdateOnSelectPix-----
 //assigns "set" argument to all elements
 //in pixel lists updated memeber
@@ -233,44 +133,6 @@ void RuPPAT :: setUpdateOnSelectPix(int set)
 	{
 		pixelList_m[i].updated = set;
 	}
-//}}}
-}
-
-
-//------------handleAllDeleteME--------->NEED WORK
-//Pixels should add themselves to list for deletion
-//so the program doesnt have to search for them
-//
-//go through pix list and delete everything 
-//with deleteMe set high
-void RuPPAT :: handleAllDeleteMe()
-{
-//{{{
-  //remove pixelList elements that have deleteMe set
-  pthread_rwlock_wrlock(&pix_rw_lock);
-  for(int k=0;k<pixelList_m.size();k++)
-	{
-	if(pixelList_m[k].deleteMe)
-	  {
-		pixelList_m.erase(pixelList_m.begin()+k);
-		k--;//compensate for the resize
-	  }
-	}
-  pthread_rwlock_unlock(&pix_rw_lock);
-//}}}
-}
-
-
-//------------handleDelete-------------
-//remove pixelList element that has deleteMe set
-//can do other things for delete later
-void RuPPAT :: handleDelete(int k)
-{
-//{{{
-	//CURRENTLY LOCKS OUTSIDE OF FUNCTION
-	//pthread_rwlock_wrlock(&pix_rw_lock);
-		pixelList_m.erase(pixelList_m.begin()+k);
-	//pthread_rwlock_unlock(&pix_rw_lock);
 //}}}
 }
 
@@ -377,6 +239,137 @@ int RuPPAT :: addObject(string spritePath,
 	pthread_rwlock_unlock(&object_rw_lock);
 
 	return size;
+//}}}
+}
+
+//------------handleAllDeleteME--------->NEED WORK
+//Pixels should add themselves to list for deletion
+//so the program doesnt have to search for them
+//
+//go through pix list and delete everything 
+//with deleteMe set high
+void RuPPAT :: handleAllDeleteMe()
+{
+//{{{
+  //remove pixelList elements that have deleteMe set
+  pthread_rwlock_wrlock(&pix_rw_lock);
+  for(int k=0;k<pixelList_m.size();k++)
+	{
+	if(pixelList_m[k].deleteMe)
+	  {
+		pixelList_m.erase(pixelList_m.begin()+k);
+		k--;//compensate for the resize
+	  }
+	}
+  pthread_rwlock_unlock(&pix_rw_lock);
+//}}}
+}
+
+//------------handleDelete-------------
+//remove pixelList element that has deleteMe set
+//can do other things for delete later
+void RuPPAT :: handleDelete(int k)
+{
+//{{{
+	//CURRENTLY LOCKS OUTSIDE OF FUNCTION
+	//pthread_rwlock_wrlock(&pix_rw_lock);
+		pixelList_m.erase(pixelList_m.begin()+k);
+	//pthread_rwlock_unlock(&pix_rw_lock);
+//}}}
+}
+
+//------------parseSelectPixToSurface--TS
+//takes everything in the pixel list and
+//places it to the surface
+void RuPPAT :: parseSelectPixToSurface()
+{
+//{{{
+   pthread_rwlock_rdlock(&pix_rw_lock);
+
+	int x, y, i, j,  size=pixelList_m.size(), screenID=0;
+	Uint32 color;	
+ //#pragma omp parallel for private(x,y,color, i, j)
+	 for( i=0 ; i< size ; i++)
+		{
+			x =	pixelList_m[i].x;// - centerX;
+			y =	pixelList_m[i].y;// - centerY;
+			color =	pixelList_m[i].color;
+	
+			mainRender->putPixel(x,y,color,screenID);
+		}
+
+   pthread_rwlock_unlock(&pix_rw_lock);
+//}}}
+}
+
+//------------parsePlayersTo Surface--TS
+//tkaes all the player object in the player vector
+//and places them to the screen (at appropriate coords)
+void RuPPAT :: parsePlayersToSurface()
+{
+//{{{
+   pthread_rwlock_wrlock(&object_rw_lock);
+
+	int x, y, i, j, color, size=players.size(), screenID=0;
+	int x_aux, y_aux;
+	CoOrd tempCoOrd;
+	Renderables_Cont tempRenderables;
+	tempCoOrd.x=0;
+	tempCoOrd.y=0;
+	SDL_Surface *refSurf;
+
+ //#pragma omp parallel for private(x,y,color, i, j)
+	 for( i=0 ; i< size ; i++)
+		{
+		while((players[i]->GetNextAuxDrawInfo(tempRenderables)) )
+			{
+				mainRender->putSprite(tempRenderables.sprites);
+				mainRender->putPixel(tempRenderables.pixels);
+			}
+		
+		x = players[i]->getX();
+		y = players[i]->getY();
+	
+		centerX = x;
+		centerY = y;
+		
+		if(players[i]->updateSprite())
+		{
+			mainRender->putSprite(x,
+								y,
+								primitive_maker->Get_Cached(i));
+
+			mainRender->putSprite(x,
+								y,
+								players[i]->getSprite());
+		
+		}
+		else
+			mainRender->putSprite(x,
+								y,
+								players[i]->getSprite());
+		}
+
+   pthread_rwlock_unlock(&object_rw_lock);
+//}}}
+}
+
+void RuPPAT :: parseObjectsToSurface()
+{
+//{{{
+	int x, y, i;
+   pthread_rwlock_rdlock(&object_rw_lock);
+	int size=objectList.size();
+
+	for(i=0; i<size;i++)
+		{
+			x = objectList[i]->getX();
+			y = objectList[i]->getY();	
+
+			objectList[i]->sprite.updateSprite();
+			mainRender->putSprite(x,y,objectList[i]->getSprite());
+		}
+   pthread_rwlock_unlock(&object_rw_lock);
 //}}}
 }
 

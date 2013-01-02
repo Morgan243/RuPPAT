@@ -58,7 +58,7 @@ class Missile : public Object
 
 		bool IsBeyondLifeSpan(float gameTime);
 
-		Surface_Container UpdateAndGetRenderables(
+		bool UpdateAndGetRenderables(
 						Renderables_Cont &rnder);
 
 	protected:
