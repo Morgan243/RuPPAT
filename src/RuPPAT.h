@@ -30,11 +30,18 @@ class RuPPAT
 {
 	public:
 		//CONSTRUCTOR(S)
-		RuPPAT(int width,int height,int bpp, unsigned int flags,
-			 string bkg_paths[], int num_bkgs);
+		RuPPAT(int width,
+				int height,
+				int bpp,
+			   	unsigned int flags,
+			 	string bkg_paths[],
+			   	int num_bkgs);
 
-		RuPPAT(int width, int height, int bpp, unsigned int flags,
-			 vector<string> bkg_paths);
+		RuPPAT(int width,
+			   	int height,
+			   	int bpp,
+			   	unsigned int flags,
+				vector<string> bkg_paths);
 
 		//DECONSTRUCTOR
 		~RuPPAT();
@@ -56,16 +63,26 @@ class RuPPAT
 
 		int applyDimming(Pixel_desc &pix_t);
 
-		int addPlayer(string spritePath, int numRotations, int startingAngle, 
-				float maxAccel, int x, int y, string HC_path);
+		int addPlayer(string spritePath,
+			   			int numRotations,
+					   	int startingAngle, 
+						float maxAccel,
+					   	int x,
+					   	int y,
+					   	string HC_path);
 
 		void addPlayer(Player* new_player);
 
 		int addEntity(Entity_desc new_ent);
 
-		int addObject(string spritePath, int x, int y, 
-				int mass, float rotationRate,
-				float xVel, float yVel, string HB_path);
+		int addObject(string spritePath,
+			   			int x,
+					   	int y, 
+						int mass,
+					   	float rotationRate,
+						float xVel,
+					   	float yVel,
+					   	string HB_path);
 
 		Entity_desc RK4_entity(Entity_desc ent);
 
@@ -77,27 +94,38 @@ class RuPPAT
 
 		void RK4_parse();
 
-		void runPPAT(bool *mainDone, Event_desc *mainEvents, 
-				string selection, string option);
+		void runPPAT(bool *mainDone,
+			   			Event_desc *mainEvents, 
+						string selection,
+					   	string option);
 
-		void createPixElement(  int x, int y,	
-					int color,
-					int xAccel,
-					int yAccel,
-					int accLength,
-					int dimFactor, int mass  );
+		void createPixElement(int x,
+								int y,	
+								int color,
+								int xAccel,
+								int yAccel,
+								int accLength,
+								int dimFactor, int mass  );
 
 		void updateSelectPix();
 
-		void putPixel(int x, int y, unsigned int color, int id);
+		void putPixel(int x,
+			   			int y,
+					   	unsigned int color,
+					   	int id);
 
-		void putSprite(int x, int y, SDL_Surface *sprite);
+		void putSprite(int x,
+			   			int y,
+					   	SDL_Surface *sprite);
 
 		void accelPlayer(int p_ID, bool isForward);
 		
 		void turnPlayer(int p_ID, bool isLeft, int numTurns);
 
-		void turnPlayerToCoord(int p_ID, int x, int y, int rate);
+		void turnPlayerToCoord(int p_ID,
+			   					int x,
+							   	int y,
+							   	int rate);
 
 		void firePlayersWeapon(int p_ID);
 
@@ -105,12 +133,18 @@ class RuPPAT
 		bool testBounds(Entity_desc &testMe, bool invert);
 
 		Primitives *primitive_maker;
+		
 	private:
 
 		int WIDTH, HEIGHT, 
-		    game_width, game_height,
+		    game_width,
+		   	game_height,
 		    gravitationalConstant,
-		    baseID = 0;
+		    baseID = 0,
+ 			centerX,
+		   	centerY=0,
+		   	xOrigin,
+		   	yOrigin;
 
 		Uint32 thisTime;
 
@@ -118,18 +152,14 @@ class RuPPAT
 		bool done;
 		
 		Render* mainRender;
-
 				
 		//mutexes/lock used throughout
 		pthread_mutex_t  pix_list_lock_2;
 		pthread_rwlock_t  pix_rw_lock, 
-				  mass_rw_lock,
-				  ent_rw_lock,
-				  player_rw_lock,
-				  object_rw_lock;
-
-
-		int centerX, centerY=0, xOrigin, yOrigin;
+						  mass_rw_lock,
+						  ent_rw_lock,
+						  player_rw_lock,
+						  object_rw_lock;
 
 		//independent pixels on screen
 		vector<Pixel_desc> pixelList;
@@ -151,8 +181,6 @@ class RuPPAT
 
 		vector<Object *> objectList;
 
-
 		queue<Pixel_desc> toRender;
-
 };
 #endif

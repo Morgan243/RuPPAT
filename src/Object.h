@@ -29,26 +29,26 @@ class Object
 	public:
 
 		explicit Object(string sprite_path,
-			       	int start_x,
-			       	int start_y,
-			       	int start_mass);
+						int start_x,
+						int start_y,
+						int start_mass);
 
 		explicit Object(string sprite_path,
-			       	int start_x,
-			       	int start_y,
-			       	int start_mass,
-				int num_rotations,
-			       	int starting_angle);
+						int start_x,
+						int start_y,
+						int start_mass,
+						int num_rotations,
+						int starting_angle);
 
 		explicit Object(string sprite_path,
-			       	int start_x,
-			       	int start_y,
-			       	int start_mass,
-				int num_rotations,
-			       	int starting_angle,
-				float xVel,
-			       	float yVel,
-			       	string HC_path);
+						int start_x,
+						int start_y,
+						int start_mass,
+						int num_rotations,
+						int starting_angle,
+						float xVel,
+						float yVel,
+						string HC_path);
 
 		Object(const Object& src);
 		Object &operator=(const Object &src);
@@ -87,9 +87,9 @@ class Object
 		void getXY_exhaust(float &xVel, float &yVel);
 
 		void GetVectors_FrontRelative(float &xVect,
-						float &yVect,
-						float angleFromFront,
-						float mag);
+										float &yVect,
+										float angleFromFront,
+										float mag);
 
 		void setRotation_rate(float rotRate);
 
@@ -114,22 +114,20 @@ class Object
 		void buildHitBoxes_fromLayer(SDL_Surface* hitBoxLayout);
 
 		bool checkHits(float &xVel,
-			       	float &yVel,
-			       	Entity_desc &check_ent);
+						float &yVel,
+						Entity_desc &check_ent);
 
 
 		float lastErr;
 		float rotationalErrorAccum;
 
-		virtual Entity_desc* PhysicsHandler(
-							float t,
-			       				float dt,
-						Entity_desc &state_src);
+		virtual Entity_desc* PhysicsHandler(float t,
+											float dt,
+											Entity_desc &state_src);
 
-		virtual Entity_desc*  PhysicsHandler(
-						Entity_desc &state_dest, 
-							float t,
-						       	float dt);
+		virtual Entity_desc*  PhysicsHandler(Entity_desc &state_dest, 
+												float t,
+												float dt);
 
 		virtual vector<Entity_desc*>* GetAuxillaryDescriptors();
 
@@ -137,8 +135,7 @@ class Object
 
 		virtual Renderables_Cont* GetRenderables();
 
-		virtual bool UpdateAndGetRenderables(
-					Renderables_Cont rnder);
+		virtual bool UpdateAndGetRenderables(Renderables_Cont rnder);
 
 
 		//destroy the object in game (destruction animation/effects
@@ -149,22 +146,28 @@ class Object
 		float getTime();
 
 		Sprite sprite, hitCircleSprite;
-		bool killMe;
-		bool isDestroying;
+
+		bool killMe,
+			 isDestroying;
 
 	protected:
 		
 		
-		int refMax, refCounter;
-		int numRotations;
-		float exhaustX, exhaustY;
+		int refMax, 
+			refCounter,
+		   	numRotations;
+
+		float exhaustX, 
+			  exhaustY,
+			  timeCreated;
+
 		Entity_desc descriptor;
 
-		float timeCreated;
 		//generic timestamp for class
 		float thisTime;
 
 		Renderables_Cont to_render;
+
 		vector<Pixel_desc> pixelSprite_cache;
 };
 #endif

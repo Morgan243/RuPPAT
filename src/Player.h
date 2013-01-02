@@ -26,23 +26,23 @@ class Player : public Object
 	public:
 
 		explicit Player(string sprite_path, 
-				int num_rotations,
-			       	int startingAngle);
+						int num_rotations,
+						int startingAngle);
 
 		explicit Player(string sprite_path,
-			       	int num_rotations,
-			       	int startingAngle,
-				float maxaccel,
-			       	int startX,
-			       	int startY);
+						int num_rotations,
+						int startingAngle,
+						float maxaccel,
+						int startX,
+						int startY);
 
 		explicit Player(string sprite_path,
-			       	int num_rotations,
-			       	int startingAngle,
-				float maxaccel,
-			       	int startX,
-			       	int startY, 
-				string HC_path);
+						int num_rotations,
+						int startingAngle,
+						float maxaccel,
+						int startX,
+						int startY, 
+						string HC_path);
 		~Player();
 
 
@@ -51,19 +51,19 @@ class Player : public Object
 		//add a missile, auto sets the sprite path to the 
 		//default sprite
 		void addMissile(string sprite_path,
-			       	string name,
-			       	bool makeSelected,
-				int amnt,
-			       	int mxDamage,
-			       	float velocity,
-			       	float lifespan);
+						string name,
+						bool makeSelected,
+						int amnt,
+						int mxDamage,
+						float velocity,
+						float lifespan);
 
 		//load sprite and create a new Missile object
 		void addMissile(string sprite_path,
-			       	string name,
-			       	bool makeSelected,
-				int amnt,
-			       	int mxDamage);
+						string name,
+						bool makeSelected,
+						int amnt,
+						int mxDamage);
 		
 		Missile* selectMissile_byName(string name);
 
@@ -82,19 +82,19 @@ class Player : public Object
 		Missile* fireSelectedMissile();
 		
 		Entity_desc *PhysicsHandler(Entity_desc &state_dest,
-						float t,
-					       	float dt);
+									float t,
+									float dt);
 
 		Entity_desc *PhysicsHandler(float t,
-			       			float dt,
-						Entity_desc &state_src);
+									float dt,
+									Entity_desc &state_src);
 		
 		vector<Entity_desc*>* GetAuxillaryDescriptors();
 
 		SDL_Surface* GetNextAuxDrawInfo(int &x,
-			       			int &y,
-					       	SDL_Surface* &refSurf,
-					Renderables_Cont &renderables);
+										int &y,
+										SDL_Surface* &refSurf,
+										Renderables_Cont &renderables);
 
 		bool GetNextAuxDrawInfo(Renderables_Cont &renderables);
 
@@ -117,5 +117,4 @@ class Player : public Object
 		//User has selected this unit; not currently in use
 		bool isSelected;
 };
-
 #endif

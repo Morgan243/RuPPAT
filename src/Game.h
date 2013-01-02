@@ -26,67 +26,64 @@ using namespace std;
 //CLASS:::GAME
 class Game
 {
-public:
+	public:
 
-	//CONSTRUCTOR
-	Game();
-	Game(int WIDTH_cl, int HEIGHT_cl);
+		//CONSTRUCTOR
+		Game();
+		Game(int WIDTH_cl, int HEIGHT_cl);
 
-	//Game(RunOptions options);	
+		//Game(RunOptions options);	
 
-	Game(vector<section> configSection);	
-
-
-	//DECONSTRUCTOR
-	~Game();
-
-	void initEvent(Event_desc &initMe);
+		Game(vector<section> configSection);	
 
 
-	void createPixElement(  int x, int y,	
-				int color,
-				int xAccel,
-				int yAccel,
-				int accLength,
-				int dimFactor, int mass  );
+		//DECONSTRUCTOR
+		~Game();
 
-	
-	void parseSelectPixToSurface();
+		void initEvent(Event_desc &initMe);
 
 
-	void updateSelectPix();
-
-
-	void setUpdateOnSelectPix(int set);
+		void createPixElement(int x, int y,	
+								int color,
+								int xAccel,
+								int yAccel,
+								int accLength,
+								int dimFactor, int mass  );
 
 		
-	void run(string selection, string option);	
-
-	float runDemos(string selection, string option1, string option2,
-		        int x1, int y1, int x2, int y2, int x3, int y3);
-
-	void handleEvents(Event_desc &mainEvents);
-
-	void rotateSpriteToCoor(int p_ID, int x, int y, int turnRate);
-
-private:
-	SDL_Event event;	
-
-	bool done;
-	bool space;
-	RuPPAT *engine;	
-
-	vector<Player *> players;
+		void parseSelectPixToSurface();
 
 
-	int x, y, 
-	    up_count, down_count, left_count, right_count,
-	    key_count_limit, defaultTurnAmnt, fastTurn,
-	    w_count, s_count, a_count, d_count;
+		void updateSelectPix();
 
-	bool  k_UP, k_DOWN, k_LEFT, k_RIGHT,
-		k_lCTRL, k_lMOUSE;
 
+		void setUpdateOnSelectPix(int set);
+
+			
+		void run(string selection, string option);	
+
+		void handleEvents(Event_desc &mainEvents);
+
+		void rotateSpriteToCoor(int p_ID, int x, int y, int turnRate);
+
+	private:
+		SDL_Event event;	
+
+		bool done,
+			 space;
+
+		RuPPAT *engine;	
+
+		vector<Player *> players;
+
+
+		int x, y, 
+			up_count, down_count, left_count, right_count,
+			key_count_limit, defaultTurnAmnt, fastTurn,
+			w_count, s_count, a_count, d_count;
+
+		bool  k_UP, k_DOWN, k_LEFT, k_RIGHT,
+				k_lCTRL, k_lMOUSE;
 };
 #endif
 
