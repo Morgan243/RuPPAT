@@ -225,8 +225,7 @@ void Render :: putPixel(int x, int y, Uint32 color, int screenID)
 		Uint8 *p = (Uint8 *)pre_surface->pixels + y * pre_surface->pitch + x * bpp;
 
 		//prevent placeing pixel outside of screens bounds	
-		if( ((y*(pre_surface->pitch/4))
-		    < game_height*game_width) 
+		if( ((y*(pre_surface->pitch/4)) < game_height*game_width) 
 		    && (y*(pre_surface->pitch/4)) >=0 )
 				*(Uint32 *)p = color;
 

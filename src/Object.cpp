@@ -439,8 +439,8 @@ Entity_desc* Object :: PhysicsHandler(float t,
 }
 
 Entity_desc* Object :: PhysicsHandler(Entity_desc &state_dest, 
-					float t, 
-					float dt)
+											float t, 
+											float dt)
 {
 //{{{
 	thisTime = t;
@@ -483,18 +483,24 @@ void Object::GameDestroy()
 //{{{
 	//should append in case there are pixels already here
 	to_render.pixels = pixelSprite_cache;
+	
+	int width, height;
+	
+	this->sprite.getDimensions(width,height);
 
 	//set the correct coordinates
 	for(int i = 0; i < to_render.pixels.size(); i++)
 	{
+		//to_render.pixels[i].color = 0xFFFFFFff;
+		//cout<<hex<<to_render.pixels[i].color<<endl;
 		to_render.pixels[i].dimFactor = 8;
 		to_render.pixels[i].dimTimer = 0;
-		to_render.pixels[i].x += descriptor.x;
-		to_render.pixels[i].y += descriptor.y;
+		to_render.pixels[i].x += (descriptor.x - width/2);
+		to_render.pixels[i].y += (descriptor.y - height/2);
 		to_render.pixels[i].xVel = descriptor.xVel
-						+ rand()%75 - rand()%75;
+						+ rand()%5 - rand()%5;
 		to_render.pixels[i].yVel = descriptor.yVel
-						+ rand()%75 - rand()%75;
+						+ rand()%5 - rand()%5;
 	}
 	isDestroying = true;
 //}}}

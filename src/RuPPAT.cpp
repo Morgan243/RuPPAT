@@ -731,11 +731,11 @@ void RuPPAT :: accelPlayer(int p_ID, bool isForward)
 	pthread_rwlock_unlock(&object_rw_lock);
 		
 		//exhaust color starts red
-		t_pix.color=0x9f0000ff;
+		t_pix.color=0xff0023ff;
 		t_pix.xAcc = 0;
 		t_pix.yAcc = 0;
 		t_pix.accelLength = 2;
-		t_pix.dimFactor = 2;
+		t_pix.dimFactor = 6;
 		t_pix.dimTimer = 0;
 		t_pix.deleteMe = false;
 		t_pix.updated = 0;
@@ -750,8 +750,8 @@ void RuPPAT :: accelPlayer(int p_ID, bool isForward)
 		t_pix.color += 0x000300;
 		t_pix.xVel =(origXvel*60)+rand()%20 -rand()%20;
 		t_pix.yVel =(origYvel*60)+rand()%20 - rand()%20;
-		t_pix.x=players[p_ID]->getX()+rand()%2-rand()%2;
-		t_pix.y=players[p_ID]->getY()+rand()%2-rand()%2;
+		t_pix.x=players[p_ID]->getX()+rand()%2 - rand()%2;
+		t_pix.y=players[p_ID]->getY()+rand()%2 - rand()%2;
 		t_pix.x +=origXvel*10;
 		t_pix.y +=origYvel*10;
 	createPixElement(&t_pix);

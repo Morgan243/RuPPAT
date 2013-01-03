@@ -139,12 +139,12 @@ bool Common::ApplyDimming(Pixel_desc &pix_t)
 		//reset the dimtimer
 		dimTimer = 0;
 
-		tmpA= (Uint8)((current_color & 0xFF000000)>>24);
+		tmpA= (Uint32)((current_color & 0xFF000000)>>24);
 		tmpA -=5;
 
 		//recombine the colors
 		//pix_t.color = ( (tmpA<<24) | (tmpR<<16) | (tmpG<<8) | tmpB);
-		pix_t.color = ( (tmpA<<24) | (0x00FFFFFF&current_color));
+		pix_t.color = ( (tmpA<<24 & 0xFF000000) | (0x00FFFFFF&current_color));
 	}
 	//reassign timer
 	pix_t.dimTimer = dimTimer;
