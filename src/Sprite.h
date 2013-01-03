@@ -67,6 +67,8 @@ class Sprite
 		void updateSprite();
 
 		float getAngle();
+		
+		int getAngleIndex();
 
 		void setAngleIndex(int angleIndex);
 

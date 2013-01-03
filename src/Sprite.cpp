@@ -269,10 +269,15 @@ float Sprite::getAngle()
 	return (float)currentAngleIndex_f*degreeIncrement;
 }
 
+int Sprite::getAngleIndex()
+{
+	return (int)currentAngleIndex_f;
+}
+
 
 void Sprite::setAngleIndex(int angleIndex)
 {
-	currentAngleIndex = angleIndex;
+	currentAngleIndex_f = (float)angleIndex;
 }
 
 

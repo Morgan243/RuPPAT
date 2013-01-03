@@ -222,7 +222,6 @@ vector<Missile*> Player :: getFreeMissiles()
 Missile* Player::fireSelectedMissile()
 {
 //{{{	
-
 		//create new missile: copy from selected 
 		Missile *firedMissile = new Missile(*selected_missile);
 
@@ -236,7 +235,8 @@ Missile* Player::fireSelectedMissile()
 		tempDesc.y = descriptor.y;
 
 		//get velocity vectors of the player 
-		GetVectors_FrontRelative(tempDesc.xVel, tempDesc.yVel,
+		GetVectors_FrontRelative(tempDesc.xVel,
+			   						tempDesc.yVel,
 									0.0, 120);
 
 		//add velocity of player to missile
@@ -255,6 +255,8 @@ Missile* Player::fireSelectedMissile()
 		//copy over reference to fired missiles descriptor
 		this->to_render.entities.push_back(firedMissile->getDescriptor_ref());
 
+		missiles_free.back()->setAngle_index(this->sprite.getAngleIndex());
+		
 		return firedMissile;
 //}}}
 }
@@ -293,18 +295,20 @@ Entity_desc* Player::PhysicsHandler(float t,
 		}
 		//integrate
 		else 
+		{
 			missiles_free[i]->PhysicsHandler(t,
 							dt,
 						    state_src);
+		}
 	}
 
 	return &descriptor;
 //}}}
 }
 
-Entity_desc* Player::PhysicsHandler( Entity_desc &state_dest, 
-					float t, 
-					float dt)
+Entity_desc* Player::PhysicsHandler(Entity_desc &state_dest, 
+									float t, 
+									float dt)
 {
 //{{{
 	//set time

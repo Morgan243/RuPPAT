@@ -16,7 +16,6 @@
 //Demo Headers Included
 #include "Descriptors.h"
 #include "Game.h"
-//#include "Render.h"
 
 using namespace std;
 
@@ -27,8 +26,6 @@ using namespace std;
 	//Default resolution
 	int WIDTH_cl = 1024;
 	int HEIGHT_cl = 768;
-
-
 
 //default config file name
 string filename = "config";
@@ -48,8 +45,6 @@ Game *game;
 //scan configuration from config file
 void readConfigFile(string filename, vector<section> &configSection); 
 
-
-
 /*\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
  * ||||||||||||||||||||||||||||||||
  * `````````ENTRY POINT````````````
@@ -57,6 +52,7 @@ void readConfigFile(string filename, vector<section> &configSection);
  */////////////////////////////////*/
 int main(int argc, char *argv[])
 {
+//{{{
 	//check that XInitThreads was not erroneous
 	if(!x_o)
 		cout<<"ERROR WITH XINIT THREADS!"<<endl;
@@ -73,7 +69,6 @@ int main(int argc, char *argv[])
 				fprintf(stderr, "setrlimit failed\n");
 				printf("stack limit setting failed!\n");
 			}	
-
 	}
 
 	//init runtime option struct
@@ -93,6 +88,7 @@ int main(int argc, char *argv[])
 	game->run(selection, option);
 
 	return 0;
+//}}}
 }
 
 //handleInput assigns global variables based on the command line options selected
@@ -236,10 +232,9 @@ int main(int argc, char *argv[])
 ////}}}
 //}
 
-
-
 void readConfigFile(string filename, vector<section>& configSections)
 {
+//{{{
 	int place = 0;
 	string line;
 
@@ -348,5 +343,6 @@ void readConfigFile(string filename, vector<section>& configSections)
 			configSections.push_back(nextSection);
 		}
 	}
+//}}}
 }
 

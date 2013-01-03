@@ -51,22 +51,25 @@ class Object
 						string HC_path);
 
 		Object(const Object& src);
+
 		Object &operator=(const Object &src);
 
 		~Object();
 
-
 		Entity_desc getDescriptor ()const;
+
 		Entity_desc* getDescriptor_ref();
 
 		void setDescriptor(Entity_desc new_desc);
 			
 		SDL_Surface *getSprite();
+
 		SDL_Surface *getSprite(int angle);
 
-
 		void setID(int id);
+
 		int getX ()const;
+
 		int getY ()const;
 
 		void setXY(int x, int y);
@@ -74,12 +77,15 @@ class Object
 		int getMass ()const;
 
 		float getXvel ()const;
+
 		float getYvel ()const;
 
 		float getXacc ()const;
+
 		float getYacc ()const;
 
 		void accelForward();	
+
 		void accelBackward();
 
 		void setAccelVectors(bool forward);
@@ -117,8 +123,8 @@ class Object
 						float &yVel,
 						Entity_desc &check_ent);
 
-
 		float lastErr;
+
 		float rotationalErrorAccum;
 
 		virtual Entity_desc* PhysicsHandler(float t,
@@ -143,6 +149,7 @@ class Object
 		virtual void GameDestroy();
 
 		float setTimeNow(float time);
+
 		float getTime();
 
 		Sprite sprite, hitCircleSprite;
