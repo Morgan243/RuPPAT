@@ -24,6 +24,8 @@ class Common
 		//decrease alpha to dim out a pixel
 		static bool ApplyDimming(Pixel_desc &pix_t);
 
+        static void RotatePoint(float degrees, Pixel_desc &pix_t, CoOrd center);
+
 	private:
 		static unsigned int width, height;
 };

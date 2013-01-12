@@ -266,7 +266,7 @@ void Sprite::updateSprite()
 
 float Sprite::getAngle()
 {
-	return (float)currentAngleIndex_f*degreeIncrement;
+	return (float)currentAngleIndex_f*(float)degreeIncrement;
 }
 
 int Sprite::getAngleIndex()
@@ -386,6 +386,12 @@ void Sprite::getDimensions(int &w, int &h)
 	h = base_sprite->h;
 }
 
+void Sprite::getDimensions(int &w, int &h, int rotation)
+{
+	w = rotations[rotation]->w;
+	h = rotations[rotation]->h;
+}
+
 void Sprite::getDimensionsBpp(int &w, int &h, int &bpp) const
 {
 	w = base_sprite->w;
@@ -478,7 +484,6 @@ vector<CoOrd> Sprite:: outlineSprite()
 void Sprite::clearPixelFromAll( int start_rot_i, int x, int y)
 {
 //{{{
-
 	int tempX = x, tempY = y, index=start_rot_i;
 	float theta, mag;
 	
@@ -510,7 +515,6 @@ void Sprite::clearPixelFromAll( int start_rot_i, int x, int y)
 			{
 				theta = theta*(-1.0) + 90.0;
 			}
-
 		}
 		else//third or fourth quad
 		{
@@ -520,7 +524,7 @@ void Sprite::clearPixelFromAll( int start_rot_i, int x, int y)
 			}
 			else
 			{
-				theta = theta + 180.0;
+			    theta = theta + 180.0;
 			}
 		}
 	}

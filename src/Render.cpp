@@ -263,8 +263,6 @@ void Render :: putSprite(int x, int y, SDL_Surface* sprite)
 	imagePosition.h=0;
 
 
-//	if(SDL_MUSTLOCK(mainScreen))
-//		SDL_LockSurface(mainScreen);
 	if(SDL_MUSTLOCK(pre_surface))
 		SDL_LockSurface(pre_surface);
 
@@ -277,8 +275,6 @@ void Render :: putSprite(int x, int y, SDL_Surface* sprite)
 	if(SDL_MUSTLOCK(pre_surface))
 		SDL_UnlockSurface(pre_surface);
 
-//	if(SDL_MUSTLOCK(mainScreen))
-//		SDL_UnlockSurface(mainScreen);
 //}}}
 }
 //

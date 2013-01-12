@@ -16,13 +16,14 @@ Player:
 	HC=red_ship_HC.png
 # 	sprite path, missile name, amount,damage, speed, life
 	#missle=orange_circle.png,Orange Blob,100,10,40,4
-	#missle=white_rocket.png,White Rocket,100,10,40,4
-	missle=test_line.png,White Rocket,100,10,40,4
+	missle=white_rocket.png,White Rocket,100,10,40,4
+	#missle=test_line.png,White Rocket,100,10,40,4
+	#missle=mint_logo.png,mint_logo.png,100,10,40,4
 Object:
 	x=840
 	y=550
-	mass=299950
-	rotation=0.8
+	mass=595000
+	rotation=5.8
 	xVel=0
 	yVel=0
 	spriteBase=red_planet.png

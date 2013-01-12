@@ -487,20 +487,30 @@ void Object::GameDestroy()
 	int width, height;
 	
 	this->sprite.getDimensions(width,height);
+    //this->sprite.getDimensions(width, height, sprite.getAngleIndex());
+    //cout<<"ANGLE INDEX: "<<sprite.getAngleIndex()<<endl;
+    float theta = this->getAngle();
 
+    CoOrd center;
+        center.x = width/2;
+        center.y = height/2;
+//omp_set_num_threads(4);
 	//set the correct coordinates
+//#pragma omp parallel for
 	for(int i = 0; i < to_render.pixels.size(); i++)
 	{
-		//to_render.pixels[i].color = 0xFFFFFFff;
-		//cout<<hex<<to_render.pixels[i].color<<endl;
-		to_render.pixels[i].dimFactor = 8;
+		to_render.pixels[i].dimFactor = 18;
 		to_render.pixels[i].dimTimer = 0;
-		to_render.pixels[i].x += (descriptor.x - width/2);
-		to_render.pixels[i].y += (descriptor.y - height/2);
-		to_render.pixels[i].xVel = descriptor.xVel
-						+ rand()%5 - rand()%5;
-		to_render.pixels[i].yVel = descriptor.yVel
-						+ rand()%5 - rand()%5;
+        
+        Common::RotatePoint(theta, to_render.pixels[i], center);
+
+        to_render.pixels[i].x += (descriptor.x);
+        to_render.pixels[i].y += (descriptor.y);
+
+        to_render.pixels[i].xVel = descriptor.xVel
+						+ rand()%75 - rand()%75;
+        to_render.pixels[i].yVel = descriptor.yVel
+						+ rand()%75 - rand()%75;
 	}
 	isDestroying = true;
 //}}}

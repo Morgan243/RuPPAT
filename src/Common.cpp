@@ -1,3 +1,4 @@
+#include "math.h"
 #include "Common.h"
 
 
@@ -154,5 +155,91 @@ bool Common::ApplyDimming(Pixel_desc &pix_t)
 		{
 			pix_t.deleteMe = true;
 		}
+//}}}
+}
+
+void Common::RotatePoint(float degrees, Pixel_desc &pix_t, CoOrd center)
+{
+//{{{
+	int tempX = pix_t.x, tempY = pix_t.y; 
+	float theta, mag;
+
+   // cout<<"Degrees: "<<degrees<<endl;
+   // cout<<"Center: "<<center.x<<","<<center.y<<endl;
+
+	//add width and height
+	tempY -= center.y;// - tempY;
+	tempX -= center.x;// - tempX;
+
+    tempY *= (-1);
+
+    if(tempX)
+        theta = atan( ((float)tempY) / ((float)tempX) );
+    else
+    {
+       // cout<<"ITS ZERO!! : "<< 
+        //(theta = atan( ((float)tempY) / ((float)tempX) )) <<endl;
+
+        if( tempY > 0)
+            theta = 3.14159/2.0;
+        else if (tempY<0)
+            theta = (3.14159/2.0)*3.0;
+        else
+            theta = 0;
+    }
+
+    mag = sqrt((float)(tempX*tempX) + (float)(tempY*tempY));
+
+    //cout<<"\t--Theta: "<<theta<<endl;
+    //cout<<"\t--x,y:  "<<tempX<<","<<tempY<<endl;
+    
+
+    if(theta == -0 || theta == +0)
+        theta = 0;
+//	//x and y both are not zero!
+
+		//find initial theta
+		if(tempY>0)//first or second quadrant
+		{
+			if(tempX>0)//first quad
+			{
+				//do nothing
+			}
+			else//second quad
+			{
+				//theta = theta*(-1.0) + 90.0*0.01745329251;
+				theta = 180.0*0.01745329251 - (theta * -1.0);
+			}
+		}
+		else//third or fourth quad
+		{
+			if(tempX>0)
+			{
+				//theta = theta*(-1.0) + 270.0*0.01745329251;
+			}
+			else
+			{
+			    theta = theta + 180.0*0.01745329251;
+			}
+		}
+    //cout<<"Theta: "<<(theta * (180.0/3.14159))<<endl;
+
+
+
+    //convert degrees to radians
+    theta += (degrees*0.01745329251);
+
+        tempY = sin(theta)*mag;
+        tempX = cos(theta)*mag;
+
+    //invert Y
+    tempY *= (-1.0);
+
+   // cout<<"original X,Y: "<<pix_t.x<<","<<pix_t.y<<endl;
+
+    pix_t.x = tempX;
+    pix_t.y = tempY;
+
+   // cout<<"new X,Y: "<<pix_t.x<<","<<pix_t.y<<endl<<endl;
 //}}}
 }

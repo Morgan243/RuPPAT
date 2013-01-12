@@ -93,6 +93,8 @@ class Sprite
 
 		void getDimensions(int &w, int &h);
 
+		void getDimensions(int &w, int &h, int rotation);
+
 		void getDimensionsBpp(int &w,
 			   					int &h,
 							   	int &bpp)const;
@@ -124,5 +126,6 @@ class Sprite
 		SDL_Surface *base_sprite;
 		vector<SDL_Surface *> rotations;	
 		vector<Pixel_desc> pixel_sprite;
+		vector<Renderables_Cont> pixel_sprites;
 };
 #endif

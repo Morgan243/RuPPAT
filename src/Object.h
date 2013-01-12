@@ -11,6 +11,7 @@
 #include "SDL/SDL_rotozoom.h"
 #include "SDL/SDL_image.h"
 #include "math.h"
+#include "omp.h"
 
 #include "Descriptors.h"
 #include "Sprite.h"
