@@ -255,7 +255,7 @@ Missile* Player::fireSelectedMissile()
 		//copy over reference to fired missiles descriptor
 		this->to_render.entities.push_back(firedMissile->getDescriptor_ref());
 
-		missiles_free.back()->setAngle_index(this->sprite.getAngleIndex());
+		missiles_free.back()->setAngleIndex(this->sprite.getAngleIndex());
 		
 		return firedMissile;
 //}}}
@@ -321,11 +321,6 @@ Entity_desc* Player::PhysicsHandler(Entity_desc &state_dest,
 //}}}
 }
 
-
-vector<Entity_desc*>* Player :: GetAuxillaryDescriptors()
-{
-	return &this->to_render.entities;
-}
 
 bool Player :: GetNextAuxDrawInfo(Renderables_Cont &renderables)
 {

@@ -164,9 +164,6 @@ void Common::RotatePoint(float degrees, Pixel_desc &pix_t, CoOrd center)
 	int tempX = pix_t.x, tempY = pix_t.y; 
 	float theta, mag;
 
-   // cout<<"Degrees: "<<degrees<<endl;
-   // cout<<"Center: "<<center.x<<","<<center.y<<endl;
-
 	//add width and height
 	tempY -= center.y;// - tempY;
 	tempX -= center.x;// - tempX;
@@ -177,9 +174,6 @@ void Common::RotatePoint(float degrees, Pixel_desc &pix_t, CoOrd center)
         theta = atan( ((float)tempY) / ((float)tempX) );
     else
     {
-       // cout<<"ITS ZERO!! : "<< 
-        //(theta = atan( ((float)tempY) / ((float)tempX) )) <<endl;
-
         if( tempY > 0)
             theta = 3.14159/2.0;
         else if (tempY<0)
@@ -190,13 +184,11 @@ void Common::RotatePoint(float degrees, Pixel_desc &pix_t, CoOrd center)
 
     mag = sqrt((float)(tempX*tempX) + (float)(tempY*tempY));
 
-    //cout<<"\t--Theta: "<<theta<<endl;
-    //cout<<"\t--x,y:  "<<tempX<<","<<tempY<<endl;
+
     
 
     if(theta == -0 || theta == +0)
         theta = 0;
-//	//x and y both are not zero!
 
 		//find initial theta
 		if(tempY>0)//first or second quadrant
@@ -222,7 +214,6 @@ void Common::RotatePoint(float degrees, Pixel_desc &pix_t, CoOrd center)
 			    theta = theta + 180.0*0.01745329251;
 			}
 		}
-    //cout<<"Theta: "<<(theta * (180.0/3.14159))<<endl;
 
 
 
@@ -235,11 +226,8 @@ void Common::RotatePoint(float degrees, Pixel_desc &pix_t, CoOrd center)
     //invert Y
     tempY *= (-1.0);
 
-   // cout<<"original X,Y: "<<pix_t.x<<","<<pix_t.y<<endl;
-
     pix_t.x = tempX;
     pix_t.y = tempY;
 
-   // cout<<"new X,Y: "<<pix_t.x<<","<<pix_t.y<<endl<<endl;
 //}}}
 }

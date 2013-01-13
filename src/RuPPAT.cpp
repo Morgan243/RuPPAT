@@ -422,7 +422,6 @@ void RuPPAT::RK4(float t, float dt)
 			//Apply out loop object to the current object
 			obj_desc_prim = objectList[i]->PhysicsHandler(t,dt, obj_desc_tri);
 
-			//if( (tempAuxDesc_ref = objectList[i]->GetAuxillaryDescriptors()) != NULL)
 			if((renderables = objectList[i]->GetRenderables()) != NULL)
 			{
 				for(int i=0; i<renderables->entities.size(); i++)
@@ -727,7 +726,7 @@ void RuPPAT :: accelPlayer(int p_ID, bool isForward)
 	//setAccelVectors needs write lock, get exhaust as well
 	pthread_rwlock_wrlock(&object_rw_lock);
 		players[p_ID]->setAccelVectors(isForward);
-		players[p_ID]->getXY_exhaust(t_pix.xVel, t_pix.yVel);
+		players[p_ID]->getExhaustVectors(t_pix.xVel, t_pix.yVel);
 	pthread_rwlock_unlock(&object_rw_lock);
 		
 		//exhaust color starts red
@@ -741,7 +740,7 @@ void RuPPAT :: accelPlayer(int p_ID, bool isForward)
 		t_pix.updated = 0;
 
 	
-	float origXvel=t_pix.xVel, origYvel=t_pix.yVel;
+	float origXvel = t_pix.xVel, origYvel = t_pix.yVel;
 	//	cout<<origXvel<<"  "<<origYvel<<endl;	
 	
 	//create 10 pixels with slight random variation
@@ -768,13 +767,13 @@ void RuPPAT :: turnPlayer(int p_ID, bool isLeft, int numTurns)
 		if(isLeft)
 		{
 			pthread_rwlock_wrlock(&object_rw_lock);
-				players[p_ID]->incrementRotation_rate();
+				players[p_ID]->incrementRotationRate();
 			pthread_rwlock_unlock(&object_rw_lock);
 		}
 		else
 		{
 			pthread_rwlock_wrlock(&object_rw_lock);
-				players[p_ID]->decrementRotation_rate();
+				players[p_ID]->decrementRotationRate();
 			pthread_rwlock_unlock(&object_rw_lock);
 		}
 	}
@@ -841,7 +840,7 @@ float dif_rate = 0.0;
 float pos_curr_rate = 0.0;
 
 	pthread_rwlock_wrlock(&object_rw_lock);
-		float curr_rate = players[p_ID]->getRotation_rate(); 
+		float curr_rate = players[p_ID]->getRotationRate(); 
 	pthread_rwlock_unlock(&object_rw_lock);
 
 tempErrDiff =  angle_diff*.1 - tempErrDiff; //angle_diff - tempErrDiff;
@@ -901,13 +900,12 @@ tempErrDiff =  angle_diff*.1 - tempErrDiff; //angle_diff - tempErrDiff;
 			turnPlayer(p_ID, false, dif_rate);
 		}
 	}
-
 	else
 	{
 	//tempErrAccum = tempErrAccum*.1;
 		pthread_rwlock_wrlock(&object_rw_lock);
 
-		players[p_ID]->setRotation_rate(0);
+		players[p_ID]->setRotationRate(0);
 	
 		pthread_rwlock_unlock(&object_rw_lock);
 

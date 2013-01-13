@@ -135,7 +135,9 @@ Object :: ~Object()
 {
 }
 
+//{{{
 
+//->Descriptior Getters and Setters
 //{{{
 void Object::setDescriptor(Entity_desc new_desc)
 {
@@ -151,70 +153,77 @@ Entity_desc* Object::getDescriptor_ref()
 {
 	return &descriptor;
 }
+//}}}
 
 
-
-void Object :: setRotation_rate(float rotRate)
+//->Rotation Rate Getters Setters and Manipulatorts
+//{{{
+void Object :: setRotationRate(float rotRate)
 {
 	sprite.setRotationRate(rotRate);
 }
 
-float Object :: getRotation_rate()
+float Object :: getRotationRate()
 {
 	return sprite.getRotationRate();
 }
 
-void Object :: incrementRotation_rate()
+void Object :: incrementRotationRate()
 {
 	sprite.incrementRotationRate();
 }
 
-void Object :: decrementRotation_rate()
+void Object :: decrementRotationRate()
 {
 	sprite.decrementRotationRate();
+}
+//}}}
 
+
+//->Angle Getters, Setters, and Manipulators
+//{{{
+float Object :: getAngle()
+{
+	return sprite.getAngle();
 }
 
+void Object :: setAngleIndex(int angleIndex)
+{
+	sprite.setAngleIndex(angleIndex);
+}
+
+void Object :: incrementAngleIndex()
+{
+	sprite.incrementAngleIndex();
+}
+
+void Object :: decrementAngleIndex()
+{
+	sprite.decrementAngleIndex();
+}
+//}}}
+
+//->Sprite Getter, Setter, Updater
+//{{{
 bool Object :: updateSprite()
 {
 	sprite.updateSprite();
 	return false;
 }
 
-float Object :: getAngle()
-{
-	return sprite.getAngle();
-}
-
-void Object :: setAngle_index(int angleIndex)
-{
-	sprite.setAngleIndex(angleIndex);
-}
-
-
-void Object :: incrementAngle_index()
-{
-	sprite.incrementAngleIndex();
-}
-
-
-void Object :: decrementAngle_index()
-{
-	sprite.decrementAngleIndex();
-}
-
-
 SDL_Surface* Object :: getSprite()
 {
 	return sprite.getSprite();
 }
 
-
 SDL_Surface *Object :: getSprite(int angle)
 {
 	return sprite.getSprite(angle);
 }
+//}}}
 
+//->Attribute Getters and Setters
+//{{{
 int Object :: getMass() const
 {
 	return descriptor.mass;
@@ -229,12 +238,14 @@ int Object :: getY() const
 {
 	return descriptor.y;
 }
+
 void Object :: setXY(int x, int y)
 {
 	descriptor.x = x;
 	descriptor.y = y;
 	
 }
+
 float Object :: getXvel() const
 {
 	return descriptor.xVel;
@@ -253,9 +264,9 @@ float Object :: getXacc() const
 float Object :: getYacc() const
 {
 	return descriptor.yAcc;
-
-
 }
+//}}}
+
 //}}}
 
 void Object :: accelForward() 
@@ -275,8 +286,6 @@ void Object :: setAccelVectors(bool forward)
 		float heading = sprite.getAngle();
 	if(forward)
 	{
-
-	
 		if(heading>0 && heading<90)
 			{
 			exhaustX=-1*descriptor.maxAccel*cos(heading*3.141/180);
@@ -366,7 +375,7 @@ void Object :: setAccelVectors(bool forward)
 }
 
 
-void Object :: getXY_exhaust(float &xVel, float &yVel)
+void Object :: getExhaustVectors(float &xVel, float &yVel)
 {
 	xVel=exhaustX;
 	yVel=exhaustY;
@@ -391,8 +400,8 @@ void Object :: GetVectors_FrontRelative(float &xVect,
 		angle = 360 + angle;
 	}
 
-	cout<<"ANGLE="<<angle<<endl;
 	//use mag and angle to calc x and y vectors
+	cout<<"ANGLE="<<angle<<endl;
 	
 	//convert to rads
 	angle *= 0.0174532925;
@@ -451,13 +460,6 @@ Entity_desc* Object :: PhysicsHandler(Entity_desc &state_dest,
 //}}}
 }
 
-vector<Entity_desc*>* Object :: GetAuxillaryDescriptors()
-{
-	if(to_render.entities.size())
-		return &this->to_render.entities;
-	else
-		return NULL;
-}
 
 float Object::setTimeNow(float time)
 {
@@ -487,16 +489,14 @@ void Object::GameDestroy()
 	int width, height;
 	
 	this->sprite.getDimensions(width,height);
-    //this->sprite.getDimensions(width, height, sprite.getAngleIndex());
-    //cout<<"ANGLE INDEX: "<<sprite.getAngleIndex()<<endl;
+
     float theta = this->getAngle();
 
     CoOrd center;
         center.x = width/2;
         center.y = height/2;
-//omp_set_num_threads(4);
+ 
 	//set the correct coordinates
-//#pragma omp parallel for
 	for(int i = 0; i < to_render.pixels.size(); i++)
 	{
 		to_render.pixels[i].dimFactor = 18;

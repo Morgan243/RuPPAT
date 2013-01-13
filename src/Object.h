@@ -57,16 +57,48 @@ class Object
 
 		~Object();
 
+        //Descriptor
+        //{{{
 		Entity_desc getDescriptor ()const;
 
 		Entity_desc* getDescriptor_ref();
 
 		void setDescriptor(Entity_desc new_desc);
-			
+		//}}}
+        
+        //Rotation
+        //{{{
+		void setRotationRate(float rotRate);
+
+		float getRotationRate();
+
+		void incrementRotationRate();
+
+		void decrementRotationRate();
+        //}}}
+
+        //Angle
+        //{{{
+		float getAngle();
+
+		void setAngleIndex(int angleIndex);
+
+		void incrementAngleIndex();
+
+		void decrementAngleIndex();
+        //}}}
+        
+        //Sprite
+        //{{{
 		SDL_Surface *getSprite();
 
 		SDL_Surface *getSprite(int angle);
 
+		virtual bool updateSprite();
+        //}}}
+
+        //Attributes
+        //{{{
 		void setID(int id);
 
 		int getX ()const;
@@ -84,6 +116,7 @@ class Object
 		float getXacc ()const;
 
 		float getYacc ()const;
+        //}}}
 
 		void accelForward();	
 
@@ -91,34 +124,17 @@ class Object
 
 		void setAccelVectors(bool forward);
 
-		void getXY_exhaust(float &xVel, float &yVel);
+		void getExhaustVectors(float &xVel, float &yVel);
 
 		void GetVectors_FrontRelative(float &xVect,
 										float &yVect,
 										float angleFromFront,
 										float mag);
 
-		void setRotation_rate(float rotRate);
 
-		float getRotation_rate();
+		void buildHitBoxesFromSprite();
 
-		void incrementRotation_rate();
-
-		void decrementRotation_rate();
-
-		virtual bool updateSprite();
-
-		float getAngle();
-
-		void setAngle_index(int angleIndex);
-
-		void incrementAngle_index();
-
-		void decrementAngle_index();
-
-		void buildHitBoxes_fromSprite();
-
-		void buildHitBoxes_fromLayer(SDL_Surface* hitBoxLayout);
+		void buildHitBoxesFromLayer(SDL_Surface* hitBoxLayout);
 
 		bool checkHits(float &xVel,
 						float &yVel,
@@ -136,14 +152,11 @@ class Object
 												float t,
 												float dt);
 
-		virtual vector<Entity_desc*>* GetAuxillaryDescriptors();
-
 		virtual bool GetRenderables(Renderables_Cont &renderables);
 
 		virtual Renderables_Cont* GetRenderables();
 
 		virtual bool UpdateAndGetRenderables(Renderables_Cont rnder);
-
 
 		//destroy the object in game (destruction animation/effects
 		//initialization begins here) not a destructor operation
