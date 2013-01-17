@@ -40,23 +40,19 @@ class Sprite
 			   						float &degreeInc,
 								   	float &currAngle) const;
 		
-		void set_RotR_DegIncr_Angl(float rotateRate,
-			   						float degreeInc,
-								   	float currAngle);
+		void set_RotR_DegIncr_Angl(const float rotateRate,
+			   						const float degreeInc,
+								   	const float currAngle);
 
-		//use prtoected sprite path member
 		void setBaseSprite();
 
-		//load sprite from path
-		void setBaseSprite(string path_to_sprite);
+		void setBaseSprite(const string path_to_sprite);
 
-		//copy from surface
 		void setBaseSprite(SDL_Surface *src);
 
-		//make all rotations based on protected members
 		void generateRotations();
 
-		void setRotationRate(float rotRate);
+		void setRotationRate(const float rotRate);
 
 		float getRotationRate();
 
@@ -70,7 +66,7 @@ class Sprite
 		
 		int getAngleIndex();
 
-		void setAngleIndex(int angleIndex);
+		void setAngleIndex(const int angleIndex);
 
 		void incrementAngleIndex();
 
@@ -80,20 +76,20 @@ class Sprite
 
 		SDL_Surface * getSprite();
 
-		SDL_Surface * getSprite(int angle);
+		SDL_Surface * getSprite(const int angle);
 
-		Uint32 getPixel(int x, int y);
+		Uint32 getPixel(const int x, const int y);
 
-		Uint32 getPixel(int x, int y, int rotation_i);
+		Uint32 getPixel(const int x, const int y, const int rotation_i);
 
-		void putPixel(int x,
-			   			int y,
+		void putPixel(const int x,
+			   			const int y,
 					   	Uint32 color,
-					   	int rotation_i);
+					   	const int rotation_i);
 
 		void getDimensions(int &w, int &h);
 
-		void getDimensions(int &w, int &h, int rotation);
+		void getDimensions(int &w, int &h, const int rotation);
 
 		void getDimensionsBpp(int &w,
 			   					int &h,
@@ -110,9 +106,9 @@ class Sprite
 
 		vector<CoOrd> outlineSprite();
 
-		void clearPixelFromAll(int start_rot_i, int x, int y);
+		void clearPixelFromAll(const int start_rot_i, const int x, const int y);
 
-		void clearPixel(int rotation, int x, int y);
+		void clearPixel(const int rotation, const int x, const int y);
 
 	protected:
 		float rotationRate,

@@ -64,6 +64,7 @@ Sprite::Sprite(string path_to_sprite,int numRotations, int startingAngle)
 
 Sprite::Sprite(const Sprite &src)
 {
+//{{{
 	SDL_Surface *tempSurf;
 	src.copyAll(tempSurf, *this);
 
@@ -71,16 +72,19 @@ Sprite::Sprite(const Sprite &src)
 										   src.getBaseSprite()->format,
 										   SDL_SWSURFACE);
 	this->generateRotations();
+//}}}
 }
 
 Sprite & Sprite::operator=(const Sprite &src)
 {
+//{{{
 	//copy the right hand side to the left hand side
 	//src.copyBaseSprite(base_sprite);
 	SDL_Surface *tempSurf = NULL;
 	src.copyAll(tempSurf, *this);
 	this->setBaseSprite(tempSurf);
 	this->generateRotations();
+//}}}
 }
 
 Sprite::~Sprite()
@@ -152,8 +156,9 @@ void Sprite :: copyBaseSprite(SDL_Surface *dest) const
 //}}}
 }
 
-void Sprite :: get_RotR_DegIncr_Angl(float &rotateRate, float &degreeInc
-						, float &currAngle) const
+void Sprite :: get_RotR_DegIncr_Angl(float &rotateRate, 
+                                    float &degreeInc, 
+                                    float &currAngle) const
 {
 //{{{
 	rotateRate = this->rotationRate;
@@ -162,7 +167,9 @@ void Sprite :: get_RotR_DegIncr_Angl(float &rotateRate, float &degreeInc
 //}}}
 }
 
-void Sprite :: set_RotR_DegIncr_Angl(float rotateRate, float degreeInc, float currAngle)
+void Sprite :: set_RotR_DegIncr_Angl(const float rotateRate,
+                                     const float degreeInc, 
+                                     const float currAngle)
 {
 //{{{
 
@@ -180,7 +187,7 @@ void Sprite::setBaseSprite()
 
 }
 
-void Sprite::setBaseSprite(string path_to_sprite)
+void Sprite::setBaseSprite(const string path_to_sprite)
 {
 
 }
@@ -226,7 +233,7 @@ void Sprite :: generateRotations()
 //}}}
 }
 
-void Sprite::setRotationRate(float rotRate)
+void Sprite::setRotationRate(const float rotRate)
 {
 	rotationRate = rotRate;
 }
@@ -275,7 +282,7 @@ int Sprite::getAngleIndex()
 }
 
 
-void Sprite::setAngleIndex(int angleIndex)
+void Sprite::setAngleIndex(const int angleIndex)
 {
 	currentAngleIndex_f = (float)angleIndex;
 }
@@ -306,20 +313,21 @@ SDL_Surface* Sprite::getSprite()
 }
 
 
-SDL_Surface* Sprite::getSprite(int angle)
+SDL_Surface* Sprite::getSprite(const int angle)
 {
 	return rotations[angle];
 }
 
 
-Uint32 Sprite::getPixel(int x, int y)
+Uint32 Sprite::getPixel(const int x, const int y)
 {
 	Uint32 *pixels = (Uint32 *)base_sprite->pixels;
 	return pixels[ (y * base_sprite->w) + x];
 }
-Uint32 Sprite::getPixel(int x, int y, int rotation_i)
-{
 
+Uint32 Sprite::getPixel(const int x, const int y, const int rotation_i)
+{
+//{{{
 	int bpp = rotations[rotation_i]->format->BytesPerPixel;
 
     Uint8 *p = (Uint8 *)rotations[rotation_i]->pixels + y * 
@@ -348,9 +356,10 @@ Uint32 Sprite::getPixel(int x, int y, int rotation_i)
 					default:
 							return 0;
 		}
+//}}}
 }
 
-void Sprite::putPixel(int x, int y, Uint32 color, int rotation_i)
+void Sprite::putPixel(const int x, const int y, Uint32 color, const int rotation_i)
 {
 //{{{
 if (SDL_MUSTLOCK(rotations[rotation_i])) 
@@ -386,7 +395,7 @@ void Sprite::getDimensions(int &w, int &h)
 	h = base_sprite->h;
 }
 
-void Sprite::getDimensions(int &w, int &h, int rotation)
+void Sprite::getDimensions(int &w, int &h, const int rotation)
 {
 	w = rotations[rotation]->w;
 	h = rotations[rotation]->h;
@@ -424,7 +433,7 @@ void Sprite::generateSpriteOutlines()
 ///}}}
 }
 
-void Sprite::generatePixelSprite(bool print)
+void Sprite::generatePixelSprite(const bool print)
 {
 //{{{	
 
@@ -464,7 +473,7 @@ void Sprite::generatePixelSprite(bool print)
 
 vector<Pixel_desc> Sprite::getPixelSprite()
 {
-		cout<<"pixel sprite size of "<< pixel_sprite.size()<<endl;
+    cout<<"pixel sprite size of "<< pixel_sprite.size()<<endl;
 	return pixel_sprite;
 }
 
@@ -481,7 +490,7 @@ vector<CoOrd> Sprite:: outlineSprite()
 //}}}
 }
 
-void Sprite::clearPixelFromAll( int start_rot_i, int x, int y)
+void Sprite::clearPixelFromAll(const int start_rot_i, const int x, const int y)
 {
 //{{{
 	int tempX = x, tempY = y, index=start_rot_i;
@@ -559,16 +568,15 @@ void Sprite::clearPixelFromAll( int start_rot_i, int x, int y)
 }
 
 
-void Sprite::clearPixel(int rotation, int x, int y)
+void Sprite::clearPixel(const int rotation, const int x, const int y)
 {
+//{{{
 	//rotations[rotation]
 	Uint32 tempColor = getPixel(x, y, rotation);
-//	cout<<"PIXEL TEST: 0x"<<hex<<tempColor<<endl;	
 
 	//clear alpha portion of the pixel to make it transparent
 	tempColor = tempColor & 0xFFFFFF00;
 
-	//cout<<"\t New PIXEL: 0x"<<hex<<tempColor<<endl;	
-
 	putPixel(x,y,tempColor,rotation);
+//}}}
 }
