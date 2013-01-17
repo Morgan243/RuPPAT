@@ -58,6 +58,7 @@ printf("Surface %s: w:%d h:%d bpp:%d\n",
   //}}}
 }
 
+
 Render::Render(int width, int height, int bpp, Uint32 flags,
 		int game_width, int game_height)
 {
@@ -112,6 +113,7 @@ printf("Game space: width = %d, height = %d\n", game_width, game_height);
   //}}}
 }
 
+
 //-----------------DECONSTRUCTOR------
 Render::~Render()
 {
@@ -120,8 +122,10 @@ Render::~Render()
 	SDL_Quit();
 }
 
-void Render::setGameArea(int w, int h)
+
+void Render::setGameArea(const int w, const int h)
 {
+//{{{
 	game_width = w;
 	game_height = h;
 	#if SDL_BYTEORDER == SDL_BIG_ENDIAN 
@@ -137,12 +141,14 @@ void Render::setGameArea(int w, int h)
 	#endif 
 		SDL_SetAlpha(pre_surface,SDL_SRCALPHA,0xFF);
 		//SDL_DisplayFormatAlpha(pre_surface);
+//}}}
 }
+
 
 //-----------------setMainScreen-----
 //this fills the main screen with the 
 //color specified by the arg
-void Render :: setMainScreen(int color)
+void Render :: setMainScreen(const int color)
 {
 	SDL_FillRect(mainScreen, NULL, color);
 }
@@ -152,38 +158,42 @@ void Render :: setMainScreen(int color)
 //swap whats being shown with what has been added to main screen
 void Render::OnRender()
 {
-	//applySurface(0,0,sprite_surface);
-	//pre_surface = rotozoomSurface(pre_surface, 0.0,1.0,0);
+//{{{
 	applySurface(0,0,pre_surface);
-
 	
 	SDL_Flip(mainScreen);
 	SDL_FillRect(pre_surface,NULL,0);
+//}}}
 }
 
-void Render::OnRender(int x, int y)
+
+void Render::OnRender(const int x, const int y)
 {
+//{{{
 	//applySurface(0,0,sprite_surface);
 	applySurface(x,y,pre_surface);
 
 	
 	SDL_Flip(mainScreen);
 	SDL_FillRect(pre_surface,NULL,0);
-
+//}}}
 }
 
 //-----------------getPixel---------
 //returns the color (32 bit unsigned int) of the
 //pixel located at x, y args
-Uint32 Render::getPixel(int x, int y, int screenID)
+const Uint32 Render::getPixel(const int x, const int y, int screenID)
 {
-
+//{{{
 	Uint32 *pixels = (Uint32 *)pre_surface->pixels;
 	return pixels[ ( y * pre_surface->w ) + x ];
+//}}}
 }
 
-void Render::putPixel(vector<Pixel_desc> pixels)
+
+void Render::putPixel(const vector<Pixel_desc> pixels)
 {
+//{{{
 	unsigned int color = 0;
 	for(int i = 0; i < pixels.size(); i++)
 	{
@@ -195,19 +205,18 @@ void Render::putPixel(vector<Pixel_desc> pixels)
 				| (color&0xff000000);
 
 		putPixel(pixels[i].x, pixels[i].y,color, 0);
-
-						
 	}
+//}}}
 }
 
 
 //-----------------putPixel--------
 //place a pixel of color and location as
 //specified bu the arguments
-void Render :: putPixel(int x, int y, Uint32 color, int screenID)
+void Render :: putPixel(const int x, const int y, 
+                        Uint32 color, const int screenID)
 {
 //{{{
-
 	if (SDL_MUSTLOCK(pre_surface)) 
 		SDL_LockSurface(pre_surface);	
 
@@ -235,23 +244,9 @@ void Render :: putPixel(int x, int y, Uint32 color, int screenID)
 }
 
 
-//-----------------putPixel2--------
-//a different way to putPixel, should act similar to putPixel
-void Render :: putPixel2(int x, int y, Uint8 r, Uint8 g, Uint8 b)
-{
-	Uint32 *pixmem32;
-	Uint32 colour;  
- 
-	colour = SDL_MapRGB( mainScreen->format, r, g, b );
-  
-	pixmem32 = (Uint32*) mainScreen->pixels  + y + x;
-	*pixmem32 = colour;
-}
-
-
 //-----------------putSprite-------
 //place sprite at position 
-void Render :: putSprite(int x, int y, SDL_Surface* sprite)
+void Render :: putSprite(const int x, const int y, SDL_Surface* sprite)
 {
 //{{{
 	SDL_Rect imagePosition;
@@ -266,31 +261,32 @@ void Render :: putSprite(int x, int y, SDL_Surface* sprite)
 	if(SDL_MUSTLOCK(pre_surface))
 		SDL_LockSurface(pre_surface);
 
-		///SDL_SetAlpha(sprite, 0, sprite->format->alpha);
 		//finally blit the source onto main at (x,y) on main
 		SDL_BlitSurface(sprite,NULL,pre_surface,&imagePosition);
 
-		//SDL_SetAlpha(pre_surface, SDL_SRCALPHA , pre_surface->format->alpha);
-		
 	if(SDL_MUSTLOCK(pre_surface))
 		SDL_UnlockSurface(pre_surface);
-
 //}}}
 }
-//
+
+
 //-----------------putSprite-------
 //Put multiple sprites to the screen 
-void Render :: putSprite(vector<Surface_Container> sprites)
+void Render :: putSprite(const vector<Surface_Container> sprites)
 {
+//{{{
 	for(int i = 0; i < sprites.size(); i++)
 	{
 		putSprite(sprites[i].x, sprites[i].y, sprites[i].surface);
 	}
+//}}}
 }
 
+
 //blit a surface onto the main screen, good for backgrounds and testing sprites
-void Render::applySurface(int x, int y, SDL_Surface* source)
+void Render::applySurface(const int x, const int y, SDL_Surface* source)
 {
+//{{{
 	//Need a rectangle to hold the offsets
 	SDL_Rect offset;
 
@@ -301,15 +297,11 @@ void Render::applySurface(int x, int y, SDL_Surface* source)
 	
 	if(SDL_MUSTLOCK(mainScreen))
 		SDL_LockSurface(mainScreen);
-//	if(SDL_MUSTLOCK(pre_surface))
-//		SDL_LockSurface(pre_surface);
 
 		//finally blit the source onto main at (x,y) on main
 		SDL_BlitSurface(source,&offset,mainScreen,NULL);
 
-//	if(SDL_MUSTLOCK(pre_surface))
-//		SDL_UnlockSurface(pre_surface);
-//
 	if(SDL_MUSTLOCK(mainScreen))
 		SDL_UnlockSurface(mainScreen);
+//}}}
 }

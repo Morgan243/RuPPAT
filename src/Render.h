@@ -30,43 +30,33 @@ class Render
 
 		~Render();
 
-		void setGameArea(int w, int h);
+		void setGameArea(const int w, const int h);
 
-		void setMainScreen(int color);
+		void setMainScreen(const int color);
 
 		void OnRender();
 
-		void OnRender(int x, int y);
+		void OnRender(const int x, const int y);
 		
-		Uint32 getPixel(int x,
-			   			int y,
-					   	int screenID);
+		const Uint32 getPixel(const int x,
+                                const int y,
+                                const int screenID);
 
-		void putPixel(int x,
-			   			int y,
+		void putPixel(const vector<Pixel_desc> pixels);
+
+		void putPixel(const int x,
+			   			const int y,
 					   	Uint32 color,
-					   	int screenID);
-		
-		void putPixel(vector<Pixel_desc> pixels);
+					   	const int screenID);
 
-		void putSprite(int x,
-			   			int y,
-					   	Entity_desc* entityDetails);
-
-		void putSprite(int x,
-			   			int y,
+		void putSprite(const int x,
+			   			const int y,
 					   	SDL_Surface* sprite);
 
-		void putSprite(vector<Surface_Container> sprites);
+		void putSprite(const vector<Surface_Container> sprites);
 
-		void putPixel2(int x,
-			   			int y,
-					   	Uint8 r,
-					   	Uint8 g,
-					   	Uint8 b);
-
-		void applySurface(int x,
-			   				int y,
+		void applySurface(const int x,
+			   				const int y,
 						   	SDL_Surface* source);	
 		
 		SDL_Surface *mainScreen,
