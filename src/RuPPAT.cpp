@@ -20,10 +20,10 @@ using namespace std;
 
 //------------CONSTRUCTOR--------
 RuPPAT :: RuPPAT(int width,
-	   				int height,
-				   	int bpp,
-				   	unsigned int flags,
-		 			vector<string> bkg_paths)
+	   			 int height,
+				 int bpp,
+				 unsigned int flags,
+		 	     vector<string> bkg_paths)
 {
 //{{{
 	//init all the locks with error check
@@ -116,7 +116,7 @@ void RuPPAT :: createPixElement(Pixel_desc *pixel )
 
    pthread_rwlock_wrlock(&pix_rw_lock);
 
-  	pixelList_m.push_back(temp_pix);
+    pixelList_m.push_back(temp_pix);
 
    pthread_rwlock_unlock(&pix_rw_lock);
 //}}}
@@ -125,7 +125,7 @@ void RuPPAT :: createPixElement(Pixel_desc *pixel )
 //------------setUpdateOnSelectPix-----
 //assigns "set" argument to all elements
 //in pixel lists updated memeber
-void RuPPAT :: setUpdateOnSelectPix(int set)
+void RuPPAT :: setUpdateOnSelectPix(const int set)
 {
 //{{{
 //#pragma omp parallel for
@@ -141,13 +141,13 @@ void RuPPAT :: setUpdateOnSelectPix(int set)
 //Using arguments, create a new player
 //object and add it to players and add
 //its base object class to objects
-int RuPPAT :: addPlayer(string spritePath,
-	   					int numRotations,
-					   	int startingAngle,
-						float maxAccel,
-					   	int x,
-					   	int y,
-					   	string HC_path)
+int RuPPAT :: addPlayer(const string spritePath,
+	   					const int numRotations,
+					   	const int startingAngle,
+						const float maxAccel,
+					   	const int x,
+					   	const int y,
+					   	const string HC_path)
 {
 //{{{
 	int size, height, width;
@@ -205,14 +205,14 @@ void RuPPAT :: addPlayer(Player* new_player)
 }
 
 
-int RuPPAT :: addObject(string spritePath,
-	   					int x,
-					   	int y,
-					   	int mass,
-					   	float rotationRate,
-						float xVel,
-					   	float yVel,
-					   	string HB_path)
+int RuPPAT :: addObject(const string spritePath,
+	   					const int x,
+					   	const int y,
+					   	const int mass,
+					   	const float rotationRate,
+						const float xVel,
+					   	const float yVel,
+					   	const string HB_path)
 {
 //{{{
 	int size;
@@ -268,7 +268,7 @@ void RuPPAT :: handleAllDeleteMe()
 //------------handleDelete-------------
 //remove pixelList element that has deleteMe set
 //can do other things for delete later
-void RuPPAT :: handleDelete(int k)
+void RuPPAT :: handleDelete(const int k)
 {
 //{{{
 	//CURRENTLY LOCKS OUTSIDE OF FUNCTION
@@ -381,7 +381,7 @@ void RuPPAT :: parseObjectsToSurface()
 // RK4_all functionality. By using object
 // slicing, the Runge Kutta calculations
 // can be made more generic 
-void RuPPAT::RK4(float t, float dt)
+void RuPPAT::RK4(const float t, const float dt)
 {
 //{{{
 	//some temporary variables
@@ -603,10 +603,10 @@ std::thread *rk4_th = new std::thread(&RuPPAT::RK4,this,t,dt);
 //	RuPPAT Entry Point
 //spawn threads to do work and handle events
 //
-void RuPPAT :: runPPAT(bool *mainDone,
-	   					Event_desc *mainEvents,
-					   	string selection,
-					   	string option)
+void RuPPAT :: runPPAT(const bool *mainDone,
+	   				   const Event_desc *mainEvents,
+					   const string selection,
+					   const string option)
 
 {
 //{{{
@@ -668,13 +668,13 @@ void RuPPAT :: runPPAT(bool *mainDone,
 //create a pix descriptor from arguments and
 //then push it to the pixel list vector
 Pixel_desc tmpPix;	
-void RuPPAT :: createPixElement(  int x, int y,
-				int color,
-				int xAccel,
-				int yAccel,
-				int accLength,
-				int dimFactor,
-				int mass )
+void RuPPAT :: createPixElement(const int x, const int y,
+                                const int color,
+                                const int xAccel,
+                                const int yAccel,
+                                const int accLength,
+                                const int dimFactor,
+                                const int mass )
 {	
 //{{{
 		//assign location
@@ -717,7 +717,7 @@ void RuPPAT :: createPixElement(  int x, int y,
 
 //----these below should be replaced by a better system
 //for handling player control
-void RuPPAT :: accelPlayer(int p_ID, bool isForward)
+void RuPPAT :: accelPlayer(const int p_ID, const bool isForward)
 {
 //{{{
 	//declare the base pixel used for exhaust
@@ -753,13 +753,16 @@ void RuPPAT :: accelPlayer(int p_ID, bool isForward)
 		t_pix.y=players[p_ID]->getY()+rand()%2 - rand()%2;
 		t_pix.x +=origXvel*10;
 		t_pix.y +=origYvel*10;
-	createPixElement(&t_pix);
+
+        createPixElement(&t_pix);
 	}
 //}}}
 }
 
 
-void RuPPAT :: turnPlayer(int p_ID, bool isLeft, int numTurns)
+void RuPPAT :: turnPlayer(const int p_ID, 
+                          const bool isLeft,
+                          const int numTurns)
 {
 //{{{
 	while(numTurns-- > 0)
@@ -786,7 +789,10 @@ void RuPPAT :: turnPlayer(int p_ID, bool isLeft, int numTurns)
 // The goal is to continually adjust the turn amount until the ship is pointing towards
 // the desired coordinates. Thus the manipulated variable is the rotation rate, and the
 // set point is a heading or vector alignment
-void RuPPAT :: turnPlayerToCoord(int p_ID, int x, int y, int rate)
+void RuPPAT :: turnPlayerToCoord(const int p_ID,
+                                 const int x,
+                                 const int y,
+                                 const int rate)
 {
 //{{{
 	x += xOrigin;
@@ -925,7 +931,7 @@ tempErrDiff =  angle_diff*.1 - tempErrDiff; //angle_diff - tempErrDiff;
 }
 
 
-void RuPPAT :: firePlayersWeapon(int p_ID)
+void RuPPAT :: firePlayersWeapon(const int p_ID)
 {
 	players[p_ID]->fireSelectedMissile();
 }

@@ -30,33 +30,33 @@ class Missile : public Object
 				       	string HC_path);		
 		~Missile();
 		
-		void setName(string name);
+		void setName(const string name);
 
 		string getName();
 
-		void setAmount(int amnt);
+		void setAmount(const int amnt);
 
-		int incrementAmount(int incrBy);
+		int incrementAmount(const int incrBy);
 
 		int getAmount();
 
-		void setDamage(int dmg);
+		void setDamage(const int dmg);
 
-		int incrementDamage(int incrBy);
+		int incrementDamage(const int incrBy);
 
 		int getDamage();
 
-		void SetLaunchForce(int force);
+		void SetLaunchForce(const int force);
 
-		void SetLaunchForceDuration(int duration);
+		void SetLaunchForceDuration(const int duration);
 
-		void SetTimeCreated(float gameTime);
+		void SetTimeCreated(const float gameTime);
 
-		void SetLifespan(float seconds);
+		void SetLifespan(const float seconds);
 
 		bool IsBeyondLifeSpan();
 
-		bool IsBeyondLifeSpan(float gameTime);
+		bool IsBeyondLifeSpan(const float gameTime);
 
 		bool UpdateAndGetRenderables(Renderables_Cont &rnder);
 

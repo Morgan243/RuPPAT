@@ -31,17 +31,17 @@ class RuPPAT
 	public:
 		//CONSTRUCTOR(S)
 		RuPPAT(int width,
-				int height,
-				int bpp,
-			   	unsigned int flags,
-			 	string bkg_paths[],
-			   	int num_bkgs);
+			   int height,
+			   int bpp,
+			   unsigned int flags,
+			   string bkg_paths[],
+			   int num_bkgs);
 
 		RuPPAT(int width,
-			   	int height,
-			   	int bpp,
-			   	unsigned int flags,
-				vector<string> bkg_paths);
+			   int height,
+			   int bpp,
+			   unsigned int flags,
+			   vector<string> bkg_paths);
 
 		//DECONSTRUCTOR
 		~RuPPAT();
@@ -55,82 +55,78 @@ class RuPPAT
 
 		void parseObjectsToSurface();
 
-		void setUpdateOnSelectPix(int set);
+		void setUpdateOnSelectPix(const int set);
 
 		void handleAllDeleteMe();
 
-		void handleDelete(int index);
+		void handleDelete(const int index);
 
 		int applyDimming(Pixel_desc &pix_t);
 
-		int addPlayer(string spritePath,
-			   			int numRotations,
-					   	int startingAngle, 
-						float maxAccel,
-					   	int x,
-					   	int y,
-					   	string HC_path);
+		int addPlayer(const string spritePath,
+			   		  const int numRotations,
+					  const int startingAngle, 
+				      const float maxAccel,
+					  const int x,
+					  const int y,
+					  const string HC_path);
 
 		void addPlayer(Player* new_player);
 
 		int addEntity(Entity_desc new_ent);
 
-		int addObject(string spritePath,
-			   			int x,
-					   	int y, 
-						int mass,
-					   	float rotationRate,
-						float xVel,
-					   	float yVel,
-					   	string HB_path);
+		int addObject(const string spritePath,
+			   		  const int x,
+					  const int y, 
+				      const int mass,
+					  const float rotationRate,
+					  const float xVel,
+					  const float yVel,
+					  const string HB_path);
 
 		Entity_desc RK4_entity(Entity_desc ent);
 
-		void RK4_all(float t, float dt);
+		void RK4_all(const float t,
+                     const float dt);
 
-		void runDemos(void *selection);
-
-		void RK4(float t, float dt);
+		void RK4(const float t,
+                 const float dt);
 
 		void RK4_parse();
 
-		void runPPAT(bool *mainDone,
-			   			Event_desc *mainEvents, 
-						string selection,
-					   	string option);
+		void runPPAT(const bool *mainDone,
+			   		 const Event_desc *mainEvents, 
+					 const string selection,
+					 const string option);
 
-		void createPixElement(int x,
-								int y,	
-								int color,
-								int xAccel,
-								int yAccel,
-								int accLength,
-								int dimFactor, int mass  );
+		void createPixElement(const int x,
+							  const int y,	
+							  const int color,
+							  const int xAccel,
+							  const int yAccel,
+							  const int accLength,
+							  const int dimFactor,
+                              const int mass  );
 
 		void updateSelectPix();
 
-		void putPixel(int x,
-			   			int y,
-					   	unsigned int color,
-					   	int id);
+		void putPixel(const int x,
+			   		  const int y,
+					  const unsigned int color,
+					  const int id);
 
-		void putSprite(int x,
-			   			int y,
-					   	SDL_Surface *sprite);
-
-		void accelPlayer(int p_ID, bool isForward);
+		void accelPlayer(const int p_ID, const bool isForward);
 		
-		void turnPlayer(int p_ID, bool isLeft, int numTurns);
+		void turnPlayer(const int p_ID,
+                        const bool isLeft,
+                        const int numTurns);
 
-		void turnPlayerToCoord(int p_ID,
-			   					int x,
-							   	int y,
-							   	int rate);
+		void turnPlayerToCoord(const int p_ID,
+			   				   const int x,
+							   const int y,
+							   const int rate);
 
-		void firePlayersWeapon(int p_ID);
-
-		//test the x and y Coordinates, invert velocities if desired and out of bounds
-		bool testBounds(Entity_desc &testMe, bool invert);
+		void firePlayersWeapon(const int p_ID);
 
 		Primitives *primitive_maker;
 		

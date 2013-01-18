@@ -50,24 +50,24 @@ class Player : public Object
 
 		//add a missile, auto sets the sprite path to the 
 		//default sprite
-		void addMissile(string sprite_path,
-						string name,
-						bool makeSelected,
-						int amnt,
-						int mxDamage,
-						float velocity,
-						float lifespan);
+		void addMissile(const string sprite_path,
+						const string name,
+						const bool makeSelected,
+						const int amnt,
+						const int mxDamage,
+						const float velocity,
+						const float lifespan);
 
 		//load sprite and create a new Missile object
-		void addMissile(string sprite_path,
-						string name,
-						bool makeSelected,
-						int amnt,
-						int mxDamage);
+		void addMissile(const string sprite_path,
+						const string name,
+						const bool makeSelected,
+						const int amnt,
+						const int mxDamage);
 		
-		Missile* selectMissile_byName(string name);
+		Missile* selectMissile_byName(const string name);
 
-		Missile* selectMissile_byIndex(int index);
+		Missile* selectMissile_byIndex(const int index);
 	
 		Missile* getSelectedMissile();
 
@@ -80,21 +80,16 @@ class Player : public Object
 
 		//launch a missile!
 		Missile* fireSelectedMissile();
-		
-		Entity_desc *PhysicsHandler(Entity_desc &state_dest,
-									float t,
-									float dt);
 
-		Entity_desc *PhysicsHandler(float t,
-									float dt,
+		Entity_desc *PhysicsHandler(const float t,
+									const float dt,
 									Entity_desc &state_src);
 		
+		Entity_desc *PhysicsHandler(Entity_desc &state_dest,
+									const float t,
+									const float dt);
+		
 		vector<Entity_desc*>* GetAuxillaryDescriptors();
-
-		SDL_Surface* GetNextAuxDrawInfo(int &x,
-										int &y,
-										SDL_Surface* &refSurf,
-										Renderables_Cont &renderables);
 
 		bool GetNextAuxDrawInfo(Renderables_Cont &renderables);
 

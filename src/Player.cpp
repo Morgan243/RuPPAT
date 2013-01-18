@@ -6,14 +6,14 @@
 //secondary-CONSTRUCTOR: leave many attributes statically defined by literals,
 //good for any quick tests
 Player :: Player(string sprite_path,
-	       	int num_rotations,
-	       	int startingAngle) 
-	: Object(sprite_path,
+                int num_rotations,
+                int startingAngle) 
+        : Object(sprite_path,
 		       	200,
-			200,
-			1,
-			num_rotations,
-			startingAngle)
+                200,
+                1,
+                num_rotations,
+                startingAngle)
 {
 //{{{
 	descriptor.xAcc = 0;
@@ -97,13 +97,13 @@ Player :: ~Player()
 }
 
 //add a usable missile to the players arsenal
-void Player :: addMissile(string sprite_path,
-	       			string name,
-			       	bool makeSelected,
-					int amnt,
-			       	int mxDamage,
-			       	float velocity,
-			       	float lifespan)
+void Player :: addMissile(const string sprite_path,
+                            const string name,
+                            const bool makeSelected,
+                            const int amnt,
+                            const int mxDamage,
+                            const float velocity,
+                            const float lifespan)
 {
 //{{{
 	cout<<"Adding missile:"<<endl;
@@ -134,11 +134,11 @@ void Player :: addMissile(string sprite_path,
 //}}}
 }
 
-void Player :: addMissile(string sprite_path,
-	       			string name,
-			       	bool makeSelected,
-					int amnt,
-			       	int mxDamage)
+void Player :: addMissile(const string sprite_path,
+                            const string name,
+                            const bool makeSelected,
+                            const int amnt,
+                            const int mxDamage)
 {
 //{{{
 	cout<<"Adding missile:"<<endl;
@@ -174,7 +174,7 @@ bool Player :: updateSprite()
 }
 
 //select a missile and return a pointer to it
-Missile* Player::selectMissile_byName(string name)
+Missile* Player::selectMissile_byName(const string name)
 {
 //{{{
 	for( int i = 0; i < missiles.size(); i++)
@@ -191,7 +191,7 @@ Missile* Player::selectMissile_byName(string name)
 }
 
 //select a missile and return a pointer to it
-Missile* Player::selectMissile_byIndex(int index)
+Missile* Player::selectMissile_byIndex(const int index)
 {
 //{{{
 	if((index<missiles.size()) && index >=0)
@@ -261,8 +261,8 @@ Missile* Player::fireSelectedMissile()
 //}}}
 }
 
-Entity_desc* Player::PhysicsHandler(float t,
-									float dt,
+Entity_desc* Player::PhysicsHandler(const float t,
+									const float dt,
 									Entity_desc &state_src)
 {
 //{{{
@@ -307,8 +307,8 @@ Entity_desc* Player::PhysicsHandler(float t,
 }
 
 Entity_desc* Player::PhysicsHandler(Entity_desc &state_dest, 
-									float t, 
-									float dt)
+									const float t, 
+									const float dt)
 {
 //{{{
 	//set time
