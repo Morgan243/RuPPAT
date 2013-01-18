@@ -84,11 +84,6 @@ class RuPPAT
 					  const float yVel,
 					  const string HB_path);
 
-		Entity_desc RK4_entity(Entity_desc ent);
-
-		void RK4_all(const float t,
-                     const float dt);
-
 		void RK4(const float t,
                  const float dt);
 

@@ -762,7 +762,7 @@ void RuPPAT :: accelPlayer(const int p_ID, const bool isForward)
 
 void RuPPAT :: turnPlayer(const int p_ID, 
                           const bool isLeft,
-                          const int numTurns)
+                          int numTurns)
 {
 //{{{
 	while(numTurns-- > 0)
@@ -790,8 +790,8 @@ void RuPPAT :: turnPlayer(const int p_ID,
 // the desired coordinates. Thus the manipulated variable is the rotation rate, and the
 // set point is a heading or vector alignment
 void RuPPAT :: turnPlayerToCoord(const int p_ID,
-                                 const int x,
-                                 const int y,
+                                 int x,
+                                 int y,
                                  const int rate)
 {
 //{{{
