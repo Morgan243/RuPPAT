@@ -139,7 +139,7 @@ Object :: ~Object()
 
 //->Descriptior Getters and Setters
 //{{{
-void Object::setDescriptor(Entity_desc new_desc)
+void Object::setDescriptor(const Entity_desc new_desc)
 {
 	descriptor = new_desc;
 }
@@ -158,7 +158,7 @@ Entity_desc* Object::getDescriptor_ref()
 
 //->Rotation Rate Getters Setters and Manipulatorts
 //{{{
-void Object :: setRotationRate(float rotRate)
+void Object :: setRotationRate(const float rotRate)
 {
 	sprite.setRotationRate(rotRate);
 }
@@ -187,7 +187,7 @@ float Object :: getAngle()
 	return sprite.getAngle();
 }
 
-void Object :: setAngleIndex(int angleIndex)
+void Object :: setAngleIndex(const int angleIndex)
 {
 	sprite.setAngleIndex(angleIndex);
 }
@@ -216,7 +216,7 @@ SDL_Surface* Object :: getSprite()
 	return sprite.getSprite();
 }
 
-SDL_Surface *Object :: getSprite(int angle)
+SDL_Surface *Object :: getSprite(const int angle)
 {
 	return sprite.getSprite(angle);
 }
@@ -239,11 +239,10 @@ int Object :: getY() const
 	return descriptor.y;
 }
 
-void Object :: setXY(int x, int y)
+void Object :: setXY(const int x, const int y)
 {
 	descriptor.x = x;
 	descriptor.y = y;
-	
 }
 
 float Object :: getXvel() const
@@ -279,7 +278,7 @@ void Object :: accelBackward()
 	setAccelVectors(false);
 }
 
-void Object :: setAccelVectors(bool forward)
+void Object :: setAccelVectors(const bool forward)
 {
 //{{{
 
@@ -382,9 +381,9 @@ void Object :: getExhaustVectors(float &xVel, float &yVel)
 }
 
 void Object :: GetVectors_FrontRelative(float &xVect,
-	       				float &yVect, 	
-						float degreeOffset,
-				       	float mag)
+                                            float &yVect, 	
+                                            const float degreeOffset,
+                                            const float mag)
 {
 ///{{{
 	//determine current angle of the front of sprite (zero degrees of base sprite)
@@ -411,9 +410,9 @@ void Object :: GetVectors_FrontRelative(float &xVect,
 //}}}
 }
 
-Entity_desc* Object :: PhysicsHandler(float t,
-	       				float dt, 
-						Entity_desc &state_src)
+Entity_desc* Object :: PhysicsHandler(const float t,
+                                            const float dt, 
+                                            Entity_desc &state_src)
 {
 //{{{
 	thisTime = t;
@@ -448,8 +447,8 @@ Entity_desc* Object :: PhysicsHandler(float t,
 }
 
 Entity_desc* Object :: PhysicsHandler(Entity_desc &state_dest, 
-											float t, 
-											float dt)
+											const float t, 
+											const float dt)
 {
 //{{{
 	thisTime = t;
@@ -461,7 +460,7 @@ Entity_desc* Object :: PhysicsHandler(Entity_desc &state_dest,
 }
 
 
-float Object::setTimeNow(float time)
+float Object::setTimeNow(const float time)
 {
 //{{{
 	//pass in -1 to just use ticks

@@ -59,16 +59,16 @@ class Object
 
         //Descriptor
         //{{{
-		Entity_desc getDescriptor ()const;
+		Entity_desc getDescriptor () const;
 
 		Entity_desc* getDescriptor_ref();
 
-		void setDescriptor(Entity_desc new_desc);
+		void setDescriptor(const Entity_desc new_desc);
 		//}}}
         
         //Rotation
         //{{{
-		void setRotationRate(float rotRate);
+		void setRotationRate(const float rotRate);
 
 		float getRotationRate();
 
@@ -81,7 +81,7 @@ class Object
         //{{{
 		float getAngle();
 
-		void setAngleIndex(int angleIndex);
+		void setAngleIndex(const int angleIndex);
 
 		void incrementAngleIndex();
 
@@ -92,20 +92,20 @@ class Object
         //{{{
 		SDL_Surface *getSprite();
 
-		SDL_Surface *getSprite(int angle);
+		SDL_Surface *getSprite(const int angle);
 
 		virtual bool updateSprite();
         //}}}
 
         //Attributes
         //{{{
-		void setID(int id);
+		void setID(const int id);
 
 		int getX ()const;
 
 		int getY ()const;
 
-		void setXY(int x, int y);
+		void setXY(const int x, const int y);
 
 		int getMass ()const;
 
@@ -122,14 +122,14 @@ class Object
 
 		void accelBackward();
 
-		void setAccelVectors(bool forward);
+		void setAccelVectors(const bool forward);
 
 		void getExhaustVectors(float &xVel, float &yVel);
 
 		void GetVectors_FrontRelative(float &xVect,
 										float &yVect,
-										float angleFromFront,
-										float mag);
+										const float angleFromFront,
+										const float mag);
 
 
 		void buildHitBoxesFromSprite();
@@ -144,13 +144,13 @@ class Object
 
 		float rotationalErrorAccum;
 
-		virtual Entity_desc* PhysicsHandler(float t,
+		virtual Entity_desc* PhysicsHandler(const float t,
 											float dt,
 											Entity_desc &state_src);
 
 		virtual Entity_desc*  PhysicsHandler(Entity_desc &state_dest, 
-												float t,
-												float dt);
+												const float t,
+												const float dt);
 
 		virtual bool GetRenderables(Renderables_Cont &renderables);
 
@@ -162,7 +162,7 @@ class Object
 		//initialization begins here) not a destructor operation
 		virtual void GameDestroy();
 
-		float setTimeNow(float time);
+		float setTimeNow(const float time);
 
 		float getTime();
 

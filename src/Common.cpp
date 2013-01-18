@@ -5,7 +5,7 @@
 unsigned int Common::width;
 unsigned int Common::height;
 
-void Common::SetDimensions(unsigned int wid, unsigned int hei)
+void Common::SetDimensions(const unsigned int wid, const unsigned int hei) 
 {
 //{{{
 	Common::width = wid;
@@ -13,7 +13,7 @@ void Common::SetDimensions(unsigned int wid, unsigned int hei)
 //}}}
 }
 
-bool Common::TestBounds(Entity_desc &testMe, bool invert)
+bool Common::TestBounds(Entity_desc &testMe, const bool invert)
 {
 //{{{
 	//make sure the new location is within bounds
@@ -69,7 +69,7 @@ bool Common::TestBounds(Entity_desc &testMe, bool invert)
 //}}}
 }
 
-bool Common::TestBounds(Pixel_desc &testMe, bool invert)
+bool Common::TestBounds(Pixel_desc &testMe, const bool invert)
 {
 //{{{
 	//make sure the new location is within bounds
@@ -158,7 +158,7 @@ bool Common::ApplyDimming(Pixel_desc &pix_t)
 //}}}
 }
 
-void Common::RotatePoint(float degrees, Pixel_desc &pix_t, CoOrd center)
+void Common::RotatePoint(const float degrees, Pixel_desc &pix_t, const CoOrd center)
 {
 //{{{
 	int tempX = pix_t.x, tempY = pix_t.y; 

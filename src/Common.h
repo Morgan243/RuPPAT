@@ -13,18 +13,18 @@ class Common
 {
 	public:
 		//set the static members "width" and "height"
-		static void SetDimensions(unsigned int width, unsigned int height);
+		static void SetDimensions(const unsigned int width, const unsigned int height);
 	
 		//check if the ENTITY is within the bounds of "width" and "height"
-		static bool TestBounds(Entity_desc &testMe, bool invert);
+		static bool TestBounds(Entity_desc &testMe, const bool invert);
 		
 		//check if the PIXEL is within the bounds of "width" and "height"
-		static bool TestBounds(Pixel_desc &testMe, bool invert);
+		static bool TestBounds(Pixel_desc &testMe, const bool invert);
 
 		//decrease alpha to dim out a pixel
 		static bool ApplyDimming(Pixel_desc &pix_t);
 
-        static void RotatePoint(float degrees, Pixel_desc &pix_t, CoOrd center);
+        static void RotatePoint(const float degrees, Pixel_desc &pix_t, const CoOrd center);
 
 	private:
 		static unsigned int width, height;
