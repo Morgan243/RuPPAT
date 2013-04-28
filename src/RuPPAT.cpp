@@ -152,24 +152,29 @@ int RuPPAT :: addPlayer(const string spritePath,
 //{{{
 	int size, height, width;
 	CoOrd tempCoOrd;
-		Player *new_player= 
-			new Player(spritePath, numRotations, startingAngle,
-						maxAccel, x, y, HC_path);
 
-		Object *new_object = &(*new_player);
-			new_object->setID(baseID++);
+    Player *new_player= new Player(spritePath, 
+                                    numRotations,
+                                    startingAngle,
+						            maxAccel, 
+                                    x, y, 
+                                    HC_path);
+
+    //extract the base class
+    Object *new_object = &(*new_player);
+        new_object->setID(baseID++);
 
 
-		pthread_rwlock_wrlock(&object_rw_lock);
-			players.push_back(new_player);
-			size = players.size()-1;
-		
-			new_object->sprite.getDimensions(width, height);
+    pthread_rwlock_wrlock(&object_rw_lock);
+        players.push_back(new_player);
+        size = players.size()-1;
+    
+        new_object->sprite.getDimensions(width, height);
 
-			primitive_maker->drawCircle(tempCoOrd,19 , true);
+        primitive_maker->drawCircle(tempCoOrd, 19 , true);
 
-			objectList.push_back(new_object);
-		pthread_rwlock_unlock(&object_rw_lock);
+        objectList.push_back(new_object);
+    pthread_rwlock_unlock(&object_rw_lock);
 
 	return size;
 //}}}
@@ -181,26 +186,23 @@ void RuPPAT :: addPlayer(Player* new_player)
 	int size, height, width;
 	CoOrd tempCoOrd;
 
-		Object *new_object = &(*new_player);
-			new_object->setID(baseID++);
+    Object *new_object = &(*new_player);
+        new_object->setID(baseID++);
 
 
-		pthread_rwlock_wrlock(&object_rw_lock);
-			players.push_back(new_player);
-			size = players.size()-1;
-		
-			objectList.push_back(new_object);
+    pthread_rwlock_wrlock(&object_rw_lock);
+        players.push_back(new_player);
+        size = players.size()-1;
+    
+        objectList.push_back(new_object);
 
-			centerX = new_object->getX();
-			centerY = new_object->getY();
+        centerX = new_object->getX();
+        centerY = new_object->getY();
 
-			new_object->sprite.getDimensions(width, height);
+        new_object->sprite.getDimensions(width, height);
 
-			primitive_maker->drawCircle(tempCoOrd,15 , true);
-		pthread_rwlock_unlock(&object_rw_lock);
-
-
-
+        primitive_maker->drawCircle(tempCoOrd,15 , true);
+    pthread_rwlock_unlock(&object_rw_lock);
 //}}}
 }
 
@@ -362,17 +364,17 @@ void RuPPAT :: parseObjectsToSurface()
 {
 //{{{
 	int x, y, i;
-   pthread_rwlock_rdlock(&object_rw_lock);
-	int size=objectList.size();
+    pthread_rwlock_rdlock(&object_rw_lock);
+        int size = objectList.size();
 
-	for(i=0; i<size;i++)
-		{
-			x = objectList[i]->getX();
-			y = objectList[i]->getY();	
+        for(i=0; i<size;i++)
+            {
+                x = objectList[i]->getX();
+                y = objectList[i]->getY();	
 
-			objectList[i]->sprite.updateSprite();
-			mainRender->putSprite(x,y,objectList[i]->getSprite());
-		}
+                objectList[i]->sprite.updateSprite();
+                mainRender->putSprite(x,y,objectList[i]->getSprite());
+            }
    pthread_rwlock_unlock(&object_rw_lock);
 //}}}
 }
@@ -390,12 +392,12 @@ void RuPPAT::RK4(const float t, const float dt)
 
 	//how many Objects are there to deal with
 	pthread_rwlock_rdlock(&object_rw_lock);
-	 int num_objects = objectList.size();
+	    int num_objects = objectList.size();
 	pthread_rwlock_unlock(&object_rw_lock);
 
 	//how many Pixels are there to deal with
 	pthread_rwlock_rdlock(&pix_rw_lock);
-	 int num_pixels = pixelList_m.size();
+        int num_pixels = pixelList_m.size();
 	pthread_rwlock_unlock(&pix_rw_lock);
 
 	Renderables_Cont* renderables;
@@ -442,7 +444,8 @@ void RuPPAT::RK4(const float t, const float dt)
 	{
 
 		pthread_rwlock_rdlock(&object_rw_lock);
-		pthread_rwlock_wrlock(&pix_rw_lock);
+		 pthread_rwlock_wrlock(&pix_rw_lock);
+
 			obj_desc_sec = &pixelList_m[j];
 			obj_desc_sec = objectList[i]->PhysicsHandler(*obj_desc_sec, t, dt);
 
@@ -451,39 +454,29 @@ void RuPPAT::RK4(const float t, const float dt)
 
 			new_xVel = obj_desc_sec->xVel;
 			new_yVel = obj_desc_sec->yVel;
-		pthread_rwlock_unlock(&pix_rw_lock);	
+
+		 pthread_rwlock_unlock(&pix_rw_lock);	
 		pthread_rwlock_unlock(&object_rw_lock);
 
 			//make sure the new location is within bounds
-			if(new_x<=0)
-				{new_x=1;new_xVel=new_xVel*(-1);}
-
-			if(new_x>=game_width)
-				{new_x=game_width-1;new_xVel=new_xVel*(-1);}
-
-			if(new_y<=0)
-				{new_y=1;new_yVel=new_yVel*(-1);}
-
-			if(new_y>=game_height)
-				{new_y=game_height-1;new_yVel=new_yVel*(-1);}	
+        Common::TestBounds(new_x, new_y, new_xVel, new_yVel, true);
 
 		pthread_rwlock_wrlock(&pix_rw_lock);
 			obj_desc_sec->xVel = new_xVel;
 			obj_desc_sec->yVel = new_yVel;	
 			obj_desc_sec->x = new_x;
 			obj_desc_sec->y = new_y;
-			
 		
-			//pixelList_m[j] = obj_desc_sec;
-			if(pixelList_m[j].dimFactor)//{applyDimming(pixelList_m[j]);}
+            //if the dim factor is not zero, apply it
+			if(pixelList_m[j].dimFactor)
 				Common::ApplyDimming(pixelList_m[j]);
+
 			if(pixelList_m[j].deleteMe)
 				{
 					handleDelete(j);
 					num_pixels = pixelList_m.size();
 				}
 		pthread_rwlock_unlock(&pix_rw_lock);
-
 	}
  }
 //}}}
@@ -498,43 +491,43 @@ void RuPPAT::RK4(const float t, const float dt)
 void RuPPAT :: RK4_parse()
 {
 //{{{
-Uint32 T1=0, T2=1000;
-T1=SDL_GetTicks(); 
-float t = 0.0;
-float dt = 0.004;
+    Uint32 T1=0, T2=1000;
+    T1=SDL_GetTicks(); 
+    float t = 0.0;
+    float dt = 0.004;
 
-int engine_rate = 160;
-int interval = 1000/engine_rate;
-int nextTick = SDL_GetTicks() + interval;
-int  screen_centX=WIDTH/2, screen_centY=HEIGHT/2;
+    int engine_rate = 160;
+    int interval = 1000/engine_rate;
+    int nextTick = SDL_GetTicks() + interval;
+    int  screen_centX=WIDTH/2, screen_centY=HEIGHT/2;
 
-char sel = 'g';
-void * select = &sel;
+    char sel = 'g';
+    void * select = &sel;
 
-SDL_Surface *primitives =
-			SDL_CreateRGBSurface(SDL_SWSURFACE,600,600,32, 0xFF000000, 
-			0x00FF0000, 0x0000FF00, 0x000000FF); 
+    SDL_Surface *primitives =
+                SDL_CreateRGBSurface(SDL_SWSURFACE,600,600,32, 0xFF000000, 
+                0x00FF0000, 0x0000FF00, 0x000000FF); 
 
-Primitives primMaker(1,0x9f0000ff, mainRender->pre_surface);
-CoOrd pA, pB, pC, pD, pCenter;
-pCenter.x = 200;
-pCenter.y = 200;
-
-
-pA.x = 200;
-pA.y = 400;
-
-pB.x = 200;
-pB.y = 100;
-
-pC.x = 100;
-pC.y = 200;
-
-pD.x = 100;
-pD.y = 200;
+    Primitives primMaker(1,0x9f0000ff, mainRender->pre_surface);
+    CoOrd pA, pB, pC, pD, pCenter;
+    pCenter.x = 200;
+    pCenter.y = 200;
 
 
-std::thread *rk4_th = new std::thread(&RuPPAT::RK4,this,t,dt);
+    pA.x = 200;
+    pA.y = 400;
+
+    pB.x = 200;
+    pB.y = 100;
+
+    pC.x = 100;
+    pC.y = 200;
+
+    pD.x = 100;
+    pD.y = 200;
+
+
+    std::thread *rk4_th = new std::thread(&RuPPAT::RK4,this,t,dt);
 
 	//keep looping until program end
 	while(!done)
@@ -823,34 +816,34 @@ void RuPPAT :: turnPlayerToCoord(const int p_ID,
 	//1st coordinate
 	if( (x_diff > 0) && (y_diff > 0))
 	{
-	 deg_playerToPoint = (180.0/3.141)*atan((float)y_diff/(float)x_diff);
+	    deg_playerToPoint = (180.0/3.141)*atan((float)y_diff/(float)x_diff);
 	}
 	else if( (x_diff < 0) && (y_diff > 0))
 	{
-	 deg_playerToPoint = 180.0 + ((180.0/3.141)*atan((float)y_diff/(float)x_diff));
+	    deg_playerToPoint = 180.0 + ((180.0/3.141)*atan((float)y_diff/(float)x_diff));
 	}
 	else if( (x_diff < 0) && (y_diff < 0))
 	{
-	 deg_playerToPoint = 180.0 + ((180.0/3.141)*atan((float)y_diff/(float)x_diff));
+	    deg_playerToPoint = 180.0 + ((180.0/3.141)*atan((float)y_diff/(float)x_diff));
 	}
 	else if( (x_diff > 0) && (y_diff<0))
 	{
-	 deg_playerToPoint = 360.0 + ((180.0/3.141)*atan((float)y_diff/(float)x_diff));
+	    deg_playerToPoint = 360.0 + ((180.0/3.141)*atan((float)y_diff/(float)x_diff));
 	}
 
 
-float angle_diff = deg_playerToPoint - playerDegree;
-printf("DIFFERENCE: %f\n", angle_diff);
+    float angle_diff = deg_playerToPoint - playerDegree;
+    printf("DIFFERENCE: %f\n", angle_diff);
 
-//tempErrAccum += angle_diff*.01;
-float dif_rate = 0.0;
-float pos_curr_rate = 0.0;
+    //tempErrAccum += angle_diff*.01;
+    float dif_rate = 0.0;
+    float pos_curr_rate = 0.0;
 
 	pthread_rwlock_wrlock(&object_rw_lock);
 		float curr_rate = players[p_ID]->getRotationRate(); 
 	pthread_rwlock_unlock(&object_rw_lock);
 
-tempErrDiff =  angle_diff*.1 - tempErrDiff; //angle_diff - tempErrDiff;
+    tempErrDiff =  angle_diff*.1 - tempErrDiff; //angle_diff - tempErrDiff;
 
 	if(curr_rate<0)
 		 pos_curr_rate = curr_rate * -1;
@@ -892,7 +885,7 @@ tempErrDiff =  angle_diff*.1 - tempErrDiff; //angle_diff - tempErrDiff;
 				turnPlayer(p_ID, false, dif_rate); 
 		}
 	}
-	 else if(angle_diff < -4 )
+	else if(angle_diff < -4 )
 	{
 		if ((-1.0*angle_diff) > 180 && curr_rate<rateLim)
 		{

@@ -131,6 +131,63 @@ bool Common::TestBounds(Pixel_desc &testMe, const bool invert)
 //}}}
 }
 
+bool Common::TestBounds(float &x, float &y, float &xVel, float &yVel, const bool invert)
+{
+//{{{
+	bool isOutOfBounds = false;
+
+	//make sure the new location is within bounds
+	if(invert)
+	{
+    //{{{
+        if(x<=0)
+            {
+                x=1;
+                xVel = xVel*(-1);
+                isOutOfBounds = true;
+            }
+
+        if(x>=width)
+            {
+                x = width-1;
+                xVel = xVel*(-1);
+                isOutOfBounds = true;
+            }
+
+        if(y<=0)
+            {
+                y = 1;
+                yVel = yVel*(-1);
+                isOutOfBounds = true;
+            }
+
+        if(y>=height)
+            {
+                y = height-1;
+                yVel = yVel*(-1);
+                isOutOfBounds = true;
+            }	
+    //}}}
+	}
+	else
+	{
+    //{{{
+        if(x<=0)
+                isOutOfBounds = true;
+
+        if(x>=width)
+                isOutOfBounds = true;
+
+        if(y<=0)
+                isOutOfBounds = true;
+
+        if(y>=height)
+                isOutOfBounds = true;
+    //}}}
+	}
+//}}}
+}
+
 bool Common::ApplyDimming(Pixel_desc &pix_t)
 {
 //{{{

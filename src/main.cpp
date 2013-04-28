@@ -75,7 +75,9 @@ int main(int argc, char *argv[])
 	//init runtime option struct
 	RunOptions cmdLineOptions;
 
+    //default config file path
     cmdLineOptions.config_path = "config";
+
 	//handle command line args, exit if -help used
 	if(handleInput(argc,argv,cmdLineOptions)){return 0;}
 
@@ -84,6 +86,7 @@ int main(int argc, char *argv[])
 	//get configuration from file
 	readConfigFile(filename, configSection);
 
+    //create the game object
 	game = new Game(configSection);
 	
 	//start up the game!!
@@ -105,6 +108,7 @@ int handleInput(int argc,char *argv[], RunOptions &cl_options)
 	   ||(strcmp(argv[i],"-h")==0) 
 	   || (strcmp(argv[i],"--help")==0))
 		{
+            //{{{
 			cout << "\n\n\t______RuPAP Engine Demo______"<<endl;
 			cout<<"\t\tMorgan Stuart\n"<< endl;
 			cout << "The granular CLI options have been deprecated."<< endl;
@@ -116,6 +120,7 @@ int handleInput(int argc,char *argv[], RunOptions &cl_options)
 			cout <<"-cd, --config-file \t Specify config file name\n"<<endl;
 			cout << "                print this menu: '-help'\n\n"<< endl;
 			k=1;
+            //}}}
 		}
 
 
