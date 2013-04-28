@@ -19,6 +19,7 @@ bool Common::TestBounds(Entity_desc &testMe, const bool invert)
 	//make sure the new location is within bounds
 	if(invert)
 	{
+    //{{{
 		bool isOutOfBounds = false;
 
 		if(testMe.x<=0)
@@ -50,9 +51,11 @@ bool Common::TestBounds(Entity_desc &testMe, const bool invert)
 			}	
 
 		return isOutOfBounds;
+    //}}}
 	}
 	else
 	{
+    //{{{
 		if(testMe.x<=0)
 			return true;
 
@@ -64,7 +67,7 @@ bool Common::TestBounds(Entity_desc &testMe, const bool invert)
 
 		if(testMe.y>=height)
 			return true;
-
+    //}}}
 	}
 //}}}
 }
@@ -75,6 +78,7 @@ bool Common::TestBounds(Pixel_desc &testMe, const bool invert)
 	//make sure the new location is within bounds
 	if(invert)
 	{
+    //{{{
 		bool isOutOfBounds = false;
 
 		if(testMe.x<=0)
@@ -106,9 +110,11 @@ bool Common::TestBounds(Pixel_desc &testMe, const bool invert)
 			}	
 
 		return isOutOfBounds;
+    //}}}
 	}
 	else
 	{
+    //{{{
 		if(testMe.x<=0)
 			return true;
 
@@ -120,7 +126,7 @@ bool Common::TestBounds(Pixel_desc &testMe, const bool invert)
 
 		if(testMe.y>=height)
 			return true;
-
+    //}}}
 	}
 //}}}
 }
@@ -128,7 +134,9 @@ bool Common::TestBounds(Pixel_desc &testMe, const bool invert)
 bool Common::ApplyDimming(Pixel_desc &pix_t)
 {
 //{{{
-	const int dim_scale = 1; //bring this up to increase max dim length
+    //bring this up to increase max dim length
+	const int dim_scale = 1; 
+
 	int dimFactor = pix_t.dimFactor;
 	int current_color = pix_t.color;
 	unsigned int dimTimer= pix_t.dimTimer;
@@ -147,6 +155,7 @@ bool Common::ApplyDimming(Pixel_desc &pix_t)
 		//pix_t.color = ( (tmpA<<24) | (tmpR<<16) | (tmpG<<8) | tmpB);
 		pix_t.color = ( (tmpA<<24 & 0xFF000000) | (0x00FFFFFF&current_color));
 	}
+
 	//reassign timer
 	pix_t.dimTimer = dimTimer;
 
@@ -165,8 +174,8 @@ void Common::RotatePoint(const float degrees, Pixel_desc &pix_t, const CoOrd cen
 	float theta, mag;
 
 	//add width and height
-	tempY -= center.y;// - tempY;
-	tempX -= center.x;// - tempX;
+	tempY -= center.y;
+	tempX -= center.x;
 
     tempY *= (-1);
 
@@ -183,9 +192,6 @@ void Common::RotatePoint(const float degrees, Pixel_desc &pix_t, const CoOrd cen
     }
 
     mag = sqrt((float)(tempX*tempX) + (float)(tempY*tempY));
-
-
-    
 
     if(theta == -0 || theta == +0)
         theta = 0;
@@ -215,19 +221,16 @@ void Common::RotatePoint(const float degrees, Pixel_desc &pix_t, const CoOrd cen
 			}
 		}
 
-
-
     //convert degrees to radians
     theta += (degrees*0.01745329251);
 
-        tempY = sin(theta)*mag;
-        tempX = cos(theta)*mag;
+    tempY = sin(theta)*mag;
+    tempX = cos(theta)*mag;
 
     //invert Y
     tempY *= (-1.0);
 
     pix_t.x = tempX;
     pix_t.y = tempY;
-
 //}}}
 }

@@ -288,6 +288,7 @@ void RuPPAT :: parseSelectPixToSurface()
 
 	int x, y, i, j,  size=pixelList_m.size(), screenID=0;
 	Uint32 color;	
+
  //#pragma omp parallel for private(x,y,color, i, j)
 	 for( i=0 ; i< size ; i++)
 		{

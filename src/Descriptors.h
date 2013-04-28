@@ -129,4 +129,9 @@ struct Derivative
 	float ddx;
 	float ddy;
 };
+
+struct RunOptions
+{
+    string config_path;
+};
 #endif

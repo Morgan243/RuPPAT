@@ -47,16 +47,13 @@ Game::Game(vector<section> configSections)
 			for(int j = 0; j < configSections[i].sectionOptions.size();j++)
 			{
 				if(configSections[i].sectionOptions[j].option == "width")
-					width =
-						atoi(configSections[i].sectionOptions[j].values[0].c_str());
+					width = atoi(configSections[i].sectionOptions[j].values[0].c_str());
 
 				else if(configSections[i].sectionOptions[j].option == "height")
-					height = 
-						atoi(configSections[i].sectionOptions[j].values[0].c_str());
+					height = atoi(configSections[i].sectionOptions[j].values[0].c_str());
 
 				else if(configSections[i].sectionOptions[j].option == "backgroundLayers")
-					tempVect =
-					   	configSections[i].sectionOptions[j].values;
+					tempVect = configSections[i].sectionOptions[j].values;
 			}
 
 			engine = new RuPPAT(width,
@@ -80,50 +77,37 @@ Game::Game(vector<section> configSections)
 
 			for(int j = 0; j < configSections[i].sectionOptions.size();j++)
 			{
-				if(configSections[i].sectionOptions[j].option
-						== "sprite")
+				if(configSections[i].sectionOptions[j].option == "sprite")
 					tempVect = configSections[i].sectionOptions[j].values;
 
-				else if(configSections[i].sectionOptions[j].option
-						== "HC")
+				else if(configSections[i].sectionOptions[j].option == "HC")
 					tempVect_2 = configSections[i].sectionOptions[j].values;
 
-				else if(configSections[i].sectionOptions[j].option
-						== "x")
-					x = 
-					atoi(configSections[i].sectionOptions[j].values[0].c_str());
+				else if(configSections[i].sectionOptions[j].option == "x")
+					x = atoi(configSections[i].sectionOptions[j].values[0].c_str());
 
-				else if(configSections[i].sectionOptions[j].option
-						== "y")
-					y = 
-					atoi(configSections[i].sectionOptions[j].values[0].c_str());
+				else if(configSections[i].sectionOptions[j].option == "y")
+					y = atoi(configSections[i].sectionOptions[j].values[0].c_str());
 
-				else if(configSections[i].sectionOptions[j].option
-						== "angle")
-					startingAngle = 
-					atoi(configSections[i].sectionOptions[j].values[0].c_str());
+				else if(configSections[i].sectionOptions[j].option == "angle")
+					startingAngle = atoi(configSections[i].sectionOptions[j].values[0].c_str());
 
-				else if(configSections[i].sectionOptions[j].option
-						== "maxAcc")
-					maxAcc = 
-					atof(configSections[i].sectionOptions[j].values[0].c_str());
+				else if(configSections[i].sectionOptions[j].option == "maxAcc")
+					maxAcc = atof(configSections[i].sectionOptions[j].values[0].c_str());
 				
-				else if(configSections[i].sectionOptions[j].option
-						== "missle")
+				else if(configSections[i].sectionOptions[j].option == "missle")
 				{
-				 missile_sprite =
-					 configSections[i].sectionOptions[j].values[0];
-				 missile_name =
-					 configSections[i].sectionOptions[j].values[1];
+                    missile_sprite = configSections[i].sectionOptions[j].values[0];
 
-				 missile_amnt =
-					atoi(configSections[i].sectionOptions[j].values[2].c_str());
-				 missile_dmg = 
-					atoi(configSections[i].sectionOptions[j].values[3].c_str());
-				 missile_vel = 
-					atof(configSections[i].sectionOptions[j].values[4].c_str());
-				 missile_life = 
-					atof(configSections[i].sectionOptions[j].values[5].c_str());
+                    missile_name = configSections[i].sectionOptions[j].values[1];
+
+                    missile_amnt = atoi(configSections[i].sectionOptions[j].values[2].c_str());
+
+                    missile_dmg = atoi(configSections[i].sectionOptions[j].values[3].c_str());
+                    
+                    missile_vel = atof(configSections[i].sectionOptions[j].values[4].c_str());
+        
+                    missile_life = atof(configSections[i].sectionOptions[j].values[5].c_str());
 				}
 			}
 
@@ -164,45 +148,37 @@ Game::Game(vector<section> configSections)
 
 			for(int j = 0; j < configSections[i].sectionOptions.size();j++)
 			{
+            //{{{
 				if(configSections[i].sectionOptions[j].option == "spriteBase")
-					tempVect = 
-						configSections[i].sectionOptions[j].values;
+					tempVect = configSections[i].sectionOptions[j].values;
 
 				else if(configSections[i].sectionOptions[j].option == "HC")
-					tempVect_2 = 
-						configSections[i].sectionOptions[j].values;
+					tempVect_2 = configSections[i].sectionOptions[j].values;
 
 				else if(configSections[i].sectionOptions[j].option == "x")
-					x = 
-						atoi(configSections[i].sectionOptions[j].values[0].c_str());
+					x = atoi(configSections[i].sectionOptions[j].values[0].c_str());
 
 				else if(configSections[i].sectionOptions[j].option == "y")
-					y = 
-						atoi(configSections[i].sectionOptions[j].values[0].c_str());
+					y = atoi(configSections[i].sectionOptions[j].values[0].c_str());
 
 				else if(configSections[i].sectionOptions[j].option == "angle")
-					startingAngle = 
-						atoi(configSections[i].sectionOptions[j].values[0].c_str());
+					startingAngle = atoi(configSections[i].sectionOptions[j].values[0].c_str());
 
 				else if(configSections[i].sectionOptions[j].option == "maxAcc")
-					maxAcc = 
-						atof(configSections[i].sectionOptions[j].values[0].c_str());
+					maxAcc = atof(configSections[i].sectionOptions[j].values[0].c_str());
 
 				else if(configSections[i].sectionOptions[j].option == "rotation")
-					rotRate = 
-						atof(configSections[i].sectionOptions[j].values[0].c_str());
+					rotRate = atof(configSections[i].sectionOptions[j].values[0].c_str());
 
 				else if(configSections[i].sectionOptions[j].option == "mass")
-					mass = 
-						atoi(configSections[i].sectionOptions[j].values[0].c_str());
+					mass = atoi(configSections[i].sectionOptions[j].values[0].c_str());
 					
 				else if(configSections[i].sectionOptions[j].option == "xVel")
-					xVel = 
-						atof(configSections[i].sectionOptions[j].values[0].c_str());
+					xVel = atof(configSections[i].sectionOptions[j].values[0].c_str());
 
 				else if(configSections[i].sectionOptions[j].option == "yVel")
-					yVel = 
-						atof(configSections[i].sectionOptions[j].values[0].c_str());
+					yVel = atof(configSections[i].sectionOptions[j].values[0].c_str());
+            //}}}
 			}
 
 			engine->addObject(tempVect[0],
@@ -233,11 +209,11 @@ void Game :: run(string selection, string option)
 		//desired framerate
 	int game_rate = 120,
 
-		//ms to wait between frames
-		interval = 1000/game_rate,
+    //ms to wait between frames
+    interval = 1000/game_rate,
 	
-		//get the tick# when events should be handled
-		nextTick = SDL_GetTicks() + interval;
+    //get the tick# when events should be handled
+    nextTick = SDL_GetTicks() + interval;
 
 	//declare and init SDL events structure
 	Event_desc mainEvents;
@@ -246,11 +222,11 @@ void Game :: run(string selection, string option)
 
 	//Launch the particle physics and time engine!
 	std::thread ruppat_th(&RuPPAT::runPPAT,
-		   					engine,
-							&done,
-						   	&mainEvents,
-						   	selection,
-						   	option);
+                                    engine,
+                                    &done,
+                                    &mainEvents,
+                                    selection,
+                                    option);
 
 	//just keep checking events until done
 	while(!done)
@@ -281,6 +257,7 @@ void Game :: handleEvents(Event_desc &mainEvents)
 	//keep working while events exist
 	while(SDL_PollEvent(&event))
 	{
+    //{{{
 		//if evenet was quit, finsh everything up
 		if(event.type == SDL_QUIT)
 			done = true;
@@ -288,6 +265,7 @@ void Game :: handleEvents(Event_desc &mainEvents)
 		//if a key was pressed
 		if(event.type == SDL_KEYDOWN)
 			{
+            //{{{
 			//LEFT CONTROL
 			if(event.key.keysym.sym == SDLK_LCTRL)
 				{
@@ -340,17 +318,18 @@ void Game :: handleEvents(Event_desc &mainEvents)
 					x+=2;
 					k_RIGHT=true;
 				}
+            //}}}
 			}
 
 		//if a key was RELEASED
 		if(event.type == SDL_KEYUP)
 			{
-
+            //{{{
 			//LEFT CONTROL
 			if(event.key.keysym.sym == SDLK_LCTRL )
-			{
-				k_lCTRL = false;
-			}
+                {
+                    k_lCTRL = false;
+                }
 
 			//SPACE
 			if(event.key.keysym.sym == SDLK_SPACE )
@@ -387,21 +366,25 @@ void Game :: handleEvents(Event_desc &mainEvents)
 				{				
 					k_RIGHT=false;
 				}
+            //}}}
 			}
+        //}}}
 	}
 
 
 		//HANDLE LONG PRESSES
 		if(k_lCTRL)
 			{
+            //{{{
 			//mouse button one is pressed, store location of mouse 
 			//in two ints
 			if(SDL_BUTTON(1)&SDL_GetMouseState(&mouse_x, &mouse_y))
 				{
+                //{{{
 					engine->turnPlayerToCoord(0,
-												mouse_x,
-												mouse_y,
-												defaultTurnAmnt);
+                                              mouse_x,
+                                              mouse_y,
+                                              defaultTurnAmnt);
 
 					//check if its time to accelerate
 					if(up_count>key_count_limit)
@@ -413,15 +396,19 @@ void Game :: handleEvents(Event_desc &mainEvents)
 						{
 							up_count++;
 						}
+                //}}}
 				}
 			else
 				{
+                //{{{
 					//otherwise, left click isn't pressed, turn the player
 					engine->turnPlayerToCoord(0, 
 												mouse_x,
 												mouse_y,
 												defaultTurnAmnt);
+                //}}}
 				}
+            //}}}
 			}
 
 		//handle counting the time of the key presses
@@ -429,6 +416,7 @@ void Game :: handleEvents(Event_desc &mainEvents)
 		//(use ticks or someotherreal world time to garuntee the "feel" of user IO)
 		if(k_UP)
 			{
+            //{{{
 			//reached desired time between accels, so accel and reset counter
 			if(up_count>key_count_limit)
 				{
@@ -439,10 +427,12 @@ void Game :: handleEvents(Event_desc &mainEvents)
 				{
 					up_count++;
 				}			
+            //}}}
 			}
 
 		if(k_DOWN)
 			{
+            //{{{
 			if(down_count>key_count_limit)		
 				{
 					engine->accelPlayer(0,false);
@@ -452,10 +442,12 @@ void Game :: handleEvents(Event_desc &mainEvents)
 				{
 					down_count++;
 				}
+            //}}}
 			}
 
 		if(k_LEFT)
 			{
+            //{{{
 			if(left_count>key_count_limit)
 				{
 					engine->turnPlayer(0,true, defaultTurnAmnt);
@@ -465,10 +457,12 @@ void Game :: handleEvents(Event_desc &mainEvents)
 				{
 					left_count++;
 				}
+            //}}}
 			}
 
 		if(k_RIGHT)
 			{
+            //{{{
 			if(right_count>key_count_limit)
 				{
 					engine->turnPlayer(0,false,defaultTurnAmnt );
@@ -478,6 +472,7 @@ void Game :: handleEvents(Event_desc &mainEvents)
 				{
 					right_count++;
 				}
+            //}}}
 			}
 //}}}
 }

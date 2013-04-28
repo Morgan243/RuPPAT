@@ -40,10 +40,11 @@ int x_o = XInitThreads();
 Game *game;
 
 //handle command line arguments
-//int handleInput(int argc,char *argv[], RunOptions &cl_options);
+int handleInput(int argc,char *argv[], RunOptions &cl_options);
 
 //scan configuration from config file
 void readConfigFile(string filename, vector<section> &configSection); 
+
 
 /*\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
  * ||||||||||||||||||||||||||||||||
@@ -72,10 +73,11 @@ int main(int argc, char *argv[])
 	}
 
 	//init runtime option struct
-	//RunOptions cmdLineOptions;
+	RunOptions cmdLineOptions;
 
+    cmdLineOptions.config_path = "config";
 	//handle command line args, exit if -help used
-	///if(handleInput(argc,argv,cmdLineOptions)){return 0;}
+	if(handleInput(argc,argv,cmdLineOptions)){return 0;}
 
 	vector<section> configSection;
 
@@ -92,145 +94,145 @@ int main(int argc, char *argv[])
 }
 
 //handleInput assigns global variables based on the command line options selected
-//int handleInput(int argc,char *argv[], RunOptions &cl_options)
-//{
-//	//{{{
-//	int i,j,k=0, num_objects = 0;
-//	for(i=1;i<argc;i++)
-//	{
-//		
-//	if((strcmp(argv[i],"-help")==0)
-//	   ||(strcmp(argv[i],"-h")==0) 
-//	   || (strcmp(argv[i],"--help")==0))
-//		{
-//			cout << "\n\n\t______RuPAP Engine Demo______"<<endl;
-//			cout<<"\t\tMorgan Stuart\n"<< endl;
-//			cout << "The granular CLI options have been deprecated."<< endl;
-//			cout << "They will not override the config. They do nothing."<< endl;
-//			cout << "Instead, use a config file. A default should have"<< endl;
-//			cout << "been included called \"config\". You can specify a "<<endl;
-//			cout << "different file using the config file option."<< endl;
-//			cout << "This is the only option you should be using.\n"<< endl;
-//			cout <<"-cd, --config-file \t Specify config file name\n"<<endl;
-//			cout << "                print this menu: '-help'\n\n"<< endl;
-//			k=1;
-//		}
-//
-//
-//	if((strcmp(argv[i],"--config-file")==0)||(strcmp(argv[i],"-cf")==0))
-//		{
-//			filename = argv[i+1];	
-//		}
-//
-//		if(strcmp(argv[i],"-height")==0)
-//		{
-//			//HEIGHT_cl=atoi(argv[i+1]);
-//			cl_options.height = atoi(argv[i+1]);	
-//		}	
-//
-//		if(strcmp(argv[i],"-width")==0)
-//		{
-//			//WIDTH_cl=atoi(argv[i+1]);
-//			cl_options.width = atoi(argv[i+1]);	
-//
-//		}	
-//	
-//		if(strcmp(argv[i],"-background")==0)
-//		{
-//			cl_options.background_spritePaths[0]=(argv[i+1]);
-//			cl_options.background_spritePaths[1]=(argv[i+2]);
-//			cl_options.background_spritePaths[2]=(argv[i+3]);
-//		}
-//
-//		if(strcmp(argv[i],"-object")==0)
-//		{
-//		
-//			if(num_objects<2)
-//			{
-//				cl_options.objects_spritePath[num_objects]=(argv[i+1]);
-//
-//				cout<<"CL arg: "<<argv[i+1]<<endl;
-//
-//				cl_options.objects_HCpath[num_objects] = (argv[i+2]);
-//
-//				cout<<"CL arg: "<<argv[i+2]<<endl;
-//			}
-//			else
-//			{
-//				cl_options.objects_spritePath.push_back(argv[i+1]);
-//
-//				cout<<"CL arg: "<<argv[i+1]<<endl;
-//
-//				cl_options.objects_HCpath.push_back(argv[i+2]);
-//
-//				cout<<"CL arg: "<<argv[i+2]<<endl;
-//			}
-//
-//			num_objects++;
-//		}
-//	
-//		if(strcmp(argv[i],"-gwell")==0)
-//		{	
-//			selection = "gwell";
-//		}
-//
-//		
-//		if(strcmp(argv[i],"-explode")==0)
-//		{	
-//			selection = "explode";
-//		}
-//
-//		if(strcmp(argv[i],"-boxin")==0)
-//		{	
-//			selection = "boxin";
-//		}
-//
-//		//unimplemented!	
-//		if(strcmp(argv[i],"-fire")==0)
-//		{
-//			selection = "fire";
-//		}
-//
-//		if(strcmp(argv[i],"-porbit")==0)
-//		{
-//			selection = "porbit";
-//		}
-//
-//		if(strcmp(argv[i],"-hose")==0)
-//		{
-//			selection = "hose";
-//		}
-//
-//		if(strcmp(argv[i],"-explode")==0)
-//		{
-//			selection = "explode";
-//		}
-//
-//
-//		if(strcmp(argv[i],"-r")==0)
-//		{
-//		//		choice = 1;				
-//		}
-//
-//		if(strcmp(argv[i],"-s")==0)
-//		{
-//		//		choice = 2;				
-//		}
-//
-//		if(strcmp(argv[i],"-p")==0)
-//		{
-//		//		choice = 3;
-//		}
-//
-//
-//		if(strcmp(argv[i],"-threads")==0)
-//		{
-//		//	THREADS=atoi(argv[i+1]);
-//		}		
-//	}
-//	return k;
-////}}}
-//}
+int handleInput(int argc,char *argv[], RunOptions &cl_options)
+{
+	//{{{
+	int i,j,k=0, num_objects = 0;
+	for(i=1;i<argc;i++)
+	{
+		
+	if((strcmp(argv[i],"-help")==0)
+	   ||(strcmp(argv[i],"-h")==0) 
+	   || (strcmp(argv[i],"--help")==0))
+		{
+			cout << "\n\n\t______RuPAP Engine Demo______"<<endl;
+			cout<<"\t\tMorgan Stuart\n"<< endl;
+			cout << "The granular CLI options have been deprecated."<< endl;
+			cout << "They will not override the config. They do nothing."<< endl;
+			cout << "Instead, use a config file. A default should have"<< endl;
+			cout << "been included called \"config\". You can specify a "<<endl;
+			cout << "different file using the config file option."<< endl;
+			cout << "This is the only option you should be using.\n"<< endl;
+			cout <<"-cd, --config-file \t Specify config file name\n"<<endl;
+			cout << "                print this menu: '-help'\n\n"<< endl;
+			k=1;
+		}
+
+
+	if((strcmp(argv[i],"--config-file")==0)||(strcmp(argv[i],"-cf")==0))
+		{
+		    cl_options.config_path = argv[i+1];	
+		}
+
+		if(strcmp(argv[i],"-height")==0)
+		{
+			//HEIGHT_cl=atoi(argv[i+1]);
+			//cl_options.height = atoi(argv[i+1]);	
+		}	
+
+		if(strcmp(argv[i],"-width")==0)
+		{
+			//WIDTH_cl=atoi(argv[i+1]);
+			//cl_options.width = atoi(argv[i+1]);	
+
+		}	
+	
+		if(strcmp(argv[i],"-background")==0)
+		{
+			//cl_options.background_spritePaths[0]=(argv[i+1]);
+			//cl_options.background_spritePaths[1]=(argv[i+2]);
+			//cl_options.background_spritePaths[2]=(argv[i+3]);
+		}
+
+		if(strcmp(argv[i],"-object")==0)
+		{
+		
+			if(num_objects<2)
+			{
+				//cl_options.objects_spritePath[num_objects]=(argv[i+1]);
+
+				cout<<"CL arg: "<<argv[i+1]<<endl;
+
+				//cl_options.objects_HCpath[num_objects] = (argv[i+2]);
+
+				cout<<"CL arg: "<<argv[i+2]<<endl;
+			}
+			else
+			{
+				//cl_options.objects_spritePath.push_back(argv[i+1]);
+
+				cout<<"CL arg: "<<argv[i+1]<<endl;
+
+				//cl_options.objects_HCpath.push_back(argv[i+2]);
+
+				cout<<"CL arg: "<<argv[i+2]<<endl;
+			}
+
+			num_objects++;
+		}
+	
+		if(strcmp(argv[i],"-gwell")==0)
+		{	
+			//selection = "gwell";
+		}
+
+		
+		if(strcmp(argv[i],"-explode")==0)
+		{	
+			//selection = "explode";
+		}
+
+		if(strcmp(argv[i],"-boxin")==0)
+		{	
+			//selection = "boxin";
+		}
+
+		//unimplemented!	
+		if(strcmp(argv[i],"-fire")==0)
+		{
+			//selection = "fire";
+		}
+
+		if(strcmp(argv[i],"-porbit")==0)
+		{
+			//selection = "porbit";
+		}
+
+		if(strcmp(argv[i],"-hose")==0)
+		{
+			//selection = "hose";
+		}
+
+		if(strcmp(argv[i],"-explode")==0)
+		{
+			//selection = "explode";
+		}
+
+
+		if(strcmp(argv[i],"-r")==0)
+		{
+		//		choice = 1;				
+		}
+
+		if(strcmp(argv[i],"-s")==0)
+		{
+		//		choice = 2;				
+		}
+
+		if(strcmp(argv[i],"-p")==0)
+		{
+		//		choice = 3;
+		}
+
+
+		if(strcmp(argv[i],"-threads")==0)
+		{
+		//	THREADS=atoi(argv[i+1]);
+		}		
+	}
+	return k;
+//}}}
+}
 
 void readConfigFile(string filename, vector<section>& configSections)
 {

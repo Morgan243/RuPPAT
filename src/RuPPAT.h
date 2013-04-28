@@ -49,19 +49,7 @@ class RuPPAT
 		//push pixel to pixel_list_m
 		void createPixElement(Pixel_desc *pixel); 
 
-		void parseSelectPixToSurface();
-
-		void parsePlayersToSurface();
-
-		void parseObjectsToSurface();
-
 		void setUpdateOnSelectPix(const int set);
-
-		void handleAllDeleteMe();
-
-		void handleDelete(const int index);
-
-		int applyDimming(Pixel_desc &pix_t);
 
 		int addPlayer(const string spritePath,
 			   		  const int numRotations,
@@ -73,8 +61,6 @@ class RuPPAT
 
 		void addPlayer(Player* new_player);
 
-		int addEntity(Entity_desc new_ent);
-
 		int addObject(const string spritePath,
 			   		  const int x,
 					  const int y, 
@@ -83,6 +69,16 @@ class RuPPAT
 					  const float xVel,
 					  const float yVel,
 					  const string HB_path);
+
+		void handleAllDeleteMe();
+
+		void handleDelete(const int index);
+
+		void parseSelectPixToSurface();
+
+		void parsePlayersToSurface();
+
+		void parseObjectsToSurface();
 
 		void RK4(const float t,
                  const float dt);
@@ -102,13 +98,6 @@ class RuPPAT
 							  const int accLength,
 							  const int dimFactor,
                               const int mass  );
-
-		void updateSelectPix();
-
-		void putPixel(const int x,
-			   		  const int y,
-					  const unsigned int color,
-					  const int id);
 
 		void accelPlayer(const int p_ID, const bool isForward);
 		
