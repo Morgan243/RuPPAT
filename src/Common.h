@@ -21,8 +21,11 @@ class Common
 		//check if the PIXEL is within the bounds of "width" and "height"
 		static bool TestBounds(Pixel_desc &testMe, const bool invert);
 
-		//check if the PIXEL is within the bounds of "width" and "height"
+		//check if float coordinated are within bounds
         static bool TestBounds(float &x, float &y, float &xVel, float &yVel, const bool invert);
+
+        //check bounds using a CoOrd Struct (probably not useful)
+        static bool TestBounds(CoOrd_fl &testMe, float &xVel, float &yVel, const bool invert);
 
 		//decrease alpha to dim out a pixel
 		static bool ApplyDimming(Pixel_desc &pix_t);

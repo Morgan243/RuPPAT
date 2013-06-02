@@ -7,7 +7,9 @@ Object :: Object(string sprite_path,
 		int start_x,
 	       	int start_y,
 	       	int start_mass)
-:sprite(sprite_path,360,0)
+        :sprite(sprite_path,
+                360,
+                0)
 {
 //{{{
 
@@ -30,10 +32,10 @@ Object :: Object(string sprite_path,
 	       	int start_mass,
 			int num_rotations,
 	       	int starting_angle)
-	:sprite(sprite_path,
-			num_rotations,
-			starting_angle), 
-	hitCircleSprite()
+        :sprite(sprite_path,
+                num_rotations,
+                starting_angle), 
+        hitCircleSprite()
 {
 //{{{
 	numRotations = num_rotations;
@@ -59,10 +61,10 @@ Object::Object(string sprite_path,
 	       float xVel,
 	       float yVel,
 	       string HC_path)
-	:sprite(sprite_path,
-		num_rotations,
-		starting_angle), 
-	hitCircleSprite(HC_path)
+        :sprite(sprite_path,
+            num_rotations,
+            starting_angle), 
+        hitCircleSprite(HC_path)
 {
 //{{{
 	//if(HC_path =! NULL)

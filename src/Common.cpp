@@ -22,6 +22,7 @@ bool Common::TestBounds(Entity_desc &testMe, const bool invert)
     //{{{
 		bool isOutOfBounds = false;
 
+        //x left region boundry
 		if(testMe.x<=0)
 			{
 				testMe.x=1;
@@ -29,13 +30,15 @@ bool Common::TestBounds(Entity_desc &testMe, const bool invert)
 				isOutOfBounds=true;
 			}
 
-		if(testMe.x>=width)
+        //x right boundry
+        else if(testMe.x>=width)
 			{
 				testMe.x=width-1;
 				testMe.xVel=testMe.xVel*(-1);
 				isOutOfBounds=true;
 			}
 
+        //y left boundry
 		if(testMe.y<=0)
 			{
 				testMe.y=1;
@@ -43,7 +46,8 @@ bool Common::TestBounds(Entity_desc &testMe, const bool invert)
 				isOutOfBounds=true;
 			}
 
-		if(testMe.y>=height)
+        //y right boundry check
+        else if(testMe.y>=height)
 			{
 				testMe.y=height-1;
 				testMe.yVel=testMe.yVel*(-1);
@@ -185,6 +189,67 @@ bool Common::TestBounds(float &x, float &y, float &xVel, float &yVel, const bool
                 isOutOfBounds = true;
     //}}}
 	}
+//}}}
+
+    return isOutOfBounds;
+}
+
+bool Common::TestBounds(CoOrd_fl &testMe, float &xVel, float &yVel, const bool invert)
+{
+//{{{
+	bool isOutOfBounds = false;
+
+	//make sure the new location is within bounds
+	if(invert)
+	{
+    //{{{
+        if(testMe.x<=0)
+            {
+                testMe.x=1;
+                xVel = xVel*(-1);
+                isOutOfBounds = true;
+            }
+
+        if(testMe.x>=width)
+            {
+                testMe.x = width-1;
+                xVel = xVel*(-1);
+                isOutOfBounds = true;
+            }
+
+        if(testMe.y<=0)
+            {
+                testMe.y = 1;
+                yVel = yVel*(-1);
+                isOutOfBounds = true;
+            }
+
+        if(testMe.y>=height)
+            {
+                testMe.y = height-1;
+                yVel = yVel*(-1);
+                isOutOfBounds = true;
+            }	
+    //}}}
+	}
+	else
+	{
+    //{{{
+        if(testMe.x<=0)
+                isOutOfBounds = true;
+
+        if(testMe.x>=width)
+                isOutOfBounds = true;
+
+        if(testMe.y<=0)
+                isOutOfBounds = true;
+
+        if(testMe.y>=height)
+                isOutOfBounds = true;
+    //}}}
+	}
+
+    return isOutOfBounds;
 //}}}
 }
 

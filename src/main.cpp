@@ -19,7 +19,7 @@
 
 using namespace std;
 
-	//depreciated way old doing options below
+	//depreciated way of doing options below
 	string selection = "gwell";
 	string option;
 
@@ -35,7 +35,7 @@ string filename = "config";
 //working on the buffer
 int x_o = XInitThreads();
 
-//stack is too small for this honey
+//stack is too small for this puppy
 //most init outside main to use heap instead
 Game *game;
 

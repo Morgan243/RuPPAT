@@ -18,7 +18,7 @@ float getDistance(float x1, float y1, float x2, float y2)
 
 //need to decide how to apply all the forces to the object here
 float G_acceleration (const Pixel_desc &state, Derivative &output, float t,
-			const float objMass, const float objX, const float objY)
+                    const float objMass, const float objX, const float objY)
 {
 //{{{*
 	const float gravConst = 10;
@@ -57,7 +57,7 @@ float G_acceleration (const Pixel_desc &state, Derivative &output, float t,
 }
 
 Derivative evaluate(Pixel_desc &initial,float t, float dt,const Derivative &d,
-			const float objMass, const float point_x, const float point_y)
+                    const float objMass, const float point_x, const float point_y)
 {
 	//{{{
 	Pixel_desc state;
@@ -85,7 +85,7 @@ return output;
 }
 
 void integrate (Pixel_desc &state, float t, float dt, 
-			const float objMass, const float point_x, const float point_y )
+                    const float objMass, const float point_x, const float point_y )
 {
 	//{{{
 	Derivative init;
@@ -121,7 +121,7 @@ void integrate (Pixel_desc &state, float t, float dt,
 
 //need to decide how to apply all the forces to the object here
 float G_acceleration_ent (const Entity_desc &state, Derivative &output, float t,
-			const float objMass, const float objX, const float objY)
+                    const float objMass, const float objX, const float objY)
 {
 	//{{{
 	const float gravConst = 10;
@@ -158,7 +158,7 @@ float G_acceleration_ent (const Entity_desc &state, Derivative &output, float t,
 }
 
 Derivative evaluate_ent(Entity_desc &initial,float t, float dt,const Derivative &d,
-				const float objMass, const float point_x, const float point_y)
+				    const float objMass, const float point_x, const float point_y)
 {
 	//{{{
 	Entity_desc state;
@@ -188,7 +188,7 @@ return output;
 
 
 void integrate_ent (Entity_desc &state, float t, float dt, 
-			const float objMass, const float point_x, const float point_y )
+                    const float objMass, const float point_x, const float point_y )
 {
 	//{{{
 	Derivative init;
