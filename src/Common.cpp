@@ -356,3 +356,4 @@ void Common::RotatePoint(const float degrees, Pixel_desc &pix_t, const CoOrd cen
     pix_t.y = tempY;
 //}}}
 }
+

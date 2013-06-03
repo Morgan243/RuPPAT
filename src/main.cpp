@@ -17,6 +17,18 @@
 #include "Descriptors.h"
 #include "Game.h"
 
+//Lua Scripting support
+extern "C"
+{
+    #include <lua.h>
+    #include <lualib.h>
+    #include <lauxlib.h>
+}
+
+#pragma comment(lib, "lua.lib")
+#pragma comment(lib, "lualib.lib")
+
+
 using namespace std;
 
 	//depreciated way of doing options below
@@ -45,6 +57,9 @@ int handleInput(int argc,char *argv[], RunOptions &cl_options);
 //scan configuration from config file
 void readConfigFile(string filename, vector<section> &configSection); 
 
+//init lua
+lua_State* initLua();
+
 
 /*\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
  * ||||||||||||||||||||||||||||||||
@@ -72,6 +87,9 @@ int main(int argc, char *argv[])
 			}	
 	}
 
+    lua_State *pL = initLua();
+
+    luaL_dofile(pL, "init_script.lua");
 	//init runtime option struct
 	RunOptions cmdLineOptions;
 
@@ -91,6 +109,8 @@ int main(int argc, char *argv[])
 	
 	//start up the game!!
 	game->run(selection, option);
+
+    lua_close(pL);
 
 	return 0;
 //}}}
@@ -353,3 +373,15 @@ void readConfigFile(string filename, vector<section>& configSections)
 //}}}
 }
 
+
+lua_State* initLua()
+{
+
+    //create Lua state
+    lua_State *pL = luaL_newstate();
+
+    //open all standard Lua libraries
+    luaL_openlibs(pL);
+
+    return pL;
+}
