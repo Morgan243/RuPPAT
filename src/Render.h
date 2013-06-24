@@ -38,9 +38,9 @@ class Render
 
 		void OnRender(const int x, const int y);
 		
-		const Uint32 getPixel(const int x,
-                                const int y,
-                                const int screenID);
+		Uint32 getPixel(const int x,
+                        const int y,
+                        const int screenID) const;
 
 		void putPixel(const vector<Pixel_desc> pixels);
 

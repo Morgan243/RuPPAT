@@ -26,29 +26,13 @@ RuPPAT :: RuPPAT(int width,
 		 	     vector<string> bkg_paths)
 {
 //{{{
-	//init all the locks with error check
-	if(pthread_rwlock_init(&pix_rw_lock, NULL))
-		{cout<<"ERROR initializing pixel rw lock: "<<endl;}
+    
+    initLocks();
 
-	if(pthread_rwlock_init(&mass_rw_lock, NULL))
-		{cout<<"ERROR initializing mass rw lock: "<<endl;}
-
-	if(pthread_rwlock_init(&ent_rw_lock, NULL))
-		{cout<<"ERROR initializing entity rw lock: "<<endl;}
-
-	if(pthread_rwlock_init(&player_rw_lock, NULL))
-		{cout<<"ERROR initializing player rw lock: "<<endl;}
-
-	if(pthread_mutex_init(&pix_list_lock_2,NULL))
-		{cout<<"ERROR initializing pix lock 2 lock: "<<endl;}
-	
-	if(pthread_rwlock_init(&object_rw_lock,NULL))
-		{cout<<"ERROR initializing object rw lock: "<<endl;}
-
-	
+	//start up the renderer
 	mainRender = new Render(width, height, BPP, flags);
 
-
+    //load the background sprites
 	for( int i = 0; i< bkg_paths.size(); i++)
 	{
 		SDL_Surface *tempBkg, * tempBkgOpt;
@@ -66,26 +50,29 @@ RuPPAT :: RuPPAT(int width,
 
 		cout<<"\tPushing back..."<<bkg_paths[i]<<endl;
 		backgroundLayers.push_back(tempBkgOpt);	
-			
 	}
-
+    
+    //base the game boundries based on the height and width
 	game_width = backgroundLayers[0]->w;
 	game_height = backgroundLayers[0]->h;
 
+    //make sure common has the width and height values
 	Common::SetDimensions(game_width, game_height);
 
-	printf("game width = %d, game height = %d\n", game_width, game_height);
+    //let render know the boundries
 	mainRender->setGameArea(backgroundLayers[0]->w, backgroundLayers[0]->h);
 
+	printf("game width = %d, game height = %d\n", game_width, game_height);
 
 	WIDTH = width;
 	HEIGHT = height;
 
+    //primitive factory
 	primitive_maker = new Primitives(1,
 		   							0x55efe000,
 								   	mainRender->pre_surface);
-	gravitationalConstant = 22;
 
+	gravitationalConstant = 22;
 //}}}
 }
 
@@ -106,77 +93,63 @@ RuPPAT :: ~RuPPAT()
 }
 
 
-//------------createPixElement-----TS
-//pushes the pixel descriptor to the pixel
-//list
-void RuPPAT :: createPixElement(Pixel_desc *pixel )
-{	
-//{{{
-  Pixel_desc temp_pix = *pixel;
-
-   pthread_rwlock_wrlock(&pix_rw_lock);
-
-    pixelList_m.push_back(temp_pix);
-
-   pthread_rwlock_unlock(&pix_rw_lock);
-//}}}
-}
-
-//------------setUpdateOnSelectPix-----
-//assigns "set" argument to all elements
-//in pixel lists updated memeber
-void RuPPAT :: setUpdateOnSelectPix(const int set)
+void RuPPAT::initLocks()
 {
 //{{{
-//#pragma omp parallel for
-  for(int i=0 ; i<pixelList_m.size() ; i++)
-	{
-		pixelList_m[i].updated = set;
-	}
+	//init all the locks with error check
+	if(pthread_rwlock_init(&pix_rw_lock, NULL))
+		{cout<<"ERROR initializing pixel rw lock: "<<endl;}
+
+	if(pthread_rwlock_init(&mass_rw_lock, NULL))
+		{cout<<"ERROR initializing mass rw lock: "<<endl;}
+
+	if(pthread_rwlock_init(&ent_rw_lock, NULL))
+		{cout<<"ERROR initializing entity rw lock: "<<endl;}
+
+	if(pthread_rwlock_init(&player_rw_lock, NULL))
+		{cout<<"ERROR initializing player rw lock: "<<endl;}
+
+	if(pthread_mutex_init(&pix_list_lock_2,NULL))
+		{cout<<"ERROR initializing pix lock 2 lock: "<<endl;}
+	
+	if(pthread_rwlock_init(&object_rw_lock,NULL))
+		{cout<<"ERROR initializing object rw lock: "<<endl;}
 //}}}
 }
 
 
-//------------addPlayer----------------
-//Using arguments, create a new player
-//object and add it to players and add
-//its base object class to objects
-int RuPPAT :: addPlayer(const string spritePath,
-	   					const int numRotations,
-					   	const int startingAngle,
-						const float maxAccel,
-					   	const int x,
+int RuPPAT :: addObject(const string spritePath,
+	   					const int x,
 					   	const int y,
-					   	const string HC_path)
+					   	const int mass,
+					   	const float rotationRate,
+						const float xVel,
+					   	const float yVel,
+					   	const string HB_path)
 {
 //{{{
-	int size, height, width;
-	CoOrd tempCoOrd;
+	pthread_rwlock_wrlock(&object_rw_lock);
 
-    Player *new_player= new Player(spritePath, 
-                                    numRotations,
-                                    startingAngle,
-						            maxAccel, 
-                                    x, y, 
-                                    HC_path);
+		if(HB_path == "")
+		{
+            objectList.push_back(new Object(spritePath, x, y, mass,
+                            360,0,xVel,yVel, HB_path));
+            cout<<spritePath<<" doesnt have HB!"<<endl;
+		}			
+		else
+		{
+            objectList.push_back(new Object(spritePath, x, y, mass,
+                            360,0,xVel,yVel, HB_path ));
+        
+            cout<<spritePath<<" DOES have HB!"<<endl;
+		}
 
-    //extract the base class
-    Object *new_object = &(*new_player);
-        new_object->setID(baseID++);
+		objectList.back()->setID(baseID++);
+		objectList.back()->sprite.setRotationRate(rotationRate);
 
+	pthread_rwlock_unlock(&object_rw_lock);
 
-    pthread_rwlock_wrlock(&object_rw_lock);
-        players.push_back(new_player);
-        size = players.size()-1;
-    
-        new_object->sprite.getDimensions(width, height);
-
-        primitive_maker->drawCircle(tempCoOrd, 19 , true);
-
-        objectList.push_back(new_object);
-    pthread_rwlock_unlock(&object_rw_lock);
-
-	return size;
+	return objectList.size();
 //}}}
 }
 
@@ -206,176 +179,112 @@ void RuPPAT :: addPlayer(Player* new_player)
 //}}}
 }
 
-
-int RuPPAT :: addObject(const string spritePath,
-	   					const int x,
+//------------addPlayer----------------
+//Using arguments, create a new player
+//object and add it to players and add
+//its base object class to objects
+int RuPPAT :: addPlayer(const string spritePath,
+	   					const int numRotations,
+					   	const int startingAngle,
+						const float maxAccel,
+					   	const int x,
 					   	const int y,
-					   	const int mass,
-					   	const float rotationRate,
-						const float xVel,
-					   	const float yVel,
-					   	const string HB_path)
+					   	const string HC_path)
 {
 //{{{
-	int size;
+    int size = 0;
+	CoOrd tempCoOrd;
 
-	pthread_rwlock_wrlock(&object_rw_lock);
+    //create the new player
+    Player *new_player= new Player(spritePath, 
+                                    numRotations,
+                                    startingAngle,
+						            maxAccel, 
+                                    x, y, 
+                                    HC_path);
 
-		if(HB_path == "")
-		{
-			objectList.push_back(new Object(spritePath, x, y, mass,
-						360,0,xVel,yVel, HB_path));
-			cout<<spritePath<<" doesnt have HB!"<<endl;
-		}			
-		else
-		{
-		objectList.push_back(new Object(spritePath, x, y, mass,
-						360,0,xVel,yVel, HB_path ));
-	
-		cout<<spritePath<<" DOES have HB!"<<endl;
-		}
+    //extract the base class
+    Object *new_object = &(*new_player);
+        new_object->setID(baseID++);
 
-		objectList.back()->setID(baseID++);
-		objectList.back()->sprite.setRotationRate(rotationRate);
+    pthread_rwlock_wrlock(&object_rw_lock);
+        players.push_back(new_player);
 
-	pthread_rwlock_unlock(&object_rw_lock);
+        size = players.size()-1;
+    
+        primitive_maker->drawCircle(tempCoOrd, 19 , true);
+
+        objectList.push_back(new_object);
+    pthread_rwlock_unlock(&object_rw_lock);
 
 	return size;
 //}}}
 }
 
-//------------handleAllDeleteME--------->NEED WORK
-//Pixels should add themselves to list for deletion
-//so the program doesnt have to search for them
+
+
+//||||||||||||||||||||||||||||||||||||\\
+//-------------------------------------\\
+//	RuPPAT Entry Point
+//spawn threads to do work and handle events
 //
-//go through pix list and delete everything 
-//with deleteMe set high
-void RuPPAT :: handleAllDeleteMe()
+void RuPPAT :: runPPAT(const bool *mainDone,
+	   				   const Event_desc *mainEvents,
+					   const string selection,
+					   const string option)
+
 {
 //{{{
-  //remove pixelList elements that have deleteMe set
-  pthread_rwlock_wrlock(&pix_rw_lock);
-  for(int k=0;k<pixelList_m.size();k++)
+	bool *DONE = (bool*)mainDone;
+
+	cout<<"SELECTION: "<<selection<<"\t OPTION: "<<option<<endl;
+
+	char select;
+	
+	//launch thread into rk4 parse
+	std::thread RK4_parse_th(&RuPPAT::RK4_parse, this);
+	
+	void *sel = &select;
+
+	int FPS=1000;
+	unsigned int keyT1, keyT2;
+
+	int game_rate = 120;
+	int interval = 1000/game_rate;
+	int nextTick = SDL_GetTicks() + interval;
+	
+	//keep going until game thread says DONE
+	while(!*DONE)
 	{
-	if(pixelList_m[k].deleteMe)
-	  {
-		pixelList_m.erase(pixelList_m.begin()+k);
-		k--;//compensate for the resize
-	  }
-	}
-  pthread_rwlock_unlock(&pix_rw_lock);
-//}}}
-}
-
-//------------handleDelete-------------
-//remove pixelList element that has deleteMe set
-//can do other things for delete later
-void RuPPAT :: handleDelete(const int k)
-{
-//{{{
-	//CURRENTLY LOCKS OUTSIDE OF FUNCTION
-	//pthread_rwlock_wrlock(&pix_rw_lock);
-		pixelList_m.erase(pixelList_m.begin()+k);
-	//pthread_rwlock_unlock(&pix_rw_lock);
-//}}}
-}
-
-//------------parseSelectPixToSurface--TS
-//takes everything in the pixel list and
-//places it to the surface
-void RuPPAT :: parseSelectPixToSurface()
-{
-//{{{
-   pthread_rwlock_rdlock(&pix_rw_lock);
-
-	int x, y, i, j,  size=pixelList_m.size(), screenID=0;
-	Uint32 color;	
-
- //#pragma omp parallel for private(x,y,color, i, j)
-	 for( i=0 ; i< size ; i++)
-		{
-			x =	pixelList_m[i].x;// - centerX;
-			y =	pixelList_m[i].y;// - centerY;
-			color =	pixelList_m[i].color;
-	
-			mainRender->putPixel(x,y,color,screenID);
-		}
-
-   pthread_rwlock_unlock(&pix_rw_lock);
-//}}}
-}
-
-//------------parsePlayersTo Surface--TS
-//tkaes all the player object in the player vector
-//and places them to the screen (at appropriate coords)
-void RuPPAT :: parsePlayersToSurface()
-{
-//{{{
-   pthread_rwlock_wrlock(&object_rw_lock);
-
-	int x, y, i, j, color, size=players.size(), screenID=0;
-	int x_aux, y_aux;
-	CoOrd tempCoOrd;
-	Renderables_Cont tempRenderables;
-	tempCoOrd.x=0;
-	tempCoOrd.y=0;
-	SDL_Surface *refSurf;
-
- //#pragma omp parallel for private(x,y,color, i, j)
-	 for( i=0 ; i< size ; i++)
-		{
-
-		//Get renderable set from player (ex: missiles)
-		while((players[i]->GetNextAuxDrawInfo(tempRenderables)) )
+		//if space is pressed and it has been
+		//a while since it was last pressed
+		if(mainEvents->space && keyT1>20)
 			{
-				mainRender->putSprite(tempRenderables.sprites);
-				mainRender->putPixel(tempRenderables.pixels);
+
+			//reset the key tick count
+			keyT1 = 0;
+
+			//then run demo->place pixels w/ attr
+			//runDemos(sel);
+			firePlayersWeapon(0);
 			}
-		
-		x = players[i]->getX();
-		y = players[i]->getY();
-	
-		centerX = x;
-		centerY = y;
-		
-		//put a selection primitive around sprite if selected
-		if(players[i]->updateSprite())
-		{
-			mainRender->putSprite(x,
-								y,
-								primitive_maker->Get_Cached(i));
 
-			mainRender->putSprite(x,
-								y,
-								players[i]->getSprite());
-		
-		}
-		else
-			mainRender->putSprite(x,
-								y,
-								players[i]->getSprite());
-		}
+		//increment keypress counter
+		keyT1++;
 
-   pthread_rwlock_unlock(&object_rw_lock);
-//}}}
-}
+		//sleep thread, keeps CPU usage down
+		if(nextTick > SDL_GetTicks())
+			SDL_Delay(nextTick - SDL_GetTicks());
+			
+		nextTick = SDL_GetTicks() + interval;	
 
-void RuPPAT :: parseObjectsToSurface()
-{
-//{{{
-	int x, y, i;
-    pthread_rwlock_rdlock(&object_rw_lock);
-        int size = objectList.size();
+	}
 
-        for(i=0; i<size;i++)
-            {
-                x = objectList[i]->getX();
-                y = objectList[i]->getY();	
+	//tell threads to finish
+	done = true;
 
-                objectList[i]->sprite.updateSprite();
-                mainRender->putSprite(x,y,objectList[i]->getSprite());
-            }
-   pthread_rwlock_unlock(&object_rw_lock);
+	//join on RK4_parse thread
+	RK4_parse_th.join();
 //}}}
 }
 
@@ -591,122 +500,110 @@ void RuPPAT :: RK4_parse()
 //}}}
 }
 
-
-//||||||||||||||||||||||||||||||||||||\\
-//-------------------------------------\\
-//	RuPPAT Entry Point
-//spawn threads to do work and handle events
-//
-void RuPPAT :: runPPAT(const bool *mainDone,
-	   				   const Event_desc *mainEvents,
-					   const string selection,
-					   const string option)
-
+//------------parseSelectPixToSurface--TS
+//takes everything in the pixel list and
+//places it to the surface
+void RuPPAT :: parseSelectPixToSurface()
 {
 //{{{
-	bool *DONE = (bool*)mainDone;
+   pthread_rwlock_rdlock(&pix_rw_lock);
 
-	cout<<"SELECTION: "<<selection<<"\t OPTION: "<<option<<endl;
+	int x, y, i, size = pixelList_m.size(), screenID=0;
+	Uint32 color;	
 
-	char select;
+ //#pragma omp parallel for private(x,y,color, i, j)
+	 for( i=0 ; i< size ; i++)
+		{
+			x =	pixelList_m[i].x;// - centerX;
+			y =	pixelList_m[i].y;// - centerY;
+			color =	pixelList_m[i].color;
 	
-	//launch thread into rk4 parse
-	std::thread RK4_parse_th(&RuPPAT::RK4_parse, this);
-	
-	void *sel = &select;
+			mainRender->putPixel(x,y,color,screenID);
+		}
 
-	int FPS=1000;
-	unsigned int keyT1, keyT2;
-
-	int game_rate = 120;
-	int interval = 1000/game_rate;
-	int nextTick = SDL_GetTicks() + interval;
-	
-	//keep going until game thread says DONE
-	while(!*DONE)
-	{
-		//if space is pressed and it has been
-		//a while since it was last pressed
-		if(mainEvents->space && keyT1>20)
-			{
-
-			//reset the key tick count
-			keyT1 = 0;
-
-			//then run demo->place pixels w/ attr
-			//runDemos(sel);
-			firePlayersWeapon(0);
-			}
-
-		//increment keypress counter
-		keyT1++;
-
-		//sleep thread, keeps CPU usage down
-		if(nextTick > SDL_GetTicks())
-			SDL_Delay(nextTick - SDL_GetTicks());
-			
-		nextTick = SDL_GetTicks() + interval;	
-
-	}
-
-	//tell threads to finish
-	done = true;
-
-	//join on RK4_parse thread
-	RK4_parse_th.join();
+   pthread_rwlock_unlock(&pix_rw_lock);
 //}}}
 }
 
-
-//-----------------createPixElemenent-------
-//create a pix descriptor from arguments and
-//then push it to the pixel list vector
-Pixel_desc tmpPix;	
-void RuPPAT :: createPixElement(const int x, const int y,
-                                const int color,
-                                const int xAccel,
-                                const int yAccel,
-                                const int accLength,
-                                const int dimFactor,
-                                const int mass )
-{	
+//------------parsePlayersTo Surface--TS
+//tkaes all the player object in the player vector
+//and places them to the screen (at appropriate coords)
+void RuPPAT :: parsePlayersToSurface()
+{
 //{{{
-		//assign location
-		tmpPix.x=x;
-		tmpPix.y=y;
+   pthread_rwlock_wrlock(&object_rw_lock);
+
+	int x, y, i, color, size=players.size(), screenID=0;
+	int x_aux, y_aux;
+	CoOrd tempCoOrd;
+	Renderables_Cont tempRenderables;
+	tempCoOrd.x=0;
+	tempCoOrd.y=0;
+	SDL_Surface *refSurf;
+
+ //#pragma omp parallel for private(x,y,color, i, j)
+	for( i=0 ; i< size ; i++)
+    {
+
+		//Get renderable set from player (ex: missiles)
+		while((players[i]->GetNextAuxDrawInfo(tempRenderables)) )
+        {
+				mainRender->putSprite(tempRenderables.sprites);
+				mainRender->putPixel(tempRenderables.pixels);
+        }
 		
-		//assign color	
-		tmpPix.color=color; 
+        //get x and y of player and center screen on player
+		centerX = x = players[i]->getX();
+		centerY = y = players[i]->getY();
 	
-		//if it has mass
-		if(mass!=0)
-		{//assign amss and add to massList
-		tmpPix.mass = mass;
-	  	//massList.push_back(topMap[x][y]);
-	  	}
+		//put a selection primitive around sprite if selected
+		if(players[i]->updateSprite())
+		{
+            //place selection primitive
+			mainRender->putSprite(x,
+								  y,
+								  primitive_maker->Get_Cached(i));
 
-		//intit velocity to zero, set acce
-		tmpPix.xVel = 0;
-		tmpPix.yVel = 0;
-		tmpPix.xAcc = xAccel;
-		tmpPix.yAcc = yAccel;
+            //place player sprite
+			mainRender->putSprite(x,
+								  y,
+								  players[i]->getSprite());
+		
+		}
+		else
+        {
+            //place player sprite
+			mainRender->putSprite(x,
+                                  y,
+								  players[i]->getSprite());
+        }
+    }
 
-		tmpPix.deleteMe = false;
-		tmpPix.ID=baseID++;
-
-		//set accellength:number of times to apply this accel to vel
-		tmpPix.accelLength = accLength;
-		tmpPix.updated = 0;
-
-		//set dimfactor:higher=pixel fades away quicker
-		tmpPix.dimFactor = dimFactor;
-
-		 //finally, push tmp to vector
-		 pthread_rwlock_wrlock(&pix_rw_lock);
-		    pixelList_m.push_back(tmpPix);
-		 pthread_rwlock_unlock(&pix_rw_lock);
+   pthread_rwlock_unlock(&object_rw_lock);
 //}}}
 }
+
+void RuPPAT :: parseObjectsToSurface()
+{
+//{{{
+	int x, y, i, size;
+
+    pthread_rwlock_rdlock(&object_rw_lock);
+        size = objectList.size();
+
+        for(i=0; i<size;i++)
+            {
+                x = objectList[i]->getX();
+                y = objectList[i]->getY();	
+
+                objectList[i]->sprite.updateSprite();
+                mainRender->putSprite(x,y,objectList[i]->getSprite());
+            }
+   pthread_rwlock_unlock(&object_rw_lock);
+//}}}
+}
+
+
 
 
 //----these below should be replaced by a better system
@@ -929,3 +826,120 @@ void RuPPAT :: firePlayersWeapon(const int p_ID)
 {
 	players[p_ID]->fireSelectedMissile();
 }
+
+
+
+//------------createPixElement-----TS
+//pushes the pixel descriptor to the pixel
+//list
+void RuPPAT :: createPixElement(Pixel_desc *pixel )
+{	
+//{{{
+    pthread_rwlock_wrlock(&pix_rw_lock);
+
+        pixelList_m.push_back(*pixel);
+
+    pthread_rwlock_unlock(&pix_rw_lock);
+//}}}
+}
+
+//-----------------createPixElemenent-------
+//create a pix descriptor from arguments and
+//then push it to the pixel list vector
+Pixel_desc tmpPix;	
+void RuPPAT :: createPixElement(const int x, const int y,
+                                const int color,
+                                const int xAccel,
+                                const int yAccel,
+                                const int accLength,
+                                const int dimFactor,
+                                const int mass )
+{	
+//{{{
+		//assign location
+		tmpPix.x=x;
+		tmpPix.y=y;
+		
+		//assign color	
+		tmpPix.color=color; 
+	
+		//if it has mass
+		if(mass!=0)
+		{//assign amss and add to massList
+		tmpPix.mass = mass;
+	  	//massList.push_back(topMap[x][y]);
+	  	}
+
+		//intit velocity to zero, set acce
+		tmpPix.xVel = 0;
+		tmpPix.yVel = 0;
+		tmpPix.xAcc = xAccel;
+		tmpPix.yAcc = yAccel;
+
+		tmpPix.deleteMe = false;
+		tmpPix.ID=baseID++;
+
+		//set accellength:number of times to apply this accel to vel
+		tmpPix.accelLength = accLength;
+		tmpPix.updated = 0;
+
+		//set dimfactor:higher=pixel fades away quicker
+		tmpPix.dimFactor = dimFactor;
+
+		 //finally, push tmp to vector
+		 pthread_rwlock_wrlock(&pix_rw_lock);
+		    pixelList_m.push_back(tmpPix);
+		 pthread_rwlock_unlock(&pix_rw_lock);
+//}}}
+}
+
+//------------setUpdateOnSelectPix-----
+//assigns "set" argument to all elements
+//in pixel lists updated memeber
+void RuPPAT :: setUpdateOnSelectPix(const int set)
+{
+//{{{
+//#pragma omp parallel for
+  for(int i=0 ; i<pixelList_m.size() ; i++)
+	{
+		pixelList_m[i].updated = set;
+	}
+//}}}
+}
+
+//------------handleAllDeleteME--------->NEED WORK
+//Pixels should add themselves to list for deletion
+//so the program doesnt have to search for them
+//
+//go through pix list and delete everything 
+//with deleteMe set high
+void RuPPAT :: handleAllDeleteMe()
+{
+//{{{
+  //remove pixelList elements that have deleteMe set
+  pthread_rwlock_wrlock(&pix_rw_lock);
+  for(int k=0;k<pixelList_m.size();k++)
+	{
+	if(pixelList_m[k].deleteMe)
+	  {
+		pixelList_m.erase(pixelList_m.begin()+k);
+		k--;//compensate for the resize
+	  }
+	}
+  pthread_rwlock_unlock(&pix_rw_lock);
+//}}}
+}
+
+//------------handleDelete-------------
+//remove pixelList element that has deleteMe set
+//can do other things for delete later
+void RuPPAT :: handleDelete(const int k)
+{
+//{{{
+	//CURRENTLY LOCKS OUTSIDE OF FUNCTION
+	//pthread_rwlock_wrlock(&pix_rw_lock);
+		pixelList_m.erase(pixelList_m.begin()+k);
+	//pthread_rwlock_unlock(&pix_rw_lock);
+//}}}
+}
+

@@ -46,20 +46,8 @@ class RuPPAT
 		//DECONSTRUCTOR
 		~RuPPAT();
 
-		//push pixel to pixel_list_m
-		void createPixElement(Pixel_desc *pixel); 
-
-		void setUpdateOnSelectPix(const int set);
-
-		int addPlayer(const string spritePath,
-			   		  const int numRotations,
-					  const int startingAngle, 
-				      const float maxAccel,
-					  const int x,
-					  const int y,
-					  const string HC_path);
-
-		void addPlayer(Player* new_player);
+        //----Initialization and construction methods----
+        void initLocks();
 
 		int addObject(const string spritePath,
 			   		  const int x,
@@ -70,9 +58,27 @@ class RuPPAT
 					  const float yVel,
 					  const string HB_path);
 
-		void handleAllDeleteMe();
+		void addPlayer(Player* new_player);
 
-		void handleDelete(const int index);
+		int addPlayer(const string spritePath,
+			   		  const int numRotations,
+					  const int startingAngle, 
+				      const float maxAccel,
+					  const int x,
+					  const int y,
+					  const string HC_path);
+
+
+        //----Core backend routines----
+		void runPPAT(const bool *mainDone,
+			   		 const Event_desc *mainEvents, 
+					 const string selection,
+					 const string option);
+
+		void RK4(const float t,
+                 const float dt);
+
+		void RK4_parse();
 
 		void parseSelectPixToSurface();
 
@@ -80,25 +86,8 @@ class RuPPAT
 
 		void parseObjectsToSurface();
 
-		void RK4(const float t,
-                 const float dt);
 
-		void RK4_parse();
-
-		void runPPAT(const bool *mainDone,
-			   		 const Event_desc *mainEvents, 
-					 const string selection,
-					 const string option);
-
-		void createPixElement(const int x,
-							  const int y,	
-							  const int color,
-							  const int xAccel,
-							  const int yAccel,
-							  const int accLength,
-							  const int dimFactor,
-                              const int mass  );
-
+        //---player control and manipulations
 		void accelPlayer(const int p_ID, const bool isForward);
 		
 		void turnPlayer(const int p_ID,
@@ -111,6 +100,24 @@ class RuPPAT
 							   const int rate);
 
 		void firePlayersWeapon(const int p_ID);
+
+		//----Pixel creation and handling methods----
+		void createPixElement(Pixel_desc *pixel); 
+
+		void createPixElement(const int x,
+							  const int y,	
+							  const int color,
+							  const int xAccel,
+							  const int yAccel,
+							  const int accLength,
+							  const int dimFactor,
+                              const int mass  );
+
+		void setUpdateOnSelectPix(const int set);
+
+		void handleAllDeleteMe();
+
+		void handleDelete(const int index);
 
 		Primitives *primitive_maker;
 		

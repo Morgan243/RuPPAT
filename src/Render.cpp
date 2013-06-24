@@ -100,16 +100,16 @@ Render::Render(int width, int height, int bpp, Uint32 flags,
 	#endif 
 
 
-printf("Surface %s: w:%d h:%d bpp:%d\n", 
-	"mainScreen", mainScreen->w, mainScreen->h, mainScreen->format->BitsPerPixel);
+    printf("Surface %s: w:%d h:%d bpp:%d\n", 
+            "mainScreen", mainScreen->w, mainScreen->h, mainScreen->format->BitsPerPixel);
 
-printf("Game space: width = %d, height = %d\n", game_width, game_height);
+    printf("Game space: width = %d, height = %d\n", game_width, game_height);
 
-  if ( mainScreen == NULL ) 
-  {
-    fprintf(stderr, "Unable to set video: %s\n", SDL_GetError());
-    exit(1);
-  }
+    if ( mainScreen == NULL ) 
+    {
+        fprintf(stderr, "Unable to set video: %s\n", SDL_GetError());
+        exit(1);
+    }
   //}}}
 }
 
@@ -140,7 +140,6 @@ void Render::setGameArea(const int w, const int h)
 		0x0000FF00, 0x00FF0000, 0xFF000000); 
 	#endif 
 		SDL_SetAlpha(pre_surface,SDL_SRCALPHA,0xFF);
-		//SDL_DisplayFormatAlpha(pre_surface);
 //}}}
 }
 
@@ -182,7 +181,7 @@ void Render::OnRender(const int x, const int y)
 //-----------------getPixel---------
 //returns the color (32 bit unsigned int) of the
 //pixel located at x, y args
-const Uint32 Render::getPixel(const int x, const int y, int screenID)
+Uint32 Render::getPixel(const int x, const int y, int screenID) const
 {
 //{{{
 	Uint32 *pixels = (Uint32 *)pre_surface->pixels;

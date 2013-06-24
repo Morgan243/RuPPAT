@@ -71,7 +71,6 @@ class Game
 
 		vector<Player *> players;
 
-
 		int x, y, 
 			up_count, down_count, left_count, right_count,
 			key_count_limit, defaultTurnAmnt, fastTurn,

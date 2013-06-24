@@ -218,6 +218,7 @@ void Game :: run(string selection, string option)
 	//declare and init SDL events structure
 	Event_desc mainEvents;
 
+    //set event struct to initial defaults
 	initEvent( mainEvents );
 
 	//Launch the particle physics and time engine!
