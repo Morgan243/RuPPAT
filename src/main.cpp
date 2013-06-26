@@ -13,6 +13,8 @@
 #include "SDL/SDL_rotozoom.h"
 #include "SDL/SDL_image.h"
 
+#include "LuaParser.h"
+
 //Demo Headers Included
 #include "Descriptors.h"
 #include "Game.h"
@@ -57,10 +59,6 @@ int handleInput(int argc,char *argv[], RunOptions &cl_options);
 //scan configuration from config file
 void readConfigFile(string filename, vector<section> &configSection); 
 
-//init lua
-lua_State* initLua();
-
-
 /*\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
  * ||||||||||||||||||||||||||||||||
  * `````````ENTRY POINT````````````
@@ -87,10 +85,11 @@ int main(int argc, char *argv[])
 			}	
 	}
 
-    lua_State *pL = initLua();
+    LuaParser l_parse("init_script.lua");
 
-    luaL_dofile(pL, "init_script.lua");
-	//init runtime option struct
+    cout<< l_parse.PopLuaString("name")<< " is "<< l_parse.PopLuaNumber<int>("age")<<" years old!!!!!\n";
+    
+    //init runtime option struct
 	RunOptions cmdLineOptions;
 
     //default config file path
@@ -110,7 +109,7 @@ int main(int argc, char *argv[])
 	//start up the game!!
 	game->run(selection, option);
 
-    lua_close(pL);
+    //lua_close(pL);
 
 	return 0;
 //}}}
@@ -373,15 +372,3 @@ void readConfigFile(string filename, vector<section>& configSections)
 //}}}
 }
 
-
-lua_State* initLua()
-{
-
-    //create Lua state
-    lua_State *pL = luaL_newstate();
-
-    //open all standard Lua libraries
-    luaL_openlibs(pL);
-
-    return pL;
-}

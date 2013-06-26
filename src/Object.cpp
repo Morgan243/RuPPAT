@@ -417,6 +417,7 @@ Entity_desc* Object :: PhysicsHandler(const float t,
                                             Entity_desc &state_src)
 {
 //{{{
+    //keep track of current time
 	thisTime = t;
 
 	//integrate the sprite location if its alive

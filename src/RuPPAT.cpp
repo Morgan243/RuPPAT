@@ -331,8 +331,8 @@ void RuPPAT::RK4(const float t, const float dt)
 			//Get the outer loop objects descriptor
 			obj_desc_tri = objectList[j]->getDescriptor();
 		
-			//Apply out loop object to the current object
-			obj_desc_prim = objectList[i]->PhysicsHandler(t,dt, obj_desc_tri);
+			//Apply outer loop object [i] to the current object
+			obj_desc_prim = objectList[i]->PhysicsHandler(t, dt, obj_desc_tri);
 
 			if((renderables = objectList[i]->GetRenderables()) != NULL)
 			{
@@ -390,7 +390,6 @@ void RuPPAT::RK4(const float t, const float dt)
  }
 //}}}
 }
-
 
 //-------------RK4_parse-----------
 //keeps running RK4_all (determines movement
@@ -544,7 +543,6 @@ void RuPPAT :: parsePlayersToSurface()
  //#pragma omp parallel for private(x,y,color, i, j)
 	for( i=0 ; i< size ; i++)
     {
-
 		//Get renderable set from player (ex: missiles)
 		while((players[i]->GetNextAuxDrawInfo(tempRenderables)) )
         {

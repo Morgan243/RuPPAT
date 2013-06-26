@@ -11,6 +11,7 @@
 #include "Render.h"
 #include "RuPPAT.h"
 #include "Player.h"
+#include "ObjectFactory.h"
 #include <vector>
 #include <iostream>
 #ifndef GAME_H
