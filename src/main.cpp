@@ -59,6 +59,8 @@ int handleInput(int argc,char *argv[], RunOptions &cl_options);
 //scan configuration from config file
 void readConfigFile(string filename, vector<section> &configSection); 
 
+void readConfigLuaScript(string filename, vector<section> &configSection);
+
 /*\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
  * ||||||||||||||||||||||||||||||||
  * `````````ENTRY POINT````````````
@@ -372,3 +374,8 @@ void readConfigFile(string filename, vector<section>& configSections)
 //}}}
 }
 
+void readConfigLuaScript(string filename, vector<section> &configSection)
+{
+    //load up a Lua parser
+    LuaParser lua_parser(filename.c_str());
+}
