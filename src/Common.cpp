@@ -5,6 +5,37 @@
 unsigned int Common::width;
 unsigned int Common::height;
 
+using namespace std;
+
+string Common::createReadableStringFromSection(section configSection)
+{
+    string readable = "Section Title: " + configSection.title + "\n";
+
+    for(int i = 0; i < configSection.sectionOptions.size(); i++)
+    {
+        readable += "\t Option:: " + configSection.sectionOptions.at(i).option + "\n";
+
+        for(int j = 0; j < configSection.sectionOptions.at(i).values.size(); j++)
+        {
+            readable += "\t  --" + configSection.sectionOptions.at(i).values.at(j) + "\n";
+        }
+    }
+
+    return readable;
+}
+
+string Common::createReadableStringFromSection(vector<section> configSection)
+{
+    string readable = "";
+
+    for(int i = 0; i < configSection.size(); i++)
+    {
+        readable += createReadableStringFromSection(configSection.at(i));
+    }
+
+    return readable;
+}
+
 void Common::SetDimensions(const unsigned int wid, const unsigned int hei) 
 {
 //{{{

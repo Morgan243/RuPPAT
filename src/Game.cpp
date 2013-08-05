@@ -10,6 +10,21 @@ using namespace std;
 Game::Game(vector<section> configSections)
 {
 //{{{
+    //initGame(configSections);
+    initGame_lua(configSections);
+//}}}
+}
+
+
+//-----DECONSTRUCTOR
+Game ::~Game()
+{
+//	delete engine;
+}
+
+void Game::initGame(vector<section> configSections)
+{
+//{{{
 	//A few defaults, not configurable at the moment
 	key_count_limit = 2;
 	defaultTurnAmnt = 4;
@@ -192,13 +207,227 @@ Game::Game(vector<section> configSections)
 //}}}
 }
 
-
-//-----DECONSTRUCTOR
-Game ::~Game()
+void Game::initGame_lua(vector<section> configSections)
 {
-//	delete engine;
-}
+//{{{
+	//A few defaults, not configurable at the moment
+	key_count_limit = 2;
+	defaultTurnAmnt = 4;
+	fastTurn = 3;
+	w_count = 0;
+	s_count = 0;
+	a_count = 0;
+	d_count = 0;
 
+	k_UP=false; 
+	k_DOWN=false;
+   	k_LEFT=false;
+   	k_RIGHT=false;
+	k_lCTRL=false;
+
+	vector<string> tempVect;	
+	vector<string> tempVect_2;
+
+	//default missle sprite
+	string missile_sprite, missile_name;
+
+	int missile_amnt, missile_dmg;
+
+	float missile_vel, missile_life;
+
+    cout<<"-------------------------------------------\n";
+    cout<<"-------------------------------------------\n";
+	
+	for(int i = 0; i< configSections.size(); i++)
+	{
+        cout<<"SECTION: "<< configSections[i].title << endl;
+
+		//////////////////////////////////////////////////
+		//MAIN section: resolution and background settings
+		//////////////////////////////////////////////////	
+		if(configSections[i].title == "Main")
+		{
+			//{{{
+			int width, height;
+			for(int j = 0; j < configSections[i].sectionOptions.size();j++)
+			{
+				if(configSections[i].sectionOptions[j].option == "width")
+					width = atoi(configSections[i].sectionOptions[j].values[0].c_str());
+
+				else if(configSections[i].sectionOptions[j].option == "height")
+					height = atoi(configSections[i].sectionOptions[j].values[0].c_str());
+
+				else if(configSections[i].sectionOptions[j].option == "backgroundLayers")
+					tempVect = configSections[i].sectionOptions[j].values;
+			}
+
+            engine = new RuPPAT(width,
+                                        height,
+                                        BPP,
+                                        SDL_HWSURFACE | SDL_DOUBLEBUF,
+                                        tempVect);
+			//}}}
+		}
+
+		//Setup player: object controlled by the player(person-user)
+		//if(configSections[i].title == "Players")
+        if(configSections[i].title.find("player-") != string::npos)
+		{
+			//{{{
+            cout<<"PLAYER: " << configSections[i].title << endl;
+			int x = 400,
+			   	y = 200,
+			   	startingAngle = 0,
+			   	numRots = 360;
+
+			float maxAcc = 1.1;
+
+			for(int j = 0; j < configSections[i].sectionOptions.size();j++)
+			{
+				if(configSections[i].sectionOptions[j].option == "sprite")
+					tempVect = configSections[i].sectionOptions[j].values;
+
+				else if(configSections[i].sectionOptions[j].option == "HC")
+					tempVect_2 = configSections[i].sectionOptions[j].values;
+
+				else if(configSections[i].sectionOptions[j].option == "x")
+					x = atoi(configSections[i].sectionOptions[j].values[0].c_str());
+
+				else if(configSections[i].sectionOptions[j].option == "y")
+					y = atoi(configSections[i].sectionOptions[j].values[0].c_str());
+
+				else if(configSections[i].sectionOptions[j].option == "angle")
+					startingAngle =
+                        atoi(configSections[i].sectionOptions[j].values[0].c_str());
+
+				else if(configSections[i].sectionOptions[j].option == "max accel")
+					maxAcc =
+                        atof(configSections[i].sectionOptions[j].values[0].c_str());
+				
+				//else if(configSections[i].sectionOptions[j].option == "missle")
+                if(configSections[i].sectionOptions[j].option.
+                        find("missile-") != string::npos)
+				{
+                    
+                    int missile_id =
+                        configSections[i].sectionOptions[j].option.find('-', 8);
+                    missile_id = 
+                        atoi(configSections[i].sectionOptions[j].option.substr(7, missile_id - 7).c_str());
+
+                    cout<<"(missile id = "<< std::to_string(missile_id)<<endl;
+                    
+                    if(configSections[i].sectionOptions[j].option.
+                            find("-sprite") != string::npos)
+                        missile_sprite = 
+                            configSections[i].sectionOptions[j].values.back();
+
+                    if(configSections[i].sectionOptions[j].option.
+                            find("-name") != string::npos)
+                        missile_name = configSections[i].sectionOptions[j].values.back();
+
+                    if(configSections[i].sectionOptions[j].option.
+                            find("-amount") != string::npos)
+                        missile_amnt =
+                            atoi(configSections[i].sectionOptions[j].values.back().c_str());
+
+                    if(configSections[i].sectionOptions[j].option.
+                            find("-damage") != string::npos)
+                        missile_dmg =
+                            atoi(configSections[i].sectionOptions[j].values.back().c_str());
+                        
+                    if(configSections[i].sectionOptions[j].option.
+                            find("-velocity") != string::npos)
+                        missile_vel =
+                            atof(configSections[i].sectionOptions[j].values.back().c_str());
+            
+                    if(configSections[i].sectionOptions[j].option.
+                            find("-lifespan") != string::npos)
+                        missile_life =
+                            atof(configSections[i].sectionOptions[j].values.back().c_str());
+				}
+			}
+
+			//create the player
+			Player *tempPlayer = new Player(tempVect[0],
+											numRots, 
+											startingAngle,
+											maxAcc,
+											x, y,
+											tempVect_2[0]);
+		
+			//add default missile	
+			tempPlayer->addMissile(missile_sprite, missile_name, 
+									true,//make this the selected missile?
+									missile_amnt,
+									missile_dmg,
+									missile_vel,
+									missile_life);
+
+			engine->addPlayer(tempPlayer);
+		  //}}}
+		}
+
+		//Setup andy additional object requested
+		if(configSections[i].title.find("object ") != string::npos)
+		{
+			//{{{
+            cout<<"OBJECT: "<< configSections[i].title << endl;
+			int x = 400,
+			   	y = 200,
+			   	startingAngle = 0,
+			   	numRots = 360,
+				mass = 750;
+
+			float maxAcc = 1.0,
+				  rotRate = 0.0,
+				  xVel = 0.0,
+				  yVel = 0.0;
+
+			for(int j = 0; j < configSections[i].sectionOptions.size();j++)
+			{
+            //{{{
+				if(configSections[i].sectionOptions[j].option == "sprite")
+					tempVect = configSections[i].sectionOptions[j].values;
+
+				else if(configSections[i].sectionOptions[j].option == "HC")
+					tempVect_2 = configSections[i].sectionOptions[j].values;
+
+				else if(configSections[i].sectionOptions[j].option == "x")
+					x = atoi(configSections[i].sectionOptions[j].values[0].c_str());
+
+				else if(configSections[i].sectionOptions[j].option == "y")
+					y = atoi(configSections[i].sectionOptions[j].values[0].c_str());
+
+				else if(configSections[i].sectionOptions[j].option == "angle")
+					startingAngle = atoi(configSections[i].sectionOptions[j].values[0].c_str());
+
+				else if(configSections[i].sectionOptions[j].option == "maxAcc")
+					maxAcc = atof(configSections[i].sectionOptions[j].values[0].c_str());
+
+				else if(configSections[i].sectionOptions[j].option == "rotation")
+					rotRate = atof(configSections[i].sectionOptions[j].values[0].c_str());
+
+				else if(configSections[i].sectionOptions[j].option == "mass")
+					mass = atoi(configSections[i].sectionOptions[j].values[0].c_str());
+					
+				else if(configSections[i].sectionOptions[j].option == "x velocity")
+					xVel = atof(configSections[i].sectionOptions[j].values[0].c_str());
+
+				else if(configSections[i].sectionOptions[j].option == "y velocity")
+					yVel = atof(configSections[i].sectionOptions[j].values[0].c_str());
+            //}}}
+			}
+
+			engine->addObject(tempVect[0],
+								  x, y, mass,
+								  rotRate,
+								  xVel, yVel,
+								  tempVect_2[0]);	  
+		//}}}
+		}
+	}
+//}}}
+}
 
 ///////////////////////////////////////////////////
 //RUN the game!

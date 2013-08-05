@@ -28,14 +28,26 @@ class LuaParser
         LuaParser(const std::string &script_name);
         ~LuaParser();
 
-
         void openScript(const std::string &script_name);
-
 
         template <class T>
             T PopLuaNumber(const char* name);
 
         std::string PopLuaString(const char* name);
+
+        std::string PopLuaTableStringValue(const char* table_name, const char* key);
+        std::string PopLuaTableStringValue(const char* table_name, const int key);
+
+        int PopLuaTableIntegerValue(const char* table_name, const char* key);
+        int PopLuaTableIntegerValue(const char* table_name, const int key);
+
+        std::string GetStringFromField(std::string field);
+        std::string GetStringFromField(int index);
+
+        int GetIntegerFromField(std::string field);
+        int GetIntegerFromField(int index);
+        
+        lua_State* GetState();
 };
 
 template <class T>

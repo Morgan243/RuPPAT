@@ -1,3 +1,5 @@
+//INCLUDES
+//{{{
 #include <stdlib.h>
 #include <fstream>
 #include <string>
@@ -26,12 +28,16 @@ extern "C"
     #include <lualib.h>
     #include <lauxlib.h>
 }
+//}}}
 
 #pragma comment(lib, "lua.lib")
 #pragma comment(lib, "lualib.lib")
 
-
 using namespace std;
+
+    //Basic globals
+    //{{{
+    int debug_level = 1;
 
 	//depreciated way of doing options below
 	string selection = "gwell";
@@ -41,8 +47,9 @@ using namespace std;
 	int WIDTH_cl = 1024;
 	int HEIGHT_cl = 768;
 
-//default config file name
-string filename = "config";
+    //default config file name
+    string filename = "config";
+    //}}}
 
 
 //let X display know we are going to have multiple threads
@@ -61,6 +68,22 @@ void readConfigFile(string filename, vector<section> &configSection);
 
 void readConfigLuaScript(string filename, vector<section> &configSection);
 
+void readConfigMain(LuaParser &lua_parser, vector<section> &configSection);
+
+void readConfigPlayers(LuaParser &lua_parser, 
+                        vector<section> &configSection,
+                        section &temp_section);
+
+void readConfigMissiles(LuaParser &lua_parser,
+                        vector<section> &configSection,
+                        section &temp_section,
+                        int player_num);
+
+void readConfigObjects(LuaParser &lua_parser, 
+                        vector<section> &configSection,
+                        section &temp_section);
+
+
 /*\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
  * ||||||||||||||||||||||||||||||||
  * `````````ENTRY POINT````````````
@@ -72,7 +95,6 @@ int main(int argc, char *argv[])
 	//check that XInitThreads was not erroneous
 	if(!x_o)
 		cout<<"ERROR WITH XINIT THREADS!"<<endl;
-
 
 	struct rlimit rl;
 
@@ -87,10 +109,6 @@ int main(int argc, char *argv[])
 			}	
 	}
 
-    LuaParser l_parse("init_script.lua");
-
-    cout<< l_parse.PopLuaString("name")<< " is "<< l_parse.PopLuaNumber<int>("age")<<" years old!!!!!\n";
-    
     //init runtime option struct
 	RunOptions cmdLineOptions;
 
@@ -100,13 +118,19 @@ int main(int argc, char *argv[])
 	//handle command line args, exit if -help used
 	if(handleInput(argc,argv,cmdLineOptions)){return 0;}
 
-	vector<section> configSection;
+	vector<section> configSection, configSection_lua;
 
 	//get configuration from file
 	readConfigFile(filename, configSection);
 
+    //experimental, read config from lua
+    readConfigLuaScript("init_script.lua", configSection_lua);
+
+    cout<<Common::createReadableStringFromSection(configSection_lua)<<endl;
+
     //create the game object
-	game = new Game(configSection);
+	//game = new Game(configSection);
+	game = new Game(configSection_lua);
 	
 	//start up the game!!
 	game->run(selection, option);
@@ -375,7 +399,464 @@ void readConfigFile(string filename, vector<section>& configSections)
 }
 
 void readConfigLuaScript(string filename, vector<section> &configSection)
+//{{{
 {
+    int num_players;
+    section temp_section;
+    optionSet temp_option;
+
     //load up a Lua parser
     LuaParser lua_parser(filename.c_str());
+
+    readConfigMain(lua_parser, configSection);
 }
+//}}}
+
+void readConfigMain(LuaParser &lua_parser, vector<section> &configSection)
+//{{{
+{
+    int num_players;
+    section temp_section;
+    optionSet temp_option;
+    
+    //---Get "main" table---
+    temp_section.title = "Main";
+
+        temp_option.option = "width";
+            temp_option.values.
+                push_back(std::to_string(lua_parser.PopLuaTableIntegerValue("main", "width")));
+
+                if(debug_level > 0)
+                {
+                    cout<<"\t+Option: "<<temp_option.option<<endl;
+                    cout<<"\t++  "<< temp_option.values.back() <<endl;
+                }
+
+            //push back width option for the main set
+            temp_section.sectionOptions.push_back(temp_option);
+            //clear the temp values
+            temp_option.values.clear();
+
+        temp_option.option = "height";
+            temp_option.values.
+                push_back(std::to_string(lua_parser.PopLuaTableIntegerValue("main", "height")));
+
+                if(debug_level > 0)
+                {
+                    cout<<"\t+Option: "<<temp_option.option<<endl;
+                    cout<<"\t++  "<< temp_option.values.back() <<endl;
+                }
+             
+            //height option for the main set
+            temp_section.sectionOptions.push_back(temp_option);
+            temp_option.values.clear();
+
+            lua_getfield(lua_parser.GetState(), -1, "backgrounds");
+            lua_getfield(lua_parser.GetState(), -1, "amount");
+            int num_backgrounds = lua_tonumber(lua_parser.GetState(), -1);
+            lua_pop(lua_parser.GetState(),1);
+
+            temp_option.option = "bkg amount";
+            temp_option.values.push_back(std::to_string(num_backgrounds));
+
+            temp_section.sectionOptions.push_back(temp_option);
+            temp_option.values.clear();
+            cout<<"\t+ Number of background layers: " << num_backgrounds<<endl;
+
+            //vector of the background sprites
+            temp_option.option = "backgroundLayers" ;
+
+            for(int i = 0; i < num_backgrounds; i++)
+            {
+                lua_rawgeti(lua_parser.GetState(), -1, i);
+                string bg_sprite = lua_tostring(lua_parser.GetState(), -1);
+                lua_pop(lua_parser.GetState(),1);
+                cout<<"\t+Background layer " <<i<<": "<<bg_sprite<<endl;
+
+                temp_option.values.push_back(bg_sprite);
+            }
+
+            temp_section.sectionOptions.push_back(temp_option);
+            temp_option.values.clear();
+            
+        configSection.push_back(temp_section);
+        temp_section.sectionOptions.clear();
+ 
+        readConfigPlayers(lua_parser, configSection, temp_section);
+        readConfigObjects(lua_parser, configSection, temp_section);
+}
+//}}}
+
+void readConfigPlayers(LuaParser &lua_parser,
+                       vector<section> &configSection,
+                       section &temp_section)
+ //{{{
+{
+    cout<<"##Reading Players##"<<endl;
+
+    temp_section.title = "Player";
+    optionSet temp_option;
+    temp_option.option = "num players";
+
+        //number of players to look for
+        temp_option.values.
+            push_back(std::to_string(lua_parser.PopLuaTableIntegerValue("players", "amount")));
+
+        int num_players = std:: atoi( temp_option.values.back().c_str() );
+
+        if(debug_level > 0)
+            cout<<"\t+Number of players in config: " << num_players <<endl;
+
+        temp_section.sectionOptions.push_back(temp_option);
+        temp_option.values.clear();
+
+    //add the main section to the configuration
+    //configSection.push_back(temp_section);
+
+
+    //some temp vars
+    string sprite_name, hc_name;
+    int x_pos, y_pos;
+
+    configSection.push_back(temp_section);
+
+    //should still have the player table on top of stack from the num_players loading
+    if(lua_istable(lua_parser.GetState(), -1))
+    {
+        //cout<<"\t+got player table!"<<endl;
+
+        //go through all the players
+        for(int i = 0; i < num_players; i++)
+        {
+            //cout<<"\t+Parsing player table "<< i <<endl;
+            //get the first player (index zero of players table in lua)
+            lua_rawgeti(lua_parser.GetState(), -1, i);
+
+            temp_section.sectionOptions.clear();
+            temp_section.title = "player-" + std::to_string(i);
+            cout<<"\t++player "<<i<<"++"<<endl;
+
+            //make sure top item is a table
+            if(lua_istable(lua_parser.GetState(), -1))
+            {
+                //cout<<"\t+got player zero table..!"<<endl;
+                
+                //get lua to put the current tables "sprite" key's value
+                lua_getfield(lua_parser.GetState(), -1, "sprite");
+
+                //grab the value of "sprite" from the first player's table
+                sprite_name = lua_tostring(lua_parser.GetState(), -1);
+                cout<<"\t+Sprite: "<< sprite_name << endl;
+                
+                //fill in options structure
+                temp_option.option = "sprite";
+                temp_option.values.push_back(sprite_name);
+                temp_section.sectionOptions.push_back(temp_option);
+                temp_option.values.clear();
+
+                //pop the last value off, not needed anymore
+                lua_pop(lua_parser.GetState(),1);
+
+    
+                //put current player table "x" value on stack
+                lua_getfield(lua_parser.GetState(), -1, "x");
+
+                //get a number off the top
+                x_pos = lua_tonumber(lua_parser.GetState(), -1);
+                cout<<"\t+X Pos: "<< x_pos<<endl;
+
+                //fill in options structure
+                temp_option.option = "x";
+                temp_option.values.push_back(std::to_string(x_pos));
+                temp_section.sectionOptions.push_back(temp_option);
+                temp_option.values.clear();
+
+                //pop the last value off, not needed anymore
+                lua_pop(lua_parser.GetState(),1);
+
+
+                //put current player table "x" value on stack
+                lua_getfield(lua_parser.GetState(), -1, "y");
+
+                //get a number off the top
+                y_pos = lua_tonumber(lua_parser.GetState(), -1);
+                cout<<"\t+Y Pos: "<< y_pos<<endl;
+                
+                //fill in options structure
+                temp_option.option = "y";
+                temp_option.values.push_back(std::to_string(y_pos));
+                temp_section.sectionOptions.push_back(temp_option);
+                temp_option.values.clear();
+
+                //pop the last value off, not needed anymore
+                lua_pop(lua_parser.GetState(),1);
+
+
+                //put current player table "x" value on stack
+                lua_getfield(lua_parser.GetState(), -1, "HC");
+                
+                //get a number off the top
+                hc_name = lua_tostring(lua_parser.GetState(), -1);
+                cout<<"\t+HC: "<< hc_name<<endl;
+
+                //fill in options structure
+                temp_option.option = "HC";
+                temp_option.values.push_back(hc_name);
+                temp_section.sectionOptions.push_back(temp_option);
+                temp_option.values.clear();
+
+                //pop the last value off, not needed anymore
+                lua_pop(lua_parser.GetState(),1);
+
+                //put current player table "x" value on stack
+                lua_getfield(lua_parser.GetState(), -1, "max accel");
+                
+                //get a number off the top
+                 string maxAcc =
+                     std::to_string(lua_tonumber(lua_parser.GetState(), -1));
+
+                cout<<"\t+max accel: "<< maxAcc <<endl;
+
+                //fill in options structure
+                temp_option.option = "max accel";
+                temp_option.values.push_back(maxAcc);
+                temp_section.sectionOptions.push_back(temp_option);
+                temp_option.values.clear();
+
+                //pop the last value off, not needed anymore
+                lua_pop(lua_parser.GetState(),1);
+
+              readConfigMissiles(lua_parser, configSection, temp_section, i);
+
+                configSection.push_back(temp_section);
+
+            }
+            else
+            {
+                cout<<"ERROR: Table "<< i << " does not exist or is invalid!"<<endl;
+            }
+        }
+    }
+}
+ //}}}
+
+void readConfigMissiles(LuaParser &lua_parser, 
+                        vector<section> &configSection, 
+                        section &temp_section,
+                        int player_num)
+//{{{
+{
+    cout<<"\t##Reading Player "<< player_num<<" Missiles##"<<endl;
+    optionSet temp_option;
+    int i = player_num; //because Im lazy
+    //grab the missiles table from the player table
+
+    lua_getfield(lua_parser.GetState(), -1, "missiles");
+
+    if(lua_istable(lua_parser.GetState(), -1))
+    {
+        int amount;
+        string missle_sprite;
+
+        //get the amount field from missiles on top of stack
+        lua_getfield(lua_parser.GetState(), -1, "amount");
+        
+        //parse the amount field
+        amount = lua_tonumber(lua_parser.GetState(), -1);
+        cout<<"\t+Amount of missiles for player "<< i <<" : "<< amount << endl;
+
+        //remove the last item
+        lua_pop(lua_parser.GetState(), 1);
+
+        //go through all the missiles in the missile table
+        for(int j = 0; j < amount; j++)
+        {
+        //{{{
+        
+            //store the player that this missile goes to
+            temp_option.option = "player id";
+            temp_option.values.push_back(std::to_string(player_num));
+            temp_section.sectionOptions.push_back(temp_option);
+
+            cout<<"\n\t\t+Missile player id: "<< temp_option.values.back()<<endl;
+            temp_option.values.clear();
+
+            //get a missile table from missiles table onto the stack
+            lua_rawgeti(lua_parser.GetState(), -1, j);
+
+            //ensure it's a table
+            if(lua_istable(lua_parser.GetState(), -1))
+            {
+                //get the sprite for this missile onto the top of the stack
+                temp_option.values.push_back(lua_parser.GetStringFromField("sprite"));
+
+                temp_option.option = "missile-" + std::to_string(j) + "-sprite";
+                temp_section.sectionOptions.push_back(temp_option);
+                cout<<"\t\t+Missile sprite: "<< temp_option.values.back()<<endl;
+                temp_option.values.clear();
+
+
+                //get the name for this missile 
+                temp_option.values.push_back( lua_parser.GetStringFromField("name") );
+
+                temp_option.option = "missile-" + std::to_string(j) + "-name";
+                temp_section.sectionOptions.push_back(temp_option);
+                cout<<"\t\t+Missile name: "<< temp_option.values.back()<<endl;
+                temp_option.values.clear();
+                
+                
+                //get the amount for this missile
+                temp_option.values.push_back( lua_parser.GetStringFromField("amount") );
+
+                temp_option.option = "missile-" + std::to_string(j) + "-amount";
+                temp_section.sectionOptions.push_back(temp_option);
+                cout<<"\t\t+Missile amount: "<< temp_option.values.back()<<endl;
+                temp_option.values.clear();
+
+                
+                //get the damage for this missile 
+                temp_option.values.push_back( lua_parser.GetStringFromField("damage") );
+
+                temp_option.option = "missile-" + std::to_string(j) + "-damage";
+                temp_section.sectionOptions.push_back(temp_option);
+                cout<<"\t\t+Missile damage: "<< temp_option.values.back()<<endl;
+                temp_option.values.clear();
+
+
+                //get the velocity for this missile
+                temp_option.values.push_back(lua_parser.GetStringFromField("velocity"));
+
+                temp_option.option = "missile-" + std::to_string(j) + "-velocity";
+                temp_section.sectionOptions.push_back(temp_option);
+                cout<<"\t\t+Missile velocity: "<< temp_option.values.back()<<endl;
+                temp_option.values.clear();
+
+
+                //get the lifespan for this missile 
+                temp_option.values.push_back(lua_parser.GetStringFromField("lifespan"));
+
+                temp_option.option = "missile-" + std::to_string(j) + "-lifespan";
+                temp_section.sectionOptions.push_back(temp_option);
+                cout<<"\t\t+Missile lifespan: "<< temp_option.values.back()<<endl;
+                temp_option.values.clear();
+
+            }
+            else
+            {
+                cout<<"Error with missile table!"<<endl;
+            }
+        //}}}
+        }
+    }
+    else
+    {
+        cout<<"ERROR: Something wrong with player " 
+            << i << "'s missiles table!"<<endl;
+    }
+}
+//}}}
+
+void readConfigObjects(LuaParser &lua_parser,
+                        vector<section> &configSection,
+                        section &temp_section)
+//{{{
+{
+    optionSet temp_option;
+
+    int num_objects = lua_parser.PopLuaTableIntegerValue("objects", "amount");
+
+    cout<<"##Reading Objects##"<<endl;
+
+    temp_section.title = "Objects";
+    temp_section.sectionOptions.clear();
+
+    //create the option
+    temp_option.option = "num objects";
+    temp_option.values.push_back(std::to_string(num_objects));
+    temp_section.sectionOptions.push_back(temp_option);
+    temp_option.values.clear();
+
+    cout<<"\t+Num objects = "<<num_objects<<endl;
+
+    configSection.push_back(temp_section);
+
+    for(int i = 0; i < num_objects; i++)
+    {
+        temp_section.sectionOptions.clear();
+        temp_section.title = "object " + std::to_string(i);
+        
+
+        //cout<<"\t+Parsing object table"<<endl;
+        temp_option.option = "object id";
+        temp_option.values.push_back(std::to_string(i));
+        temp_section.sectionOptions.push_back(temp_option);
+        cout<<endl;
+        cout<<"\t+object id = " << temp_option.values.back() << endl;
+        temp_option.values.clear();
+
+        lua_rawgeti(lua_parser.GetState(), -1, i);
+
+        if(lua_istable(lua_parser.GetState(), -1))
+        {
+
+            temp_option.option = "x";
+            temp_option.values.push_back(std::to_string(lua_parser.GetIntegerFromField("x")));
+            temp_section.sectionOptions.push_back(temp_option);
+            cout<<"\t+x = "<<temp_option.values.back()<<endl;
+            temp_option.values.clear();
+
+            temp_option.option = "y";
+            temp_option.values.push_back(std::to_string(lua_parser.GetIntegerFromField("y")));
+            temp_section.sectionOptions.push_back(temp_option);
+            cout<<"\t+y = "<<temp_option.values.back()<<endl;
+            temp_option.values.clear();
+
+
+            temp_option.option = "sprite";
+            temp_option.values.push_back(lua_parser.GetStringFromField("sprite"));
+            temp_section.sectionOptions.push_back(temp_option);
+            cout<<"\t+sprite = "<<temp_option.values.back()<<endl;
+            temp_option.values.clear();
+
+
+            temp_option.option = "HC";
+            temp_option.values.push_back(lua_parser.GetStringFromField("HC"));
+            temp_section.sectionOptions.push_back(temp_option);
+            cout<<"\t+HC = "<<temp_option.values.back()<<endl;
+            temp_option.values.clear();
+
+
+            temp_option.option = "mass";
+            temp_option.values.push_back(std::to_string(lua_parser.GetIntegerFromField("mass")));
+            temp_section.sectionOptions.push_back(temp_option);
+            cout<<"\t+mass = "<<temp_option.values.back()<<endl;
+            temp_option.values.clear();
+
+            temp_option.option = "rotation";
+            temp_option.values.
+                push_back(std::to_string(lua_parser.GetIntegerFromField("rotation")));
+            temp_section.sectionOptions.push_back(temp_option);
+            cout<<"\t+rotation = "<<temp_option.values.back()<<endl;
+            temp_option.values.clear();
+
+            temp_option.option = "x velocity";
+            temp_option.values.
+                push_back(std::to_string(lua_parser.GetIntegerFromField("x velocity")));
+            temp_section.sectionOptions.push_back(temp_option);
+            cout<<"\t+x velocity = "<<temp_option.values.back()<<endl;
+            temp_option.values.clear();
+
+            temp_option.option = "y velocity";
+            temp_option.values.
+                push_back(std::to_string(lua_parser.GetIntegerFromField("y velocity")));
+            temp_section.sectionOptions.push_back(temp_option);
+            cout<<"\t+y velocity = "<<temp_option.values.back()<<endl;
+            temp_option.values.clear();
+
+
+            lua_pop(lua_parser.GetState(), 1);
+        }
+        configSection.push_back(temp_section);
+    }
+}
+//}}}

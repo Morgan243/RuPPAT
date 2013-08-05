@@ -38,6 +38,10 @@ class Game
 		//DECONSTRUCTOR
 		~Game();
 
+        void initGame(vector<section> configSections);
+
+        void initGame_lua(vector<section> configSections);
+
 		void initEvent(Event_desc &initMe);
 
 		void createPixElement(int x, int y,	

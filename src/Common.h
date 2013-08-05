@@ -12,6 +12,10 @@
 class Common
 {
 	public:
+        static std::string createReadableStringFromSection(section configSection);
+
+        static std::string createReadableStringFromSection(vector<section> configSection);
+
 		//set the static members "width" and "height"
 		static void SetDimensions(const unsigned int width, const unsigned int height);
 	
