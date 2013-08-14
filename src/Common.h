@@ -7,6 +7,7 @@
 //--------------------------------------------------------------------
 #ifndef COMMON_H
 #define COMMON_H
+#include "SDL/SDL.h"
 #include "Descriptors.h"
 
 class Common
@@ -35,6 +36,24 @@ class Common
 		static bool ApplyDimming(Pixel_desc &pix_t);
 
         static void RotatePoint(const float degrees, Pixel_desc &pix_t, const CoOrd center);
+
+        static SDL_Surface* CreateSurface(int width, int height);
+
+        static void surfaceToSurface(SDL_Surface* src, SDL_Surface* dest, int x_cent, int y_cent);
+
+        static void surfaceToSurface(SDL_Surface* src,
+                                     SDL_Rect src_rect,
+                                     SDL_Surface* dest,
+                                     int x_cent, int y_cent);
+
+        static void PerPixel_surfaceToSurface(SDL_Surface *src,
+                                                SDL_Rect src_rect,
+                                                SDL_Surface* dest,
+                                                int x_cent, int y_cent);
+
+        static Uint32 getPixel(SDL_Surface* src, int x, int y);
+
+        static Uint32 putPixel(SDL_Surface* dest, int x, int y);
 
 	private:
 		static unsigned int width, height;

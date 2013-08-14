@@ -9,6 +9,7 @@ using namespace std;
 
 string Common::createReadableStringFromSection(section configSection)
 {
+//{{{
     string readable = "Section Title: " + configSection.title + "\n";
 
     for(int i = 0; i < configSection.sectionOptions.size(); i++)
@@ -22,10 +23,12 @@ string Common::createReadableStringFromSection(section configSection)
     }
 
     return readable;
+    //}}}
 }
 
 string Common::createReadableStringFromSection(vector<section> configSection)
 {
+//{{{
     string readable = "";
 
     for(int i = 0; i < configSection.size(); i++)
@@ -34,6 +37,7 @@ string Common::createReadableStringFromSection(vector<section> configSection)
     }
 
     return readable;
+//}}}
 }
 
 void Common::SetDimensions(const unsigned int wid, const unsigned int hei) 
@@ -388,3 +392,107 @@ void Common::RotatePoint(const float degrees, Pixel_desc &pix_t, const CoOrd cen
 //}}}
 }
 
+
+SDL_Surface* Common::CreateSurface(int w, int h)
+{
+//{{{
+	#if SDL_BYTEORDER == SDL_BIG_ENDIAN 
+		return SDL_CreateRGBSurface(SDL_SWSURFACE |SDL_SRCALPHA,w,h,32, 0xFF000000, 
+		0x00FF0000, 0x0000FF00, 0x000000FF); 
+	#else 
+		return SDL_CreateRGBSurface(SDL_SWSURFACE | SDL_SRCALPHA,w,h,32, 0x000000FF, 
+		0x0000FF00, 0x00FF0000, 0xFF000000); 
+	#endif 
+//}}}
+}
+
+
+void Common::surfaceToSurface(SDL_Surface* src, SDL_Surface* dest, int x_cent, int y_cent)
+{
+//{{{
+    SDL_Rect position;
+
+    position.x = x_cent - (src->w/2);
+    position.y = y_cent - (src->h/2);
+
+    position.w = 0;
+    position.h = 0;
+
+    if(SDL_MUSTLOCK(dest))
+        SDL_LockSurface(dest);
+
+		SDL_BlitSurface(src, NULL, dest, &position);
+
+    if(SDL_MUSTLOCK(dest))
+        SDL_UnlockSurface(dest);
+//}}}
+}
+
+void Common::surfaceToSurface(SDL_Surface* src,
+                             SDL_Rect src_rect,
+                             SDL_Surface* dest,
+                             int x_cent, int y_cent)
+{
+//{{{
+    SDL_Rect position;
+
+    position.x = x_cent;//x_cent - (src_rect.w/2);
+    position.y = y_cent;//y_cent - (src_rect.h/2);
+
+    position.w = 0;
+    position.h = 0;
+
+    if(SDL_MUSTLOCK(dest))
+        SDL_LockSurface(dest);
+
+		SDL_BlitSurface(src, &src_rect, dest, &position);
+
+    if(SDL_MUSTLOCK(dest))
+        SDL_UnlockSurface(dest);
+//}}}
+}
+
+void Common::PerPixel_surfaceToSurface(SDL_Surface *src,
+                                            SDL_Rect src_rect,
+                                            SDL_Surface* dest,
+                                            int x_cent, int y_cent)
+{
+//{{{
+//}}}
+}
+
+Uint32 Common::getPixel(SDL_Surface* src, int x, int y)
+{
+//{{{
+
+//}}}
+}
+
+Uint32 Common::putPixel(SDL_Surface* dest, int x, int y)
+{
+//{{{
+//	if (SDL_MUSTLOCK(dest)) 
+//		SDL_LockSurface(dest);	
+//
+//		Uint8 r, g, b, a, color; 
+//		
+//		// This will probably warn you about addressing locals 
+//		SDL_GetRGBA(color, dest->format, &r, &g, &b, &a); 
+//		 
+//		// Now give it transparent pixels 
+//		color = SDL_MapRGBA(dest->format, r, g, b, a); 
+//
+//		int bpp = dest->format->BytesPerPixel;
+//
+//		/* Here p is the address to the pixel we want to set */
+//		Uint8 *p = (Uint8 *)dest->pixels + y * dest->pitch + x * bpp;
+//
+//		//prevent placeing pixel outside of screens bounds	
+//		if( ((y*(dest->pitch/4)) < game_height*game_width) 
+//		    && (y*(->pitch/4)) >=0 )
+//				*(Uint32 *)p = color;
+//
+//	if( SDL_MUSTLOCK(dest))
+//		SDL_UnlockSurface(dest);
+//}}}
+}

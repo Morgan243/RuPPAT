@@ -229,7 +229,7 @@ void Game::initGame_lua(vector<section> configSections)
 	vector<string> tempVect_2;
 
 	//default missle sprite
-	string missile_sprite, missile_name;
+	string missile_sprite, missile_name, font_sheet;
 
 	int missile_amnt, missile_dmg;
 
@@ -256,6 +256,9 @@ void Game::initGame_lua(vector<section> configSections)
 
 				else if(configSections[i].sectionOptions[j].option == "height")
 					height = atoi(configSections[i].sectionOptions[j].values[0].c_str());
+
+				else if(configSections[i].sectionOptions[j].option == "font")
+					font_sheet = configSections[i].sectionOptions[j].values[0];
 
 				else if(configSections[i].sectionOptions[j].option == "backgroundLayers")
 					tempVect = configSections[i].sectionOptions[j].values;

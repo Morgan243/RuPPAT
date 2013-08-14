@@ -72,6 +72,11 @@ RuPPAT :: RuPPAT(int width,
 		   							0x55efe000,
 								   	mainRender->pre_surface);
 
+    //hard coded font file, need to get this from the config
+    //however, not bothering to due to a planned structure overhaul
+    this->text_driver = new TextDriver("main", "FontSheet.png",
+                                        25, 25, 12, 12); //width, height, rows, columns
+
 	gravitationalConstant = 22;
 //}}}
 }
@@ -434,6 +439,7 @@ void RuPPAT :: RK4_parse()
     pD.x = 100;
     pD.y = 200;
 
+    Surface_Container test_text = text_driver->createTextBox("main", "test", "abcde");
 
     std::thread *rk4_th = new std::thread(&RuPPAT::RK4,this,t,dt);
 
@@ -448,6 +454,7 @@ void RuPPAT :: RK4_parse()
 		
 		//blit middle layer
 		mainRender->applySurface(xOrigin,yOrigin,backgroundLayers[1]);
+
 		
 		SDL_SetAlpha(mainRender->mainScreen, SDL_SRCALPHA, 0xFF);
 
@@ -457,6 +464,7 @@ void RuPPAT :: RK4_parse()
 
 		rk4_th->join();	
 
+
 		//parse objects	
 		parseObjectsToSurface();	
 		
@@ -465,7 +473,8 @@ void RuPPAT :: RK4_parse()
 
 		//parse players
 		parsePlayersToSurface();
-		
+
+                //text_driver->font.back().character_set['h']->getSprite() );
 
 		//test for boundry conditions of screen centering	
 		if(centerX < screen_centX)
@@ -486,6 +495,10 @@ void RuPPAT :: RK4_parse()
 
 		//blit top layer
 		mainRender->applySurface(xOrigin,yOrigin,backgroundLayers[2]);
+
+        mainRender->putSprite(300, 300,
+                        test_text.surface);
+		
 
 
 		//mainRender->putSprite(xOrigin + (WIDTH/2),yOrigin + (HEIGHT/2),primitives);

@@ -4,6 +4,7 @@ print('-------RuPPAT Lua Init Script Loaded---------')
 main = {}
 main["width"] = 980
 main["height"] = 900
+main["font"] = "FontSheet.png"
 
 --load the background sprites
 main["backgrounds"] = {}

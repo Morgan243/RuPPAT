@@ -451,6 +451,22 @@ void readConfigMain(LuaParser &lua_parser, vector<section> &configSection)
             temp_section.sectionOptions.push_back(temp_option);
             temp_option.values.clear();
 
+        temp_option.option = "font";
+            temp_option.values.
+                push_back(lua_parser.PopLuaTableStringValue("main", "font"));
+
+                if(debug_level > 0)
+                {
+                    cout<<"\t+Option: "<<temp_option.option<<endl;
+                    cout<<"\t++  "<< temp_option.values.back() <<endl;
+                }
+             
+            //height option for the main set
+            temp_section.sectionOptions.push_back(temp_option);
+            temp_option.values.clear();
+
+
+
             lua_getfield(lua_parser.GetState(), -1, "backgrounds");
             lua_getfield(lua_parser.GetState(), -1, "amount");
             int num_backgrounds = lua_tonumber(lua_parser.GetState(), -1);

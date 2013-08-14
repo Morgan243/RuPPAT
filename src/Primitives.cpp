@@ -8,20 +8,24 @@ Primitives::Primitives()
 
 Primitives::Primitives(int def_lnWidth, Uint32 def_lnColor, SDL_Surface *surface)
 {
+//{{{
 	this->default_lineWidth = def_lnWidth;
 
 	this->default_lineColor = def_lnColor;
 
 	this->default_surface = surface;
+//}}}
 }
 
 Primitives::~Primitives()
 {
+//{{{
 	if(default_surface != NULL)
 		SDL_FreeSurface(default_surface);
 
 	for(int i = 0; i < surface_cache.size() ; i++)
 		delete(surface_cache[i]);
+//}}}
 }
 
 float Primitives::calcSlope(CoOrd pointA, CoOrd pointB)

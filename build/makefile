@@ -13,11 +13,11 @@ BUILD_OUT=-o $(BUILD_DIR)
 SOURCE_DIR=../src/
 all: test
 
-test: main.o Render.o Game.o RuPPAT.o PhysFuncs.o Descriptors.o Player.o Object.o Sprite.o Missile.o Primitives.o ObjectFactory.o LuaParser.o
+test: main.o Render.o Game.o RuPPAT.o PhysFuncs.o Descriptors.o Player.o Object.o Sprite.o Missile.o Primitives.o ObjectFactory.o LuaParser.o TextDriver.o
 	$(COMP) $(BUILD_DIR)main.o $(BUILD_DIR)Render.o $(BUILD_DIR)Game.o $(BUILD_DIR)RuPPAT.o $(SOURCE_DIR)PhysFuncs.h \
 	$(SOURCE_DIR)PhysFuncs.cpp $(SOURCE_DIR)Descriptors.h $(BUILD_DIR)Player.o $(BUILD_DIR)Object.o $(BUILD_DIR)Sprite.o \
 	$(SOURCE_DIR)Common.h $(SOURCE_DIR)Common.cpp $(BUILD_DIR)Missile.o $(BUILD_DIR)Primitives.o $(BUILD_DIR)ObjectFactory.o \
-   	$(BUILD_DIR)LuaParser.o $(CFLAGS) $(BUILD_OUT)test  
+   	$(BUILD_DIR)LuaParser.o $(BUILD_DIR)TextDriver.o $(CFLAGS) $(BUILD_OUT)test  
 
 main.o: $(SOURCE_DIR)main.cpp
 	$(COMP) -c $(SOURCE_DIR)main.cpp $(CFLAGS) 
@@ -60,6 +60,9 @@ ObjectFactory.o: $(SOURCE_DIR)ObjectFactory.h $(SOURCE_DIR)ObjectFactory.cpp
 
 LuaParser.o: $(SOURCE_DIR)LuaParser.h $(SOURCE_DIR)LuaParser.cpp 
 	$(COMP) -c $(SOURCE_DIR)LuaParser.h $(SOURCE_DIR)LuaParser.cpp
+
+TextDriver.o: $(SOURCE_DIR)TextDriver.h $(SOURCE_DIR)TextDriver.cpp
+	$(COMP) -c $(SOURCE_DIR)TextDriver.h $(SOURCE_DIR)TextDriver.cpp
 
 clean: 
 	rm $(BUILD_DIR)*.o $(SOURCE_DIR)*.gch $(BUILD_DIR)test

@@ -18,6 +18,14 @@ Sprite :: Sprite(string path_to_sprite)
 	tempSpriteOpt = SDL_DisplayFormatAlpha(tempSprite);
 
 	base_sprite = tempSpriteOpt;
+    
+   // rotations.push_back(base_sprite);
+    rotations.push_back(
+            rotozoomSurface(tempSpriteOpt,
+                                0.0,
+                                1.0,0));
+
+    SDL_SetAlpha(rotations.back(), 0, 0xff);
 //}}}
 }
 

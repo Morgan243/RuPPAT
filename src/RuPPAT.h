@@ -11,6 +11,7 @@
 #include "Render.h"
 #include "Primitives.h"
 #include "Player.h"
+#include "TextDriver.h"
 #include <vector>
 #include <queue>
 #include <iostream>
@@ -169,5 +170,7 @@ class RuPPAT
 		vector<Object *> objectList;
 
 		queue<Pixel_desc> toRender;
+
+        TextDriver *text_driver;
 };
 #endif
