@@ -3,7 +3,7 @@
 #include <vector>
 #include <string>
 #include <map>
-#include <SDL/SDL_image.h>
+#include <SDL2/SDL_image.h>
 #include "Common.h"
 #include "Sprite.h"
 

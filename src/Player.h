@@ -5,10 +5,10 @@
 //--------------------------------------------------------------------
 #ifndef PLAYER_H
 #define PLAYER_H
-#include "SDL/SDL.h"
-#include "SDL/SDL_gfxPrimitives.h"
-#include "SDL/SDL_rotozoom.h"
-#include "SDL/SDL_image.h"
+#include "SDL2/SDL.h"
+#include "SDL2/SDL2_gfxPrimitives.h"
+#include "SDL2/SDL2_rotozoom.h"
+#include "SDL2/SDL_image.h"
 #include "math.h"
 
 #include "Object.h"
@@ -79,8 +79,8 @@ class Player : public Object
 		vector<Missile*> getFreeMissiles();
 
 		//launch a missile!
-		Missile* fireSelectedMissile();
-
+		void fireSelectedMissile();
+		void fireSelectedMissile(Sprite* fired_sprite); 
 		Entity_desc *PhysicsHandler(const float t,
 									const float dt,
 									Entity_desc &state_src);

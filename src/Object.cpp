@@ -4,15 +4,16 @@
 #include "PhysFuncs.h"
 
 Object :: Object(string sprite_path, 
-		int start_x,
+            int start_x,
 	       	int start_y,
 	       	int start_mass)
-        :sprite(sprite_path,
-                360,
-                0)
+//        :sprite(sprite_path,
+//                360,
+//                0)
 {
 //{{{
 
+    sprite = new Sprite(sprite_path, 360, 0);
 	refMax = refCounter = -1;
 
 	//set x and y
@@ -31,13 +32,14 @@ Object :: Object(string sprite_path,
 			int start_y,
 	       	int start_mass,
 			int num_rotations,
-	       	int starting_angle)
-        :sprite(sprite_path,
-                num_rotations,
-                starting_angle), 
+	       	int starting_angle):
+//        :sprite(sprite_path,
+//                num_rotations,
+//                starting_angle), 
         hitCircleSprite()
 {
 //{{{
+    sprite = new Sprite(sprite_path, num_rotations, starting_angle);
 	numRotations = num_rotations;
 
 	refMax = refCounter = -1;
@@ -60,15 +62,16 @@ Object::Object(string sprite_path,
 	       int starting_angle,
 	       float xVel,
 	       float yVel,
-	       string HC_path)
-        :sprite(sprite_path,
-            num_rotations,
-            starting_angle), 
+	       string HC_path):
+//        :sprite(sprite_path,
+//            num_rotations,
+//            starting_angle), 
         hitCircleSprite(HC_path)
 {
 //{{{
 	//if(HC_path =! NULL)
 	//cout<<"PATH:"<<HC_path<<endl;
+    sprite = new Sprite(sprite_path, num_rotations, starting_angle);
 
 	refMax = refCounter = -1;
 
@@ -90,7 +93,7 @@ Object::Object(string sprite_path,
 
 	timeCreated = SDL_GetTicks();
 
-	pixelSprite_cache = sprite.getPixelSprite();
+	pixelSprite_cache = sprite->getPixelSprite();
 
 	cout<<"pixel Sprite_cache in object is :"<< pixelSprite_cache.size()<<endl;
 	isDestroying = false;
@@ -126,9 +129,97 @@ Object::Object(const Object &src)
 //}}}
 }
 
+Object :: Object(Sprite* obj_sprite,
+            int start_x,
+	       	int start_y,
+	       	int start_mass)
+{
+//{{{
+
+    sprite = obj_sprite;
+	refMax = refCounter = -1;
+
+	//set x and y
+	descriptor.x = (float)start_x;
+	descriptor.y = (float)start_y;
+
+	//set mass
+	descriptor.mass = start_mass;
+
+	timeCreated = SDL_GetTicks();
+//}}}	
+}
+
+Object :: Object(Sprite* obj_sprite,
+	       	int start_x, 
+			int start_y,
+	       	int start_mass,
+			int num_rotations,
+	       	int starting_angle):
+        hitCircleSprite()
+{
+//{{{
+    //sprite = new Sprite(sprite_path, num_rotations, starting_angle);
+    sprite = obj_sprite;
+	numRotations = num_rotations;
+
+	refMax = refCounter = -1;
+	//set x and y
+	descriptor.x = (float)start_x;
+	descriptor.y = (float)start_y;
+
+	//set mass
+	descriptor.mass = start_mass;
+	
+	timeCreated = SDL_GetTicks();
+//}}}
+}
+
+Object::Object(Sprite *obj_sprite,
+	       int start_x,
+	       int start_y,
+	       int start_mass,
+	       int num_rotations,
+	       int starting_angle,
+	       float xVel,
+	       float yVel,
+	       string HC_path):
+        hitCircleSprite(HC_path)
+{
+//{{{
+    //sprite = new Sprite(sprite_path, num_rotations, starting_angle);
+    sprite = obj_sprite;
+
+	refMax = refCounter = -1;
+
+	//set x and y
+	descriptor.x = (float)start_x;
+	descriptor.y = (float)start_y;
+
+	//initial velocities
+	descriptor.xVel=xVel;
+	descriptor.yVel=yVel;
+
+	descriptor.xAcc=0.0;
+	descriptor.yAcc=0.0;
+
+	//set mass
+	descriptor.mass = start_mass;
+
+	numRotations = num_rotations;
+
+	timeCreated = SDL_GetTicks();
+
+	pixelSprite_cache = sprite->getPixelSprite();
+
+	cout<<"pixel Sprite_cache in object is :"<< pixelSprite_cache.size()<<endl;
+	isDestroying = false;
+//}}}
+}
+
 Object & Object::operator=(const Object &src)
 {
-	sprite.operator=(src.sprite);
+	sprite = (src.sprite);
 
 	//TODO: need to create new Object and return it	
 }
@@ -162,22 +253,22 @@ Entity_desc* Object::getDescriptor_ref()
 //{{{
 void Object :: setRotationRate(const float rotRate)
 {
-	sprite.setRotationRate(rotRate);
+	sprite->setRotationRate(rotRate);
 }
 
 float Object :: getRotationRate()
 {
-	return sprite.getRotationRate();
+	return sprite->getRotationRate();
 }
 
 void Object :: incrementRotationRate()
 {
-	sprite.incrementRotationRate();
+	sprite->incrementRotationRate();
 }
 
 void Object :: decrementRotationRate()
 {
-	sprite.decrementRotationRate();
+	sprite->decrementRotationRate();
 }
 //}}}
 
@@ -186,22 +277,22 @@ void Object :: decrementRotationRate()
 //{{{
 float Object :: getAngle()
 {
-	return sprite.getAngle();
+	return sprite->getAngle();
 }
 
 void Object :: setAngleIndex(const int angleIndex)
 {
-	sprite.setAngleIndex(angleIndex);
+	sprite->setAngleIndex(angleIndex);
 }
 
 void Object :: incrementAngleIndex()
 {
-	sprite.incrementAngleIndex();
+	sprite->incrementAngleIndex();
 }
 
 void Object :: decrementAngleIndex()
 {
-	sprite.decrementAngleIndex();
+	sprite->decrementAngleIndex();
 }
 //}}}
 
@@ -209,18 +300,28 @@ void Object :: decrementAngleIndex()
 //{{{
 bool Object :: updateSprite()
 {
-	sprite.updateSprite();
+	sprite->updateSprite();
 	return false;
 }
 
 SDL_Surface* Object :: getSprite()
 {
-	return sprite.getSprite();
+	return sprite->getSprite();
 }
 
 SDL_Surface *Object :: getSprite(const int angle)
 {
-	return sprite.getSprite(angle);
+	return sprite->getSprite(angle);
+}
+
+SDL_Texture* Object :: getSprite_text()
+{
+	return sprite->getSprite_text();
+}
+
+SDL_Texture *Object :: getSprite_text(const int angle)
+{
+	return sprite->getSprite_text(angle);
 }
 //}}}
 
@@ -284,7 +385,7 @@ void Object :: setAccelVectors(const bool forward)
 {
 //{{{
 
-		float heading = sprite.getAngle();
+    float heading = sprite->getAngle();
 	if(forward)
 	{
 		if(heading>0 && heading<90)
@@ -326,12 +427,9 @@ void Object :: setAccelVectors(const bool forward)
 			{
 			descriptor.xVel += descriptor.maxAccel;
 			}
-
-
 	}
 	else
 	{
-	
 		if(heading>0 && heading<90)
 			{
 			exhaustX=descriptor.maxAccel*cos(heading*3.141/180);
@@ -390,7 +488,7 @@ void Object :: GetVectors_FrontRelative(float &xVect,
 ///{{{
 	//determine current angle of the front of sprite (zero degrees of base sprite)
 	//determine new angle given the offset
-	float angle = sprite.getAngle() + degreeOffset;
+	float angle = sprite->getAngle() + degreeOffset;
 
 	if(angle>=360)
 	{
@@ -490,7 +588,7 @@ void Object::GameDestroy()
 	
 	int width, height;
 	
-	this->sprite.getDimensions(width,height);
+	this->sprite->getDimensions(width,height);
 
     float theta = this->getAngle();
 

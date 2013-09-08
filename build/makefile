@@ -1,69 +1,60 @@
-####################################################################################
-#This makefile builds the RuPPAT engine and a series of small interactive test games
-#
-#Author: Morgan Stuart
-#
-##################################################################################
+CXX = g++
+# Update these paths to match your installation
+# You may also need to update the linker option rpath, which sets where to look for
+# the SDL2 libraries at runtime to match your install
+SDL_LIB = -lpthread -lm -lX11 -ggdb -llua -L/usr/local/lib -lSDL2 -lSDL2_image -lSDL2_gfx -Wl,-rpath=/usr/local/lib
+SDL_INCLUDE = -I/usr/local/include
+CXXFLAGS = -c -std=c++11 $(SDL_INCLUDE)
+LDFLAGS = $(SDL_LIB)
+EXE = test
 
+SRC_DIR = ../src/
 
-CFLAGS=-lm -lSDL -lSDL_image -lSDL_gfx -lm -fopenmp -lpthread -lX11 -std=c++11 -ggdb -llua 
-COMP=g++
-BUILD_DIR=./
-BUILD_OUT=-o $(BUILD_DIR)
-SOURCE_DIR=../src/
-all: test
+all: $(EXE)
 
-test: main.o Render.o Game.o RuPPAT.o PhysFuncs.o Descriptors.o Player.o Object.o Sprite.o Missile.o Primitives.o ObjectFactory.o LuaParser.o TextDriver.o
-	$(COMP) $(BUILD_DIR)main.o $(BUILD_DIR)Render.o $(BUILD_DIR)Game.o $(BUILD_DIR)RuPPAT.o $(SOURCE_DIR)PhysFuncs.h \
-	$(SOURCE_DIR)PhysFuncs.cpp $(SOURCE_DIR)Descriptors.h $(BUILD_DIR)Player.o $(BUILD_DIR)Object.o $(BUILD_DIR)Sprite.o \
-	$(SOURCE_DIR)Common.h $(SOURCE_DIR)Common.cpp $(BUILD_DIR)Missile.o $(BUILD_DIR)Primitives.o $(BUILD_DIR)ObjectFactory.o \
-   	$(BUILD_DIR)LuaParser.o $(BUILD_DIR)TextDriver.o $(CFLAGS) $(BUILD_OUT)test  
+$(EXE): main.o Common.o $(SRC_DIR)Descriptors.h Render.o LuaParser.o Game.o \
+	RuPPAT.o Primitives.o Player.o Object.o Sprite.o Missile.o TextDriver.o \
+	PhysFuncs.o
+	$(CXX) $^ $(LDFLAGS) -o $@
 
-main.o: $(SOURCE_DIR)main.cpp
-	$(COMP) -c $(SOURCE_DIR)main.cpp $(CFLAGS) 
+main.o: $(SRC_DIR)main.cpp
+	$(CXX) $(CXXFLAGS) $< -o $@
 
-Render.o: $(SOURCE_DIR)Render.h $(SOURCE_DIR)Render.cpp
-	$(COMP) -c $(SOURCE_DIR)Render.h $(SOURCE_DIR)Render.cpp $(CFLAGS) 
+Game.o: $(SRC_DIR)Game.cpp $(SRC_DIR)Game.h
+	$(CXX) $(CXXFLAGS) $< -o $@
 
-Game.o: $(SOURCE_DIR)Game.h $(SOURCE_DIR)Game.cpp
-	$(COMP) -c $(SOURCE_DIR)Game.h $(SOURCE_DIR)Game.cpp $(CFLAGS) 
+RuPPAT.o: $(SRC_DIR)RuPPAT.cpp $(SRC_DIR)RuPPAT.h
+	$(CXX) $(CXXFLAGS) $< -o $@
 
-RuPPAT.o: $(SOURCE_DIR)RuPPAT.cpp $(SOURCE_DIR)RuPPAT.h
-	$(COMP) -c $(SOURCE_DIR)RuPPAT.h $(SOURCE_DIR)RuPPAT.cpp $(CFLAGS)
+Primitives.o: $(SRC_DIR)Primitives.cpp $(SRC_DIR)Primitives.h
+	$(CXX) $(CXXFLAGS) $< -o $@
 
-PhysFuncs.o: $(SOURCE_DIR)PhysFuncs.h
-	$(COMP) -c $(SOURCE_DIR)PhysFuncs.h $(SOURCE_DIR)PhysFuncs.cpp $(CFLAGS) 
+Player.o: $(SRC_DIR)Player.cpp $(SRC_DIR)Player.h
+	$(CXX) $(CXXFLAGS) $< -o $@
 
-Descriptors.o: $(SOURCE_DIR)Descriptors.h
-	$(COMP) -c $(SOURCE_DIR)Descriptors.h $(CFLAGS) 
+Object.o: $(SRC_DIR)Object.cpp $(SRC_DIR)Object.h
+	$(CXX) $(CXXFLAGS) $< -o $@
 
-Player.o: $(SOURCE_DIR)Player.h $(SOURCE_DIR)Player.cpp
-	$(COMP) -c $(SOURCE_DIR)Player.h $(SOURCE_DIR)Player.cpp $(CFLAGS) 
+Sprite.o: $(SRC_DIR)Sprite.cpp $(SRC_DIR)Sprite.h
+	$(CXX) $(CXXFLAGS) $< -o $@
 
-Object.o: $(SOURCE_DIR)Object.h $(SOURCE_DIR)Object.cpp
-	$(COMP) -c $(SOURCE_DIR)Object.h $(SOURCE_DIR)Object.cpp $(CFLAGS) 
+Missile.o: $(SRC_DIR)Missile.cpp $(SRC_DIR)Missile.h
+	$(CXX) $(CXXFLAGS) $< -o $@
 
-Sprite.o: $(SOURCE_DIR)Sprite.h $(SOURCE_DIR)Sprite.cpp
-	$(COMP) -c $(SOURCE_DIR)Sprite.h $(SOURCE_DIR)Sprite.cpp $(CFLAGS)
+TextDriver.o: $(SRC_DIR)TextDriver.cpp $(SRC_DIR)TextDriver.h
+	$(CXX) $(CXXFLAGS) $< -o $@
 
-Missile.o: $(SOURCE_DIR)Missile.h $(SOURCE_DIR)Missile.cpp
-	$(COMP) -c $(SOURCE_DIR)Missile.h $(SOURCE_DIR)Missile.cpp $(CFLAGS)
+PhysFuncs.o: $(SRC_DIR)PhysFuncs.cpp $(SRC_DIR)PhysFuncs.h
+	$(CXX) $(CXXFLAGS) $< -o $@
 
-Primitives.o: $(SOURCE_DIR)Primitives.h $(SOURCE_DIR)Primitives.cpp
-	$(COMP) -c $(SOURCE_DIR)Primitives.h $(SOURCE_DIR)Primitives.cpp $(CFLAGS)
+Common.o: $(SRC_DIR)Common.cpp $(SRC_DIR)Common.h
+	$(CXX) $(CXXFLAGS) $< -o $@
+	
+Render.o: $(SRC_DIR)Render.cpp $(SRC_DIR)Render.h
+	$(CXX) $(CXXFLAGS) $< -o $@
 
-Common.o: $(SOURCE_DIR)Common.h $(SOURCE_DIR)Common.cpp
-	$(COMP) -c $(SOURCE_DIR)Common.h $(SOURCE_DIR)Common.cpp $(CFLAGS)
+LuaParser.o: $(SRC_DIR)LuaParser.cpp $(SRC_DIR)LuaParser.h
+	$(CXX) $(CXXFLAGS) $< -o $@
 
-ObjectFactory.o: $(SOURCE_DIR)ObjectFactory.h $(SOURCE_DIR)ObjectFactory.cpp 
-	$(COMP) -c $(SOURCE_DIR)ObjectFactory.h $(SOURCE_DIR)ObjectFactory.cpp 
-
-LuaParser.o: $(SOURCE_DIR)LuaParser.h $(SOURCE_DIR)LuaParser.cpp 
-	$(COMP) -c $(SOURCE_DIR)LuaParser.h $(SOURCE_DIR)LuaParser.cpp
-
-TextDriver.o: $(SOURCE_DIR)TextDriver.h $(SOURCE_DIR)TextDriver.cpp
-	$(COMP) -c $(SOURCE_DIR)TextDriver.h $(SOURCE_DIR)TextDriver.cpp
-
-clean: 
-	rm $(BUILD_DIR)*.o $(SOURCE_DIR)*.gch $(BUILD_DIR)test
-
+clean:
+	rm *.o && rm $(EXE)

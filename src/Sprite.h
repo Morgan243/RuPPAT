@@ -3,9 +3,9 @@
 // 		Handles all the sprite generation and manipulation.
 //--------------------------------------------------------------------
 
-#include "SDL/SDL.h"
-#include "SDL/SDL_gfxPrimitives.h"
-#include "SDL/SDL_rotozoom.h"
+#include "SDL2/SDL.h"
+#include "SDL2/SDL2_gfxPrimitives.h"
+#include "SDL2/SDL2_rotozoom.h"
 #include "SDL/SDL_image.h"
 #include "Descriptors.h"
 
@@ -24,8 +24,13 @@ class Sprite
 		explicit Sprite(string path_to_sprite,
 				int numRotations, int startingAngle);
 
+		explicit Sprite(string path_to_sprite,
+				int numRotations, int startingAngle,
+                SDL_Renderer *render_context);
+
 		//copy constructor
 		Sprite(const Sprite& src);
+		Sprite(const Sprite* src);
 
 		//assignment operator
 		Sprite & operator=(const Sprite &src);
@@ -52,6 +57,8 @@ class Sprite
 
 		void generateRotations();
 
+		void generateRotations(SDL_Renderer* use_renderer);
+
 		void setRotationRate(const float rotRate);
 
 		float getRotationRate();
@@ -77,6 +84,13 @@ class Sprite
 		SDL_Surface * getSprite();
 
 		SDL_Surface * getSprite(const int angle);
+
+		SDL_Texture * getBaseSprite_text() const;
+
+		SDL_Texture * getSprite_text();
+
+		SDL_Texture * getSprite_text(const int angle);
+
 
 		Uint32 getPixel(const int x, const int y);
 
@@ -110,6 +124,7 @@ class Sprite
 
 		void clearPixel(const int rotation, const int x, const int y);
 
+        static SDL_Renderer* render_context;
 	protected:
 		float rotationRate,
 				degreeIncrement,
@@ -121,6 +136,7 @@ class Sprite
 
 		SDL_Surface *base_sprite;
 		vector<SDL_Surface *> rotations;	
+		vector<Texture_Container> rotations_text;	
 		vector<Pixel_desc> pixel_sprite;
 		vector<Renderables_Cont> pixel_sprites;
 };

@@ -6,10 +6,10 @@
 #ifndef OBJECT_H
 #define OBJECT_H
 
-#include "SDL/SDL.h"
-#include "SDL/SDL_gfxPrimitives.h"
-#include "SDL/SDL_rotozoom.h"
-#include "SDL/SDL_image.h"
+#include "SDL2/SDL.h"
+#include "SDL2/SDL2_gfxPrimitives.h"
+#include "SDL2/SDL2_rotozoom.h"
+#include "SDL2/SDL_image.h"
 #include "math.h"
 #include "omp.h"
 
@@ -50,6 +50,29 @@ class Object
 						float xVel,
 						float yVel,
 						string HC_path);
+
+        explicit Object(Sprite* obj_sprite,
+                        int start_x,
+						int start_y,
+						int start_mass);
+
+		explicit Object(Sprite* obj_sprite,
+						int start_x,
+						int start_y,
+						int start_mass,
+						int num_rotations,
+						int starting_angle);
+
+		explicit Object(Sprite* obj_sprite,
+						int start_x,
+						int start_y,
+						int start_mass,
+						int num_rotations,
+						int starting_angle,
+						float xVel,
+						float yVel,
+						string HC_path);
+
 
 		Object(const Object& src);
 
@@ -93,6 +116,10 @@ class Object
 		SDL_Surface *getSprite();
 
 		SDL_Surface *getSprite(const int angle);
+
+		SDL_Texture *getSprite_text();
+
+		SDL_Texture *getSprite_text(const int angle);
 
 		virtual bool updateSprite();
         //}}}
@@ -166,7 +193,7 @@ class Object
 
 		float getTime();
 
-		Sprite sprite, hitCircleSprite;
+		Sprite *sprite, hitCircleSprite;
 
 		bool killMe,
 			 isDestroying;

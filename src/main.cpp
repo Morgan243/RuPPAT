@@ -10,10 +10,10 @@
 #include <sys/resource.h>
 
 //SDL Dependencies
-#include "SDL/SDL.h"
-#include "SDL/SDL_gfxPrimitives.h"
-#include "SDL/SDL_rotozoom.h"
-#include "SDL/SDL_image.h"
+#include "SDL2/SDL.h"
+#include "SDL2/SDL2_gfxPrimitives.h"
+#include "SDL2/SDL2_rotozoom.h"
+#include "SDL2/SDL_image.h"
 
 #include "LuaParser.h"
 
@@ -126,7 +126,7 @@ int main(int argc, char *argv[])
     //experimental, read config from lua
     readConfigLuaScript("init_script.lua", configSection_lua);
 
-    cout<<Common::createReadableStringFromSection(configSection_lua)<<endl;
+    //cout<<Common::createReadableStringFromSection(configSection_lua)<<endl;
 
     //create the game object
 	//game = new Game(configSection);

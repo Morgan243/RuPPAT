@@ -3,10 +3,10 @@
 //| 	Draws and caches basic primitives such as lines, circles, and 
 //|squares, you can then use them later.
 //--------------------------------------------------------------------
-#include "SDL/SDL.h"
-#include "SDL/SDL_gfxPrimitives.h"
-#include "SDL/SDL_rotozoom.h"
-#include "SDL/SDL_image.h"
+#include "SDL2/SDL.h"
+#include "SDL2/SDL2_gfxPrimitives.h"
+#include "SDL2/SDL2_rotozoom.h"
+#include "SDL2/SDL_image.h"
 #include "Descriptors.h"
 
 using namespace std;

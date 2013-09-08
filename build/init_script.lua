@@ -12,6 +12,9 @@ main["backgrounds"]["amount"] = 3
 main["backgrounds"][0] = "bkg_one_1080.png"
 main["backgrounds"][1] = "bkg_two_1080.png"
 main["backgrounds"][2] = "bkg_three_1080.png"
+--main["backgrounds"][0] = "bkg_massive_8k_one.png"
+--main["backgrounds"][1] = "bkg_massive_8k_two.png"
+--main["backgrounds"][2] = "bkg_massive_8k_three.png"
 
 
 --main user's player information
@@ -49,7 +52,7 @@ asteroid_medium["x"] = 300
 asteroid_medium["y"] = 500
 asteroid_medium["mass"] = 150
 asteroid_medium["rotation"] = -1.3
-asteroid_medium["x velocity"] = 10
+asteroid_medium["x velocity"] = 0
 asteroid_medium["y velocity"] = 0
 asteroid_medium["sprite"] = "asteroid_medium_1.png"
 asteroid_medium["HC"] = "asteroid_medium_1.png"
@@ -61,8 +64,8 @@ asteroid_medium_1["x"] = 1000
 asteroid_medium_1["y"] = 200
 asteroid_medium_1["mass"] = 150
 asteroid_medium_1["rotation"] = -0.3
-asteroid_medium_1["x velocity"] = 10
-asteroid_medium_1["y velocity"] = -10
+asteroid_medium_1["x velocity"] = 0
+asteroid_medium_1["y velocity"] = -0
 asteroid_medium_1["sprite"] = "asteroid_medium_1.png"
 asteroid_medium_1["HC"] = "asteroid_medium_1.png"
 
@@ -74,8 +77,8 @@ asteroid_large["x"] = 300
 asteroid_large["y"] = 100
 asteroid_large["mass"] = 150
 asteroid_large["rotation"] = -1.1
-asteroid_large["x velocity"] = 20
-asteroid_large["y velocity"] = 5
+asteroid_large["x velocity"] = 0
+asteroid_large["y velocity"] = 0
 asteroid_large["sprite"] = "asteroid_large_1.png"
 asteroid_large["HC"] = "asteroid_large_1_HC.png"
 
@@ -94,7 +97,7 @@ objects[2] = asteroid_large
 red_planet = {}
 red_planet["x"] = 850
 red_planet["y"] = 550
-red_planet["mass"] = 1500
+red_planet["mass"] = 25000
 red_planet["rotation"] = -2.0
 red_planet["x velocity"] = 0
 red_planet["y velocity"] = 0

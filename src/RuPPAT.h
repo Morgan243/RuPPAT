@@ -3,10 +3,10 @@
 //| 	The primary class that brings everything together by handling
 //|objects, pixels, players and their manipulations/control.
 //--------------------------------------------------------------------
-#include "SDL/SDL.h"
-#include "SDL/SDL_gfxPrimitives.h"
-#include "SDL/SDL_rotozoom.h"
-#include "SDL/SDL_image.h"
+#include "SDL2/SDL.h"
+#include "SDL2/SDL2_gfxPrimitives.h"
+#include "SDL2/SDL2_rotozoom.h"
+#include "SDL2/SDL_image.h"
 #include "Descriptors.h"
 #include "Render.h"
 #include "Primitives.h"
@@ -15,6 +15,7 @@
 #include <vector>
 #include <queue>
 #include <iostream>
+#include <mutex>
 #ifndef RuPPAT_H
 #define RuPPAT_H
 
@@ -121,6 +122,9 @@ class RuPPAT
 		void handleDelete(const int index);
 
 		Primitives *primitive_maker;
+        
+		//if this goes true, all threads stop, engine stops
+		bool done;
 		
 	private:
 
@@ -136,8 +140,6 @@ class RuPPAT
 
 		Uint32 thisTime;
 
-		//if this goes true, all threads stop, engine stops
-		bool done;
 		
 		Render* mainRender;
 				
@@ -148,6 +150,8 @@ class RuPPAT
 						  ent_rw_lock,
 						  player_rw_lock,
 						  object_rw_lock;
+
+        std::mutex render_job_mutex;
 
 		//independent pixels on screen
 		vector<Pixel_desc> pixelList;
@@ -162,7 +166,7 @@ class RuPPAT
 		vector<Entity_desc> entList_m;
 
 		//layers of the background
-		vector<SDL_Surface *>backgroundLayers;
+		vector<SDL_Texture *>backgroundLayers;
 
 		//independent sprite that controlled by AI or human
 		vector<Player *> players;
@@ -172,5 +176,7 @@ class RuPPAT
 		queue<Pixel_desc> toRender;
 
         TextDriver *text_driver;
+
+        std::queue< RenderJob_Container* > render_jobs;
 };
 #endif

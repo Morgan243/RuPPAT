@@ -26,6 +26,32 @@ Missile::Missile(string sprite_path,
 	cout<<"created at:"<<timeCreated<<endl;
 }
 
+Missile::Missile(Sprite* obj_sprite,
+                int num_rotations,
+                int startingAngle,
+                int mass,
+                float maxaccel,
+                int startX, 
+                int startY,
+                float xVel,
+                float yVel,
+                string HC_path)
+
+        :Object(obj_sprite,
+                startX,
+                startY,
+                mass,
+                num_rotations, 
+                startingAngle,
+                xVel,
+                yVel,
+                HC_path)
+{
+	killMe = false;
+	timeCreated = 0;
+	cout<<"created at:"<<timeCreated<<endl;
+}
+
 Missile :: ~Missile()
 {
 }
@@ -126,11 +152,17 @@ bool Missile::UpdateAndGetRenderables(Renderables_Cont &rnder)
 	//only add the sprite if the missile is active
 	if(!isDestroying)
 	{
+        Texture_Container tmpTextCont;
 		Surface_Container tmpSurfCont;
+
 		tmpSurfCont.surface = this->getSprite();
-		tmpSurfCont.x = descriptor.x;
-		tmpSurfCont.y = descriptor.y;
+        tmpTextCont.texture = this->getSprite_text();
+
+		tmpTextCont.x = tmpSurfCont.x = descriptor.x;
+		tmpTextCont.y = tmpSurfCont.y = descriptor.y;
+
 		rnder.sprites.push_back(tmpSurfCont);
+        rnder.sprites_text.push_back(tmpTextCont);
 
 		return true;
 	}

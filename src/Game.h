@@ -3,15 +3,15 @@
 //| 	Basic logic for gameplay should exist here. Things like handling
 //|player input and initializing game specific events.
 //--------------------------------------------------------------------
-#include "SDL/SDL.h"
-#include "SDL/SDL_gfxPrimitives.h"
-#include "SDL/SDL_rotozoom.h"
-#include "SDL/SDL_image.h"
+#include "SDL2/SDL.h"
+#include "SDL2/SDL2_gfxPrimitives.h"
+#include "SDL2/SDL2_rotozoom.h"
+#include "SDL2/SDL_image.h"
 #include "Descriptors.h"
 #include "Render.h"
 #include "RuPPAT.h"
 #include "Player.h"
-#include "ObjectFactory.h"
+//#include "ObjectFactory.h"
 #include <vector>
 #include <iostream>
 #ifndef GAME_H
@@ -59,6 +59,8 @@ class Game
 			
 		void run(string selection, string option);	
 
+        void game_loop();
+
 		void handleEvents(Event_desc &mainEvents);
 
 		void rotateSpriteToCoor(int p_ID,
@@ -68,6 +70,9 @@ class Game
 
 	private:
 		SDL_Event event;	
+        
+        //declare and init SDL events structure
+        Event_desc mainEvents;
 
 		bool done,
 			 space;

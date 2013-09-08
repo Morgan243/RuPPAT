@@ -164,7 +164,7 @@ void Player :: addMissile(const string sprite_path,
 bool Player :: updateSprite()
 {
 //{{{
-	sprite.updateSprite();
+	sprite->updateSprite();
 
 	if(isSelected)
 		return true;
@@ -204,6 +204,11 @@ Missile* Player::selectMissile_byIndex(const int index)
 //}}}
 }
 
+Missile* Player::getSelectedMissile()
+{
+    return selected_missile;
+}
+
 bool Player :: areMissilesFree()
 {
 //{{{
@@ -219,11 +224,12 @@ vector<Missile*> Player :: getFreeMissiles()
 	return missiles_free;
 }
 
-Missile* Player::fireSelectedMissile()
+void Player::fireSelectedMissile()
 {
 //{{{	
 		//create new missile: copy from selected 
-		Missile *firedMissile = new Missile(*selected_missile);
+		//Missile *firedMissile = new Missile(*selected_missile);
+		Missile *firedMissile = selected_missile;// new Missile(*selected_missile);
 
 		cout<<"\""<<selected_missile->getName()<<"\" fired!"<<endl;
 
@@ -255,10 +261,51 @@ Missile* Player::fireSelectedMissile()
 		//copy over reference to fired missiles descriptor
 		this->to_render.entities.push_back(firedMissile->getDescriptor_ref());
 
-		missiles_free.back()->setAngleIndex(this->sprite.getAngleIndex());
+		missiles_free.back()->setAngleIndex(this->sprite->getAngleIndex());
 		
-		return firedMissile;
+		//return firedMissile;
 //}}}
+}
+
+void Player::fireSelectedMissile(Sprite* fired_sprite)
+{
+    Entity_desc selMissile = selected_missile->getDescriptor(),
+                tempDesc;
+    
+    //create out new missile
+    Missile *firedMissile = new Missile(fired_sprite,
+                                        360, 0, selMissile.mass,
+                                        selMissile.maxAccel,
+                                        descriptor.x, descriptor.y,
+                                        0,0, "");
+    
+    	//set the descriptors coordinates to the Player location
+		tempDesc.x = descriptor.x;
+		tempDesc.y = descriptor.y;
+
+		//get velocity vectors of the player 
+		GetVectors_FrontRelative(tempDesc.xVel,
+			   						tempDesc.yVel,
+									0.0, 120);
+
+		//add velocity of player to missile
+		tempDesc.xVel += descriptor.xVel;
+		tempDesc.yVel += descriptor.yVel;
+
+		//update positional stats with descriptor: set descriptor
+		firedMissile->setDescriptor(tempDesc);
+
+		firedMissile->SetTimeCreated(thisTime);
+		firedMissile->SetLifespan(1.0);
+
+		//Missile is free, add it to vector of fired missiles
+		missiles_free.push_back(firedMissile);
+
+		//copy over reference to fired missiles descriptor
+		this->to_render.entities.push_back(firedMissile->getDescriptor_ref());
+
+		missiles_free.back()->setAngleIndex(this->sprite->getAngleIndex());
+	
 }
 
 Entity_desc* Player::PhysicsHandler(const float t,

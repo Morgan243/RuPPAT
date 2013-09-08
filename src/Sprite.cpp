@@ -3,6 +3,8 @@
 #include <iostream>
 #include <iomanip>
 
+    SDL_Renderer* Sprite::render_context = NULL;
+
 Sprite::Sprite()
 {
 
@@ -11,21 +13,17 @@ Sprite::Sprite()
 Sprite :: Sprite(string path_to_sprite)
 {
 //{{{
-	SDL_Surface *tempSprite, *tempSpriteOpt;
+	SDL_Surface *tempSprite;
 	
 	tempSprite = IMG_Load((char *)path_to_sprite.c_str());
 
-	tempSpriteOpt = SDL_DisplayFormatAlpha(tempSprite);
-
-	base_sprite = tempSpriteOpt;
+	base_sprite = tempSprite;
     
-   // rotations.push_back(base_sprite);
     rotations.push_back(
-            rotozoomSurface(tempSpriteOpt,
-                                0.0,
-                                1.0,0));
+            rotozoomSurface(tempSprite,
+                                    0.0,
+                                    1.0,0));
 
-    SDL_SetAlpha(rotations.back(), 0, 0xff);
 //}}}
 }
 
@@ -50,19 +48,70 @@ Sprite::Sprite(string path_to_sprite,int numRotations, int startingAngle)
 
 	tempSprite = IMG_Load((char *)path_to_sprite.c_str());
 
-	tempSpriteOpt = SDL_DisplayFormatAlpha(tempSprite);
+	//tempSpriteOpt = SDL_DisplayFormatAlpha(tempSprite);
+//    SDL_SetSurfaceBlendMode(tempSprite, SDL_BLENDMODE_BLEND);
+//    SDL_SetSurfaceAlphaMod(tempSprite, 255);
+	base_sprite = tempSprite;
 
-	base_sprite = tempSpriteOpt;
+    Texture_Container tempTextCont;
+
+	for(int i = 0; i<numRotations;i++)
+	{
+		rotations.push_back(
+				rotozoomSurface(tempSprite,
+							i*degreeIncrement,
+							1.0,0));	
+
+        tempTextCont.texture = SDL_CreateTextureFromSurface(this->render_context, rotations.back());
+        this->rotations_text.push_back(tempTextCont);
+		//SDL_DisplayFormatAlpha(rotations.back());
+		//SDL_SetAlpha(rotations.back(),0, 0xff);
+		//cout<<"generating rotation #"<<i<<endl;
+	}
+	
+	generatePixelSprite(false);
+//}}}
+}
+
+Sprite::Sprite(string path_to_sprite, int numRotations, int startingAngle, SDL_Renderer *render_context)
+{
+//{{{
+	currentAngleIndex = startingAngle;
+	currentAngleIndex_f = startingAngle;
+
+	rotationRate = 0.0;
+
+	rotationalErrorAccum = 0.0;
+
+	lastErr = 0.0;
+
+	degreeIncrement = 360.0/numRotations;
+
+
+	SDL_Surface *tempSprite, *tempSpriteOpt;
+
+	sprite_path = path_to_sprite;
+
+	tempSprite = IMG_Load((char *)path_to_sprite.c_str());
+
+	//tempSpriteOpt = SDL_DisplayFormatAlpha(tempSprite);
+    SDL_SetSurfaceBlendMode(tempSprite, SDL_BLENDMODE_BLEND);
+    SDL_SetSurfaceAlphaMod(tempSprite, 255);
+	base_sprite = tempSprite;
+
+    Texture_Container tempTextCont;
 
 
 	for(int i = 0; i<numRotations;i++)
 	{
 		rotations.push_back(
-				rotozoomSurface(tempSpriteOpt,
+				rotozoomSurface(tempSprite,
 							i*degreeIncrement,
 							1.0,0));	
+        tempTextCont.texture = SDL_CreateTextureFromSurface(render_context, rotations.back());
+        this->rotations_text.push_back(tempTextCont);
 		//SDL_DisplayFormatAlpha(rotations.back());
-		SDL_SetAlpha(rotations.back(),0, 0xff);
+		//SDL_SetAlpha(rotations.back(),0, 0xff);
 		//cout<<"generating rotation #"<<i<<endl;
 	}
 	
@@ -79,13 +128,28 @@ Sprite::Sprite(const Sprite &src)
 	this->base_sprite = SDL_ConvertSurface(src.getBaseSprite(),
 										   src.getBaseSprite()->format,
 										   SDL_SWSURFACE);
-	this->generateRotations();
+	this->generateRotations(Sprite::render_context);
+//}}}
+}
+
+Sprite::Sprite(const Sprite *src)
+{
+//{{{
+    cout<<"In pointer copy constructor..."<<endl;
+	SDL_Surface *tempSurf;
+	src->copyAll(tempSurf, *this);
+
+	this->base_sprite = SDL_ConvertSurface(src->getBaseSprite(),
+										   src->getBaseSprite()->format,
+										   SDL_SWSURFACE);
+	this->generateRotations(Sprite::render_context);
 //}}}
 }
 
 Sprite & Sprite::operator=(const Sprite &src)
 {
 //{{{
+    cout<<"In reference copy constructor..."<<endl;
 	//copy the right hand side to the left hand side
 	//src.copyBaseSprite(base_sprite);
 	SDL_Surface *tempSurf = NULL;
@@ -112,9 +176,9 @@ void Sprite :: copyAll(SDL_Surface *dest, Sprite &sprDest) const
 	float rotation_rate, degree_increment, current_angle;
 
 	copyBaseSprite(dest);
-	
+    //this->render_context = sprDest.render_context;
 	get_RotR_DegIncr_Angl(rotation_rate, degree_increment, current_angle);
-	cout<<"In Cop Constr!::"<<endl;
+	cout<<"::In Cop Constr::"<<endl;
 	cout<<"Rotation Rate: "<< rotation_rate<<endl;
 	cout<<"Degree Incr: "<< degree_increment<<endl;
 	cout<<"Current Angle: "<<current_angle<<endl;
@@ -160,7 +224,6 @@ void Sprite :: copyBaseSprite(SDL_Surface *dest) const
 		cout<<"Error creating surface in operator= of Sprite: "<<SDL_GetError()<<endl;
 	}
 
-		SDL_DisplayFormatAlpha(dest);
 //}}}
 }
 
@@ -223,23 +286,65 @@ void Sprite :: generateRotations()
 
 	SDL_Surface *tempSprite, *tempSpriteOpt;
 
-	tempSpriteOpt = SDL_DisplayFormatAlpha(base_sprite);
+	//tempSpriteOpt = SDL_DisplayFormatAlpha(base_sprite);
 
 	cout<<"Generate Rots = "<<numRotations<<endl;
+    Texture_Container tempTextCont;
 
 	for(int i = 0; i<numRotations;i++)
 	{
 		rotations.push_back(
-							rotozoomSurface(tempSpriteOpt,
+							rotozoomSurface(base_sprite,
 							i*degreeIncrement,
 							1.0,0));	
+        if(render_context != NULL && rotations.back() != NULL)
+            tempTextCont.texture = SDL_CreateTextureFromSurface(render_context, rotations.back());
+        else
+            cout<<"RENDER CONTEXT NULL!"<<endl;
+        this->rotations_text.push_back(tempTextCont);
 
-		SDL_SetAlpha(rotations.back(), 0, 0xFF);
+		//SDL_SetAlpha(rotations.back(), 0, 0xFF);
 	}
 	
 	generateSpriteOutlines();
 //}}}
 }
+
+void Sprite :: generateRotations(SDL_Renderer* renderer_use)
+{
+//{{{
+	rotationalErrorAccum = 0.0;
+
+	lastErr = 0.0;
+
+	int numRotations = 360.0/degreeIncrement;
+
+	SDL_Surface *tempSprite, *tempSpriteOpt;
+
+	//tempSpriteOpt = SDL_DisplayFormatAlpha(base_sprite);
+
+	cout<<"Generate Rots = "<<numRotations<<endl;
+    Texture_Container tempTextCont;
+
+	for(int i = 0; i<numRotations;i++)
+	{
+		rotations.push_back(
+							rotozoomSurface(base_sprite,
+							i*degreeIncrement,
+							1.0,0));	
+        if(render_context != NULL && rotations.back() != NULL)
+            tempTextCont.texture = SDL_CreateTextureFromSurface(renderer_use, rotations.back());
+        else
+            cout<<"RENDER CONTEXT NULL!"<<endl;
+        this->rotations_text.push_back(tempTextCont);
+
+		//SDL_SetAlpha(rotations.back(), 0, 0xFF);
+	}
+	
+	generateSpriteOutlines();
+//}}}
+}
+
 
 void Sprite::setRotationRate(const float rotRate)
 {
@@ -325,6 +430,24 @@ SDL_Surface* Sprite::getSprite(const int angle)
 {
 	return rotations[angle];
 }
+
+SDL_Texture * Sprite::getBaseSprite_text() const
+{
+
+    return rotations_text.at(0).texture;
+}
+
+SDL_Texture * Sprite::getSprite_text()
+{
+    int tmp_angle = (int) currentAngleIndex_f;
+    return rotations_text.at(tmp_angle).texture;
+}
+
+SDL_Texture * Sprite::getSprite_text(const int angle)
+{
+    return rotations_text.at(angle).texture;
+}
+
 
 
 Uint32 Sprite::getPixel(const int x, const int y)

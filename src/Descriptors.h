@@ -6,7 +6,7 @@
 #include <vector>
 #include <iostream>
 #include <string>
-#include "SDL/SDL.h"
+#include "SDL2/SDL.h"
 #ifndef __DESC_H
 #define __DESC_H
 
@@ -16,6 +16,7 @@
 #define FORWARD 3
 
 using namespace std;
+enum JOB_ID {FIRE_MISSILE, COPY_OBJECT, COPY_SPRITE};
 
 //basic conatiner for surface, group with name and ID number
 //a more basic form of the Sprite class
@@ -23,6 +24,13 @@ struct Surface_Container
 {
 	SDL_Surface* surface;
 	int ID, x, y;
+	string name;
+};
+
+struct Texture_Container
+{
+    SDL_Texture *texture;
+	int ID, x, y, h, w;
 	string name;
 };
 
@@ -114,6 +122,7 @@ struct Pixel_desc : public Entity_desc
 struct Renderables_Cont
 {
 	vector<Surface_Container> sprites;
+	vector<Texture_Container> sprites_text;
 	vector<Pixel_desc> pixels;
 	vector<Entity_desc*> entities;
 };
@@ -129,6 +138,32 @@ struct Derivative
 	float ddx;
 	float ddy;
 };
+
+template <typename T>
+struct Function_Container
+{
+    //object to call it on
+    T *context;
+
+    void (T::*function)() = NULL;
+    //pointer to a function that accepts a void* and returns a void*
+    void* (T::*arg_function)(void* args) = NULL;
+    
+    //argument to pass to the above function pointer
+    void* argument;
+
+    //whether the job executer should rgive the return item back
+    bool fetch_return;
+};
+
+struct RenderJob_Container
+{
+    JOB_ID id;
+    void* opt_container = NULL;
+    void* return_obj = NULL;
+};
+
+
 
 struct RunOptions
 {

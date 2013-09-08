@@ -101,7 +101,7 @@ int Primitives::drawCircle(CoOrd center, int radius, bool cache)
 		tempContain->surface = rotozoomSurface(tempContain->surface,
 						0.0, 1.0,0);
 
-		SDL_SetAlpha(tempContain->surface,0,0xff);
+		//SDL_SetAlpha(tempContain->surface,0,0xff);
 		return surface_cache.size()-1;
 	}
 //}}}

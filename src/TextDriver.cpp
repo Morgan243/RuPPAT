@@ -121,7 +121,7 @@ Surface_Container TextDriver::createTextBox(const std::string& font_name,
     Surface_Container text_box;
     text_box.name = box_name;
 
-    text_box.surface = SDL_DisplayFormatAlpha(Common::CreateSurface(box_width, box_height));
+    //text_box.surface = SDL_DisplayFormatAlpha(Common::CreateSurface(box_width, box_height));
     text_box.surface = Common::CreateSurface(box_width, box_height);
 
     //SDL_FillRect(text_box.surface, NULL, 0x2f00223f);

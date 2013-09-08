@@ -74,7 +74,7 @@ void Game::initGame(vector<section> configSections)
 			engine = new RuPPAT(width,
 				   				height,
 							   	BPP,
-								SDL_HWSURFACE | SDL_DOUBLEBUF,
+								0,//SDL_HWSURFACE | SDL_DOUBLEBUF,
 								tempVect);
 			//}}}
 		}
@@ -267,7 +267,7 @@ void Game::initGame_lua(vector<section> configSections)
             engine = new RuPPAT(width,
                                         height,
                                         BPP,
-                                        SDL_HWSURFACE | SDL_DOUBLEBUF,
+                                        0,//SDL_HWSURFACE | SDL_DOUBLEBUF,
                                         tempVect);
 			//}}}
 		}
@@ -438,7 +438,27 @@ void Game::initGame_lua(vector<section> configSections)
 void Game :: run(string selection, string option)
 {
 //{{{
-		//desired framerate
+    //set event struct to initial defaults
+	initEvent( mainEvents );
+
+	//Launch the game loop (non-rendering thread)
+	std::thread g_loop_th(&Game::game_loop, this);
+
+    //main thread becomes rendering thread
+    engine->RK4_parse();
+
+	//joining 
+	cout<<"joining RuPPAT in GAME"<<endl;
+
+    //wait for game loop to end
+	g_loop_th.join();
+//}}}
+}
+
+void Game::game_loop()
+{
+//{{{
+    //desired framerate
 	int game_rate = 120,
 
     //ms to wait between frames
@@ -447,21 +467,7 @@ void Game :: run(string selection, string option)
     //get the tick# when events should be handled
     nextTick = SDL_GetTicks() + interval;
 
-	//declare and init SDL events structure
-	Event_desc mainEvents;
 
-    //set event struct to initial defaults
-	initEvent( mainEvents );
-
-	//Launch the particle physics and time engine!
-	std::thread ruppat_th(&RuPPAT::runPPAT,
-                                    engine,
-                                    &done,
-                                    &mainEvents,
-                                    selection,
-                                    option);
-
-	//just keep checking events until done
 	while(!done)
 	{
 		handleEvents(mainEvents);
@@ -472,11 +478,6 @@ void Game :: run(string selection, string option)
 	
 		nextTick = SDL_GetTicks() + interval;	
 	}
-	
-	//joining 
-	cout<<"joining RuPPAT in GAME"<<endl;
-
-	ruppat_th.join();
 //}}}
 }
 
@@ -493,7 +494,10 @@ void Game :: handleEvents(Event_desc &mainEvents)
     //{{{
 		//if evenet was quit, finsh everything up
 		if(event.type == SDL_QUIT)
+        {
 			done = true;
+           engine->done = true; 
+        }
 
 		//if a key was pressed
 		if(event.type == SDL_KEYDOWN)
@@ -509,12 +513,16 @@ void Game :: handleEvents(Event_desc &mainEvents)
 			if(event.key.keysym.sym == SDLK_ESCAPE)
 				{
 					done = true;
+                   engine->done = true; 
 					cout<<"doneskies!!"<<endl;
 				}
 
 			//SPACE
 			if(event.key.keysym.sym == SDLK_SPACE)
-				mainEvents.space = true;
+            {
+                engine->firePlayersWeapon(0);
+                mainEvents.space = true;
+            }
 
 			//UP, W, K
 			if(event.key.keysym.sym == SDLK_UP 
@@ -539,6 +547,7 @@ void Game :: handleEvents(Event_desc &mainEvents)
 				|| event.key.keysym.sym == SDLK_a 
 				|| event.key.keysym.sym == SDLK_h)
 				{
+                    cout<<"left pressed!----------"<<endl;
 					x-=2;
 					k_LEFT=true;
 				}

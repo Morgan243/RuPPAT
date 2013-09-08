@@ -32,35 +32,50 @@ RuPPAT :: RuPPAT(int width,
 	//start up the renderer
 	mainRender = new Render(width, height, BPP, flags);
 
+    Sprite::render_context = mainRender->renderer;
+
+    SDL_Surface *tempBkg, * tempBkgOpt;
+
     //load the background sprites
 	for( int i = 0; i< bkg_paths.size(); i++)
 	{
-		SDL_Surface *tempBkg, * tempBkgOpt;
+        SDL_Texture *tempBkg_text, *tempBkgOpt_text;
 		
 		cout<<"Loading..."<<bkg_paths[i]<<endl;
 
 		tempBkg = IMG_Load((char *)bkg_paths[i].c_str());
+		tempBkg_text = SDL_CreateTextureFromSurface(mainRender->renderer, tempBkg);
 	
 		cout<<"\tReassigning..."<<bkg_paths[i]<<endl;
-		tempBkgOpt = SDL_DisplayFormatAlpha(tempBkg);
+		//tempBkgOpt = SDL_DisplayFormatAlpha(tempBkg);
 		
-		SDL_SetAlpha(tempBkgOpt, SDL_SRCALPHA, 0xFF);
+		//SDL_SetAlpha(tempBkgOpt, SDL_SRCALPHA, 0xFF);
 
-		SDL_FreeSurface(tempBkg);
+		//SDL_FreeSurface(tempBkg);
 
 		cout<<"\tPushing back..."<<bkg_paths[i]<<endl;
-		backgroundLayers.push_back(tempBkgOpt);	
+		backgroundLayers.push_back(tempBkg_text);	
 	}
-    
+
+    mainRender->low_composite.push_back(backgroundLayers[0]);
+    mainRender->low_composite.push_back(backgroundLayers[1]);
+    mainRender->high_composite.push_back(backgroundLayers[2]);    
+
+    //hacky, but a way to create a proper pre-surface...Copy it!
+//    mainRender->pre_surface = SDL_ConvertSurface(tempBkg, tempBkg->format, tempBkg->flags);
+//    SDL_SetSurfaceBlendMode(mainRender->pre_surface, SDL_BLENDMODE_BLEND);
+
     //base the game boundries based on the height and width
-	game_width = backgroundLayers[0]->w;
-	game_height = backgroundLayers[0]->h;
+//	game_width = backgroundLayers[0]->width;
+//	game_height = backgroundLayers[0]->height;
+    game_height = tempBkg->h;
+    game_width = tempBkg->w;
 
     //make sure common has the width and height values
 	Common::SetDimensions(game_width, game_height);
 
     //let render know the boundries
-	mainRender->setGameArea(backgroundLayers[0]->w, backgroundLayers[0]->h);
+	mainRender->setGameArea(game_width, game_height);
 
 	printf("game width = %d, game height = %d\n", game_width, game_height);
 
@@ -74,8 +89,8 @@ RuPPAT :: RuPPAT(int width,
 
     //hard coded font file, need to get this from the config
     //however, not bothering to due to a planned structure overhaul
-    this->text_driver = new TextDriver("main", "FontSheet.png",
-                                        25, 25, 12, 12); //width, height, rows, columns
+//    this->text_driver = new TextDriver("main", "FontSheet.png",
+//                                        25, 25, 12, 12); //width, height, rows, columns
 
 	gravitationalConstant = 22;
 //}}}
@@ -150,7 +165,7 @@ int RuPPAT :: addObject(const string spritePath,
 		}
 
 		objectList.back()->setID(baseID++);
-		objectList.back()->sprite.setRotationRate(rotationRate);
+		objectList.back()->sprite->setRotationRate(rotationRate);
 
 	pthread_rwlock_unlock(&object_rw_lock);
 
@@ -177,7 +192,7 @@ void RuPPAT :: addPlayer(Player* new_player)
         centerX = new_object->getX();
         centerY = new_object->getY();
 
-        new_object->sprite.getDimensions(width, height);
+        new_object->sprite->getDimensions(width, height);
 
         primitive_maker->drawCircle(tempCoOrd,15 , true);
     pthread_rwlock_unlock(&object_rw_lock);
@@ -404,6 +419,8 @@ void RuPPAT::RK4(const float t, const float dt)
 void RuPPAT :: RK4_parse()
 {
 //{{{
+//
+	//mainRender = new Render(this->WIDTH, this->HEIGHT, 32, 0);
     Uint32 T1=0, T2=1000;
     T1=SDL_GetTicks(); 
     float t = 0.0;
@@ -417,29 +434,8 @@ void RuPPAT :: RK4_parse()
     char sel = 'g';
     void * select = &sel;
 
-    SDL_Surface *primitives =
-                SDL_CreateRGBSurface(SDL_SWSURFACE,600,600,32, 0xFF000000, 
-                0x00FF0000, 0x0000FF00, 0x000000FF); 
-
-    Primitives primMaker(1,0x9f0000ff, mainRender->pre_surface);
-    CoOrd pA, pB, pC, pD, pCenter;
-    pCenter.x = 200;
-    pCenter.y = 200;
-
-
-    pA.x = 200;
-    pA.y = 400;
-
-    pB.x = 200;
-    pB.y = 100;
-
-    pC.x = 100;
-    pC.y = 200;
-
-    pD.x = 100;
-    pD.y = 200;
-
-    Surface_Container test_text = text_driver->createTextBox("main", "test", "abcde");
+    int num_jobs;
+    RenderJob_Container *current_job;
 
     std::thread *rk4_th = new std::thread(&RuPPAT::RK4,this,t,dt);
 
@@ -448,30 +444,38 @@ void RuPPAT :: RK4_parse()
 	  {
 		//increment time
 		t += dt;
+
+        if(num_jobs = this->render_jobs.size())
+        {
+            cout<<"NUM JOBS: "<<num_jobs<<endl;
+            current_job = render_jobs.front();
+            render_jobs.pop();
+
+            if(current_job->id == JOB_ID::COPY_SPRITE)
+            {
+                Sprite *tmpSprite = new Sprite(((Sprite*)current_job->opt_container));
+                current_job->return_obj = (void*)tmpSprite;
+            }
+        }
 	
 		//blit bottom layer	
-		mainRender->applySurface(xOrigin/1.2,yOrigin/1.2,backgroundLayers[0]);
+		//mainRender->applySurface(xOrigin/1.2,yOrigin/1.2,backgroundLayers[0]);
+        mainRender->applyTextureToMain(xOrigin/1.2, yOrigin/1.2, backgroundLayers[0]);
 		
 		//blit middle layer
-		mainRender->applySurface(xOrigin,yOrigin,backgroundLayers[1]);
+		//mainRender->applySurface(xOrigin,yOrigin,backgroundLayers[1]);
+        mainRender->applyTextureToMain(xOrigin, yOrigin, backgroundLayers[1]);
 
-		
-		SDL_SetAlpha(mainRender->mainScreen, SDL_SRCALPHA, 0xFF);
-
-		pCenter.x = centerX;
-		pCenter.y = centerY;
-		//primMaker.drawCircle(pCenter, 16);
 
 		rk4_th->join();	
 
-
 		//parse objects	
 		parseObjectsToSurface();	
-		
-		//parse pixels
+//		
+//		//parse pixels
 		parseSelectPixToSurface();
-
-		//parse players
+//
+//		//parse players
 		parsePlayersToSurface();
 
                 //text_driver->font.back().character_set['h']->getSprite() );
@@ -490,19 +494,19 @@ void RuPPAT :: RK4_parse()
 			yOrigin = game_height - HEIGHT;
 		else
 			yOrigin = centerY - screen_centY;
-		//std::thread rk4(&RuPPAT::RK4,this,t,dt);
+
 		rk4_th = new std::thread(&RuPPAT::RK4,this,t,dt);
 
 		//blit top layer
-		mainRender->applySurface(xOrigin,yOrigin,backgroundLayers[2]);
+		//mainRender->applySurface(xOrigin,yOrigin,backgroundLayers[2]);
 
-        mainRender->putSprite(300, 300,
-                        test_text.surface);
-		
+        //mainRender->putSprite(300, 300, test_text.surface);
+        mainRender->applyTextureToMain(xOrigin, yOrigin, backgroundLayers[2]);
 
 
 		//mainRender->putSprite(xOrigin + (WIDTH/2),yOrigin + (HEIGHT/2),primitives);
 		mainRender->OnRender(xOrigin,yOrigin);
+        //mainRender->OnRender();
 
 	if(nextTick > SDL_GetTicks())SDL_Delay(nextTick - SDL_GetTicks());
 		nextTick = SDL_GetTicks() + interval;
@@ -559,7 +563,8 @@ void RuPPAT :: parsePlayersToSurface()
 		//Get renderable set from player (ex: missiles)
 		while((players[i]->GetNextAuxDrawInfo(tempRenderables)) )
         {
-				mainRender->putSprite(tempRenderables.sprites);
+                cout<<"Putting missile!\n";
+				mainRender->putSprite(tempRenderables.sprites_text);
 				mainRender->putPixel(tempRenderables.pixels);
         }
 		
@@ -567,18 +572,20 @@ void RuPPAT :: parsePlayersToSurface()
 		centerX = x = players[i]->getX();
 		centerY = y = players[i]->getY();
 	
+        //cout<<"X,Y ----> ("<<x<<","<<y<<")\n";
+
 		//put a selection primitive around sprite if selected
 		if(players[i]->updateSprite())
 		{
             //place selection primitive
-			mainRender->putSprite(x,
-								  y,
-								  primitive_maker->Get_Cached(i));
+//			mainRender->putSprite(x,
+//								  y,
+//								  primitive_maker->Get_Cached(i));
 
             //place player sprite
 			mainRender->putSprite(x,
 								  y,
-								  players[i]->getSprite());
+								  players[i]->getSprite_text());
 		
 		}
 		else
@@ -607,8 +614,8 @@ void RuPPAT :: parseObjectsToSurface()
                 x = objectList[i]->getX();
                 y = objectList[i]->getY();	
 
-                objectList[i]->sprite.updateSprite();
-                mainRender->putSprite(x,y,objectList[i]->getSprite());
+                objectList[i]->sprite->updateSprite();
+                mainRender->putSprite(x,y,objectList[i]->getSprite_text());
             }
    pthread_rwlock_unlock(&object_rw_lock);
 //}}}
@@ -636,7 +643,7 @@ void RuPPAT :: accelPlayer(const int p_ID, const bool isForward)
 		t_pix.xAcc = 0;
 		t_pix.yAcc = 0;
 		t_pix.accelLength = 2;
-		t_pix.dimFactor = 6;
+		t_pix.dimFactor = 10;
 		t_pix.dimTimer = 0;
 		t_pix.deleteMe = false;
 		t_pix.updated = 0;
@@ -835,7 +842,23 @@ void RuPPAT :: turnPlayerToCoord(const int p_ID,
 
 void RuPPAT :: firePlayersWeapon(const int p_ID)
 {
-	players[p_ID]->fireSelectedMissile();
+    RenderJob_Container *fire_missile_job;
+    fire_missile_job = new RenderJob_Container;
+    fire_missile_job->id = JOB_ID::COPY_SPRITE;
+
+    //get the missile sprite we need to copy, cast to void pointer
+    fire_missile_job->opt_container = (void*)players[p_ID]->getSelectedMissile()->sprite;
+
+    this->render_job_mutex.lock();
+        this->render_jobs.push(fire_missile_job);
+    this->render_job_mutex.unlock();
+
+    //wait for render to finish the job!
+    while(fire_missile_job->return_obj == NULL)
+        usleep(50);
+
+    players[p_ID]->fireSelectedMissile((Sprite*)fire_missile_job->return_obj);
+
 }
 
 

@@ -396,13 +396,13 @@ void Common::RotatePoint(const float degrees, Pixel_desc &pix_t, const CoOrd cen
 SDL_Surface* Common::CreateSurface(int w, int h)
 {
 //{{{
-	#if SDL_BYTEORDER == SDL_BIG_ENDIAN 
-		return SDL_CreateRGBSurface(SDL_SWSURFACE |SDL_SRCALPHA,w,h,32, 0xFF000000, 
-		0x00FF0000, 0x0000FF00, 0x000000FF); 
-	#else 
-		return SDL_CreateRGBSurface(SDL_SWSURFACE | SDL_SRCALPHA,w,h,32, 0x000000FF, 
-		0x0000FF00, 0x00FF0000, 0xFF000000); 
-	#endif 
+//	#if SDL_BYTEORDER == SDL_BIG_ENDIAN 
+//		return SDL_CreateRGBSurface(SDL_SWSURFACE |SDL_SRCALPHA,w,h,32, 0xFF000000, 
+//		0x00FF0000, 0x0000FF00, 0x000000FF); 
+//	#else 
+//		return SDL_CreateRGBSurface(SDL_SWSURFACE | SDL_SRCALPHA,w,h,32, 0x000000FF, 
+//		0x0000FF00, 0x00FF0000, 0xFF000000); 
+//	#endif 
 //}}}
 }
 
