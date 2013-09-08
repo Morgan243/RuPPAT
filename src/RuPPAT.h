@@ -72,15 +72,10 @@ class RuPPAT
 
 
         //----Core backend routines----
-		void runPPAT(const bool *mainDone,
-			   		 const Event_desc *mainEvents, 
-					 const string selection,
-					 const string option);
-
 		void RK4(const float t,
                  const float dt);
 
-		void RK4_parse();
+		void RunRuPPAT();
 
 		void parseSelectPixToSurface();
 

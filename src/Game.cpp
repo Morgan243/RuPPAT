@@ -445,9 +445,8 @@ void Game :: run(string selection, string option)
 	std::thread g_loop_th(&Game::game_loop, this);
 
     //main thread becomes rendering thread
-    engine->RK4_parse();
+    engine->RunRuPPAT();
 
-	//joining 
 	cout<<"joining RuPPAT in GAME"<<endl;
 
     //wait for game loop to end

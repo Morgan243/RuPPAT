@@ -241,73 +241,6 @@ int RuPPAT :: addPlayer(const string spritePath,
 //}}}
 }
 
-
-
-//||||||||||||||||||||||||||||||||||||\\
-//-------------------------------------\\
-//	RuPPAT Entry Point
-//spawn threads to do work and handle events
-//
-void RuPPAT :: runPPAT(const bool *mainDone,
-	   				   const Event_desc *mainEvents,
-					   const string selection,
-					   const string option)
-
-{
-//{{{
-	bool *DONE = (bool*)mainDone;
-
-	cout<<"SELECTION: "<<selection<<"\t OPTION: "<<option<<endl;
-
-	char select;
-	
-	//launch thread into rk4 parse
-	std::thread RK4_parse_th(&RuPPAT::RK4_parse, this);
-	
-	void *sel = &select;
-
-	int FPS=1000;
-	unsigned int keyT1, keyT2;
-
-	int game_rate = 120;
-	int interval = 1000/game_rate;
-	int nextTick = SDL_GetTicks() + interval;
-	
-	//keep going until game thread says DONE
-	while(!*DONE)
-	{
-		//if space is pressed and it has been
-		//a while since it was last pressed
-		if(mainEvents->space && keyT1>20)
-			{
-
-			//reset the key tick count
-			keyT1 = 0;
-
-			//then run demo->place pixels w/ attr
-			//runDemos(sel);
-			firePlayersWeapon(0);
-			}
-
-		//increment keypress counter
-		keyT1++;
-
-		//sleep thread, keeps CPU usage down
-		if(nextTick > SDL_GetTicks())
-			SDL_Delay(nextTick - SDL_GetTicks());
-			
-		nextTick = SDL_GetTicks() + interval;	
-
-	}
-
-	//tell threads to finish
-	done = true;
-
-	//join on RK4_parse thread
-	RK4_parse_th.join();
-//}}}
-}
-
 //-------------RK4--------------
 // 	A new implementation of the
 // RK4_all functionality. By using object
@@ -416,7 +349,7 @@ void RuPPAT::RK4(const float t, const float dt)
 //based on acceleration and such on all
 //elements in pixel list), incrementing time 
 //and rendering the pixels
-void RuPPAT :: RK4_parse()
+void RuPPAT :: RunRuPPAT()
 {
 //{{{
 //
@@ -620,9 +553,6 @@ void RuPPAT :: parseObjectsToSurface()
    pthread_rwlock_unlock(&object_rw_lock);
 //}}}
 }
-
-
-
 
 //----these below should be replaced by a better system
 //for handling player control
