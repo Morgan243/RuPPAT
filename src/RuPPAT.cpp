@@ -608,6 +608,7 @@ void RuPPAT :: turnPlayer(const int p_ID,
 	{
 		if(isLeft)
 		{
+            cout<<"left pressed!----------"<<endl;
 			pthread_rwlock_wrlock(&object_rw_lock);
 				players[p_ID]->incrementRotationRate();
 			pthread_rwlock_unlock(&object_rw_lock);
@@ -772,6 +773,7 @@ void RuPPAT :: turnPlayerToCoord(const int p_ID,
 
 void RuPPAT :: firePlayersWeapon(const int p_ID)
 {
+//{{{
     RenderJob_Container *fire_missile_job;
     fire_missile_job = new RenderJob_Container;
     fire_missile_job->id = JOB_ID::COPY_SPRITE;
@@ -779,6 +781,7 @@ void RuPPAT :: firePlayersWeapon(const int p_ID)
     //get the missile sprite we need to copy, cast to void pointer
     fire_missile_job->opt_container = (void*)players[p_ID]->getSelectedMissile()->sprite;
 
+    //add to the render thread's job queue
     this->render_job_mutex.lock();
         this->render_jobs.push(fire_missile_job);
     this->render_job_mutex.unlock();
@@ -788,7 +791,7 @@ void RuPPAT :: firePlayersWeapon(const int p_ID)
         usleep(50);
 
     players[p_ID]->fireSelectedMissile((Sprite*)fire_missile_job->return_obj);
-
+//}}}
 }
 
 

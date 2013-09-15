@@ -269,43 +269,43 @@ void Player::fireSelectedMissile()
 
 void Player::fireSelectedMissile(Sprite* fired_sprite)
 {
-    Entity_desc selMissile = selected_missile->getDescriptor(),
-                tempDesc;
-    
-    //create out new missile
+//{{{
+    Entity_desc tempDesc = selected_missile->getDescriptor();
+
+    //set the descriptors coordinates to the Player location
+    tempDesc.x = descriptor.x;
+    tempDesc.y = descriptor.y;
+
+    //get velocity vectors of the player 
+    GetVectors_FrontRelative(tempDesc.xVel,
+                                tempDesc.yVel,
+                                0.0, 120);
+
+    //add velocity of player to missile
+    tempDesc.xVel += descriptor.xVel;
+    tempDesc.yVel += descriptor.yVel;
+
+    //create our new missile
     Missile *firedMissile = new Missile(fired_sprite,
-                                        360, 0, selMissile.mass,
-                                        selMissile.maxAccel,
+                                        360, 0, tempDesc.mass,
+                                        tempDesc.maxAccel,
                                         descriptor.x, descriptor.y,
                                         0,0, "");
-    
-    	//set the descriptors coordinates to the Player location
-		tempDesc.x = descriptor.x;
-		tempDesc.y = descriptor.y;
 
-		//get velocity vectors of the player 
-		GetVectors_FrontRelative(tempDesc.xVel,
-			   						tempDesc.yVel,
-									0.0, 120);
+    //update positional stats with descriptor: set descriptor
+    firedMissile->setDescriptor(tempDesc);
 
-		//add velocity of player to missile
-		tempDesc.xVel += descriptor.xVel;
-		tempDesc.yVel += descriptor.yVel;
+    firedMissile->SetTimeCreated(thisTime);
+    firedMissile->SetLifespan(1.0);
 
-		//update positional stats with descriptor: set descriptor
-		firedMissile->setDescriptor(tempDesc);
+    //Missile is free, add it to vector of fired missiles
+    missiles_free.push_back(firedMissile);
 
-		firedMissile->SetTimeCreated(thisTime);
-		firedMissile->SetLifespan(1.0);
+    //copy over reference to fired missiles descriptor
+    this->to_render.entities.push_back(firedMissile->getDescriptor_ref());
 
-		//Missile is free, add it to vector of fired missiles
-		missiles_free.push_back(firedMissile);
-
-		//copy over reference to fired missiles descriptor
-		this->to_render.entities.push_back(firedMissile->getDescriptor_ref());
-
-		missiles_free.back()->setAngleIndex(this->sprite->getAngleIndex());
-	
+    missiles_free.back()->setAngleIndex(this->sprite->getAngleIndex());
+//}}}
 }
 
 Entity_desc* Player::PhysicsHandler(const float t,
@@ -333,7 +333,7 @@ Entity_desc* Player::PhysicsHandler(const float t,
 			i--;
 			size--;
 		}
-		//is its time through?
+		//time to begin end of life animation/sequence
 		else if(missiles_free[i]->IsBeyondLifeSpan(thisTime) 
 				&& !missiles_free[i]->isDestroying)
 		{

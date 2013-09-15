@@ -500,7 +500,7 @@ void Game :: handleEvents(Event_desc &mainEvents)
 
 		//if a key was pressed
 		if(event.type == SDL_KEYDOWN)
-			{
+        {
             //{{{
 			//LEFT CONTROL
 			if(event.key.keysym.sym == SDLK_LCTRL)
@@ -546,7 +546,6 @@ void Game :: handleEvents(Event_desc &mainEvents)
 				|| event.key.keysym.sym == SDLK_a 
 				|| event.key.keysym.sym == SDLK_h)
 				{
-                    cout<<"left pressed!----------"<<endl;
 					x-=2;
 					k_LEFT=true;
 				}
@@ -560,11 +559,11 @@ void Game :: handleEvents(Event_desc &mainEvents)
 					k_RIGHT=true;
 				}
             //}}}
-			}
+        }
 
 		//if a key was RELEASED
 		if(event.type == SDL_KEYUP)
-			{
+        {
             //{{{
 			//LEFT CONTROL
 			if(event.key.keysym.sym == SDLK_LCTRL )
@@ -608,7 +607,7 @@ void Game :: handleEvents(Event_desc &mainEvents)
 					k_RIGHT=false;
 				}
             //}}}
-			}
+        }
         //}}}
 	}
 
@@ -687,20 +686,19 @@ void Game :: handleEvents(Event_desc &mainEvents)
 			}
 
 		if(k_LEFT)
-			{
-            //{{{
+        {
+        //{{{
 			if(left_count>key_count_limit)
-				{
-					engine->turnPlayer(0,true, defaultTurnAmnt);
-					left_count=0;
-				}
+            {
+                engine->turnPlayer(0,true, defaultTurnAmnt);
+                left_count=0;
+            }
 			else
-				{
-					left_count++;
-				}
+            {
+                left_count++;
+            }
             //}}}
-			}
-
+        }
 		if(k_RIGHT)
 			{
             //{{{

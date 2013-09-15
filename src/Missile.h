@@ -29,6 +29,12 @@ class Missile : public Object
 				       	float yVel,
 				       	string HC_path);		
 
+		explicit Missile(string sprite_path,
+			       		int num_rotations,
+				       	int startingAngle, 
+                        Entity_desc ent,
+				       	string HC_path);		
+
 		explicit Missile(Sprite* obj_sprite,
 			       		int num_rotations,
 				       	int startingAngle, 
@@ -39,6 +45,12 @@ class Missile : public Object
 						float xVel,
 				       	float yVel,
 				       	string HC_path);		
+
+		explicit Missile(Sprite* obj_sprite,
+			       		int num_rotations,
+				       	int startingAngle, 
+                        Entity_desc ent,
+                        string HC_path);		
 
 		~Missile();
 		

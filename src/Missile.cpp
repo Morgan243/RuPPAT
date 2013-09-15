@@ -10,7 +10,6 @@ Missile::Missile(string sprite_path,
                 float xVel,
                 float yVel,
                 string HC_path)
-
         :Object(sprite_path,
                 startX,
                 startY,
@@ -19,6 +18,26 @@ Missile::Missile(string sprite_path,
                 startingAngle,
                 xVel,
                 yVel,
+                HC_path)
+{
+	killMe = false;
+	timeCreated = 0;
+	cout<<"created at:"<<timeCreated<<endl;
+}
+
+Missile::Missile(string sprite_path, 
+                int num_rotations,
+                int startingAngle,
+                Entity_desc ent,
+                string HC_path)
+        :Object(sprite_path,
+                ent.x,
+                ent.y,
+                ent.mass,
+                num_rotations, 
+                startingAngle,
+                ent.xVel,
+                ent.yVel,
                 HC_path)
 {
 	killMe = false;
@@ -45,6 +64,27 @@ Missile::Missile(Sprite* obj_sprite,
                 startingAngle,
                 xVel,
                 yVel,
+                HC_path)
+{
+	killMe = false;
+	timeCreated = 0;
+	cout<<"created at:"<<timeCreated<<endl;
+}
+
+Missile::Missile(Sprite* obj_sprite,
+                int num_rotations,
+                int startingAngle,
+                Entity_desc ent,
+                string HC_path)
+
+        :Object(obj_sprite,
+                ent.x,
+                ent.y,
+                ent.mass,
+                num_rotations, 
+                startingAngle,
+                ent.xVel,
+                ent.yVel,
                 HC_path)
 {
 	killMe = false;
