@@ -494,6 +494,12 @@ void readConfigMain(LuaParser &lua_parser, vector<section> &configSection)
 
             temp_section.sectionOptions.push_back(temp_option);
             temp_option.values.clear();
+
+            temp_option.option = "level style";
+                temp_option.values.push_back(lua_parser.PopLuaTableStringValue("main", "level style"));
+                cout<<"\t+Level Style: "<< temp_option.values.back()<<endl;
+            temp_section.sectionOptions.push_back(temp_option);
+            temp_option.values.clear();
             
         configSection.push_back(temp_section);
         temp_section.sectionOptions.clear();

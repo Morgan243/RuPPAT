@@ -42,6 +42,8 @@ class Game
 
         void initGame_lua(vector<section> configSections);
 
+        void initParameters();
+
 		void initEvent(Event_desc &initMe);
 
 		void createPixElement(int x, int y,	

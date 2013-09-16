@@ -17,6 +17,7 @@
 
 using namespace std;
 enum JOB_ID {FIRE_MISSILE, COPY_OBJECT, COPY_SPRITE};
+enum LEVEL_STYLE {WRAP};
 
 //basic conatiner for surface, group with name and ID number
 //a more basic form of the Sprite class
@@ -164,6 +165,14 @@ struct RenderJob_Container
 };
 
 
+struct RuPPAT_Options
+{
+    int width, height, bpp;
+    unsigned int flags;
+    
+    vector<string> background_paths;
+    LEVEL_STYLE style;
+};
 
 struct RunOptions
 {

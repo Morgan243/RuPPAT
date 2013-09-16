@@ -1,5 +1,7 @@
 print('-------RuPPAT Lua Init Script Loaded---------')
 
+
+
 --set main config information (resolution and background)
 main = {}
 main["width"] = 980
@@ -12,6 +14,8 @@ main["backgrounds"]["amount"] = 3
 main["backgrounds"][0] = "bkg_one_1080.png"
 main["backgrounds"][1] = "bkg_two_1080.png"
 main["backgrounds"][2] = "bkg_three_1080.png"
+
+main["level style"] = "wrap" --wrap style like asteroids (go over one boundry, appear at opposite
 --main["backgrounds"][0] = "bkg_massive_8k_one.png"
 --main["backgrounds"][1] = "bkg_massive_8k_two.png"
 --main["backgrounds"][2] = "bkg_massive_8k_three.png"

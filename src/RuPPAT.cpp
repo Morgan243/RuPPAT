@@ -9,8 +9,8 @@
 #include "Object.h"
 #include "Common.h"
 #include <pthread.h>
-#include <thread>
-#include <mutex>
+//#include <thread>
+//#include <mutex>
 #include <omp.h>
 #include <unistd.h>
 
@@ -19,6 +19,81 @@ using namespace std;
 
 
 //------------CONSTRUCTOR--------
+RuPPAT :: RuPPAT(struct RuPPAT_Options options)
+{
+//{{{
+    
+    initLocks();
+
+	//start up the renderer
+	mainRender = new Render(options.width,
+                             options.height, 
+                             options.bpp,
+                             options.flags);
+
+    Sprite::render_context = mainRender->renderer;
+
+    SDL_Surface *tempBkg, * tempBkgOpt;
+
+    //load the background sprites
+	for( int i = 0; i< options.background_paths.size(); i++)
+	{
+        SDL_Texture *tempBkg_text, *tempBkgOpt_text;
+		
+		cout<<"Loading..."<<options.background_paths[i]<<endl;
+
+		tempBkg = IMG_Load((char *)options.background_paths[i].c_str());
+		tempBkg_text = SDL_CreateTextureFromSurface(mainRender->renderer, tempBkg);
+	
+		cout<<"\tReassigning..."<<options.background_paths[i]<<endl;
+
+		cout<<"\tPushing back..."<<options.background_paths[i]<<endl;
+		backgroundLayers.push_back(tempBkg_text);	
+	}
+
+    mainRender->low_composite.push_back(backgroundLayers[0]);
+    mainRender->low_composite.push_back(backgroundLayers[1]);
+    mainRender->high_composite.push_back(backgroundLayers[2]);    
+
+    game_height = tempBkg->h;
+    game_width = tempBkg->w;
+
+    //make sure common has the width and height values
+	Common::SetDimensions(game_width, game_height);
+
+    //let render know the boundries
+	mainRender->setGameArea(game_width, game_height);
+
+	printf("game width = %d, game height = %d\n", game_width, game_height);
+
+	WIDTH = options.width;
+	HEIGHT = options.height;
+
+    screen_centX=WIDTH/2;
+    screen_centY=HEIGHT/2;
+    //primitive factory
+	primitive_maker = new Primitives(1,
+		   							0x55efe000,
+								   	mainRender->pre_surface);
+
+    //hard coded font file, need to get this from the config
+    //however, not bothering to due to a planned structure overhaul
+//    this->text_driver = new TextDriver("main", "FontSheet.png",
+//                                        25, 25, 12, 12); //width, height, rows, columns
+
+    if(options.style == LEVEL_STYLE::WRAP)
+    {
+
+    }
+    else 
+    {
+        this->gfxPlacer = &RuPPAT::bounce_gfxPlacer;
+    }
+	gravitationalConstant = 22;
+//}}}
+}
+
+
 RuPPAT :: RuPPAT(int width,
 	   			 int height,
 				 int bpp,
@@ -81,6 +156,8 @@ RuPPAT :: RuPPAT(int width,
 
 	WIDTH = width;
 	HEIGHT = height;
+    screen_centX=WIDTH/2;
+    screen_centY=HEIGHT/2;
 
     //primitive factory
 	primitive_maker = new Primitives(1,
@@ -352,100 +429,56 @@ void RuPPAT::RK4(const float t, const float dt)
 void RuPPAT :: RunRuPPAT()
 {
 //{{{
-//
-	//mainRender = new Render(this->WIDTH, this->HEIGHT, 32, 0);
-    Uint32 T1=0, T2=1000;
-    T1=SDL_GetTicks(); 
-    float t = 0.0;
-    float dt = 0.004;
+    Uint32 T1 = SDL_GetTicks(),
+           T2 = 1000;
 
-    int engine_rate = 160;
-    int interval = 1000/engine_rate;
-    int nextTick = SDL_GetTicks() + interval;
-    int  screen_centX=WIDTH/2, screen_centY=HEIGHT/2;
+    int engine_rate = 160,
+         interval = 1000/engine_rate,
+         nextTick = SDL_GetTicks() + interval,
+         num_jobs;
 
-    char sel = 'g';
-    void * select = &sel;
-
-    int num_jobs;
     RenderJob_Container *current_job;
 
-    std::thread *rk4_th = new std::thread(&RuPPAT::RK4,this,t,dt);
+    //physics thread
+    rk4_th = new std::thread(&RuPPAT::RK4,this,t,dt);
 
 	//keep looping until program end
 	while(!done)
-	  {
+	{
 		//increment time
 		t += dt;
 
+        //only the main thread can use the renderer, so we have render jobs queue
+        //this implementation will only do one job per cylce
         if(num_jobs = this->render_jobs.size())
         {
-            cout<<"NUM JOBS: "<<num_jobs<<endl;
+            //get the front (top) job
             current_job = render_jobs.front();
             render_jobs.pop();
 
+            //what is the job
             if(current_job->id == JOB_ID::COPY_SPRITE)
             {
+                //get job container's sprite to be copied and construct a new sprite
                 Sprite *tmpSprite = new Sprite(((Sprite*)current_job->opt_container));
+                //return the copied sprite to the job
                 current_job->return_obj = (void*)tmpSprite;
             }
         }
-	
-		//blit bottom layer	
-		//mainRender->applySurface(xOrigin/1.2,yOrigin/1.2,backgroundLayers[0]);
-        mainRender->applyTextureToMain(xOrigin/1.2, yOrigin/1.2, backgroundLayers[0]);
-		
-		//blit middle layer
-		//mainRender->applySurface(xOrigin,yOrigin,backgroundLayers[1]);
-        mainRender->applyTextureToMain(xOrigin, yOrigin, backgroundLayers[1]);
+	    
+        //points to a function that will determine where to place things
+        //this function must also handle the joining and re-launching rk4 thread
+        (*this.*gfxPlacer)();
 
 
-		rk4_th->join();	
+        //sleep out until nex tick
+        if(nextTick > SDL_GetTicks())
+            SDL_Delay(nextTick - SDL_GetTicks());
 
-		//parse objects	
-		parseObjectsToSurface();	
-//		
-//		//parse pixels
-		parseSelectPixToSurface();
-//
-//		//parse players
-		parsePlayersToSurface();
+        nextTick = SDL_GetTicks() + interval;
+	}
 
-                //text_driver->font.back().character_set['h']->getSprite() );
-
-		//test for boundry conditions of screen centering	
-		if(centerX < screen_centX)
-			xOrigin = 0;
-		else if(centerX > (game_width-screen_centX))
-			xOrigin = game_width - WIDTH;
-		else
-			xOrigin = centerX - screen_centX;
-
-		if(centerY < screen_centY)
-			yOrigin = 0;
-		else if(centerY > (game_height-screen_centY))
-			yOrigin = game_height - HEIGHT;
-		else
-			yOrigin = centerY - screen_centY;
-
-		rk4_th = new std::thread(&RuPPAT::RK4,this,t,dt);
-
-		//blit top layer
-		//mainRender->applySurface(xOrigin,yOrigin,backgroundLayers[2]);
-
-        //mainRender->putSprite(300, 300, test_text.surface);
-        mainRender->applyTextureToMain(xOrigin, yOrigin, backgroundLayers[2]);
-
-
-		//mainRender->putSprite(xOrigin + (WIDTH/2),yOrigin + (HEIGHT/2),primitives);
-		mainRender->OnRender(xOrigin,yOrigin);
-        //mainRender->OnRender();
-
-	if(nextTick > SDL_GetTicks())SDL_Delay(nextTick - SDL_GetTicks());
-		nextTick = SDL_GetTicks() + interval;
-
-	  }
-	cout<<"Render thread ending!"<<endl;
+	cout<<"Main thread terminating....!"<<endl;
 //}}}
 }
 
@@ -561,6 +594,8 @@ void RuPPAT :: accelPlayer(const int p_ID, const bool isForward)
 //{{{
 	//declare the base pixel used for exhaust
 	Pixel_desc t_pix;
+
+    cout<<"Is forward: "<<isForward<<endl;
 
 	//setAccelVectors needs write lock, get exhaust as well
 	pthread_rwlock_wrlock(&object_rw_lock);
@@ -910,3 +945,103 @@ void RuPPAT :: handleDelete(const int k)
 //}}}
 }
 
+void RuPPAT :: bounce_gfxPlacer(void)
+{
+//{{{
+    //blit bottom layer	
+    //mainRender->applySurface(xOrigin/1.2,yOrigin/1.2,backgroundLayers[0]);
+    mainRender->applyTextureToMain(xOrigin/1.2, yOrigin/1.2, backgroundLayers[0]);
+    
+    //blit middle layer
+    //mainRender->applySurface(xOrigin,yOrigin,backgroundLayers[1]);
+    mainRender->applyTextureToMain(xOrigin, yOrigin, backgroundLayers[1]);
+
+
+    rk4_th->join();	
+
+    //parse objects	
+    parseObjectsToSurface();	
+		
+    //parse pixels
+    parseSelectPixToSurface();
+
+	//parse players
+    parsePlayersToSurface();
+
+    //text_driver->font.back().character_set['h']->getSprite() );
+
+    //test for boundry conditions of screen centering	
+    if(centerX < screen_centX)
+        xOrigin = 0;
+    else if(centerX > (game_width-screen_centX))
+        xOrigin = game_width - WIDTH;
+    else
+        xOrigin = centerX - screen_centX;
+
+    if(centerY < screen_centY)
+        yOrigin = 0;
+    else if(centerY > (game_height-screen_centY))
+        yOrigin = game_height - HEIGHT;
+    else
+        yOrigin = centerY - screen_centY;
+    
+    rk4_th = new std::thread(&RuPPAT::RK4,this,t,dt);
+
+    //blit top layer
+    //mainRender->applySurface(xOrigin,yOrigin,backgroundLayers[2]);
+
+    //mainRender->putSprite(300, 300, test_text.surface);
+    mainRender->applyTextureToMain(xOrigin, yOrigin, backgroundLayers[2]);
+
+    //mainRender->putSprite(xOrigin + (WIDTH/2),yOrigin + (HEIGHT/2),primitives);
+    mainRender->OnRender(xOrigin,yOrigin);
+//}}}
+}
+
+void RuPPAT :: wrap_gfxPlacer(void)
+{
+//{{{
+    //blit bottom layer	
+    //mainRender->applySurface(xOrigin/1.2,yOrigin/1.2,backgroundLayers[0]);
+    mainRender->applyTextureToMain(xOrigin/1.2, yOrigin/1.2, backgroundLayers[0]);
+    
+    //blit middle layer
+    //mainRender->applySurface(xOrigin,yOrigin,backgroundLayers[1]);
+    mainRender->applyTextureToMain(xOrigin, yOrigin, backgroundLayers[1]);
+
+    rk4_th->join();	
+
+    //parse objects	
+    parseObjectsToSurface();	
+    
+    //parse pixels
+    parseSelectPixToSurface();
+
+    //parse players
+    parsePlayersToSurface();
+
+    //test for boundry conditions of screen centering	
+    if(centerX < screen_centX)
+        xOrigin = 0;
+    else if(centerX > (game_width-screen_centX))
+        xOrigin = game_width - WIDTH;
+    else
+        xOrigin = centerX - screen_centX;
+
+    if(centerY < screen_centY)
+        yOrigin = 0;
+    else if(centerY > (game_height-screen_centY))
+        yOrigin = game_height - HEIGHT;
+    else
+        yOrigin = centerY - screen_centY;
+
+    rk4_th = new std::thread(&RuPPAT::RK4,this,t,dt);
+
+    //mainRender->putSprite(300, 300, test_text.surface);
+    mainRender->applyTextureToMain(xOrigin, yOrigin, backgroundLayers[2]);
+
+    //mainRender->putSprite(xOrigin + (WIDTH/2),yOrigin + (HEIGHT/2),primitives);
+    mainRender->OnRender(xOrigin,yOrigin);
+    //mainRender->OnRender();
+//}}}
+}

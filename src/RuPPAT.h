@@ -16,6 +16,7 @@
 #include <queue>
 #include <iostream>
 #include <mutex>
+#include <thread>
 #ifndef RuPPAT_H
 #define RuPPAT_H
 
@@ -44,6 +45,8 @@ class RuPPAT
 			   int bpp,
 			   unsigned int flags,
 			   vector<string> bkg_paths);
+
+        RuPPAT(struct RuPPAT_Options options);
 
 		//DECONSTRUCTOR
 		~RuPPAT();
@@ -123,6 +126,12 @@ class RuPPAT
 		
 	private:
 
+        void (RuPPAT::*gfxPlacer)(void) = NULL;
+        void wrap_gfxPlacer(void);
+        void bounce_gfxPlacer(void);
+        std::thread *rk4_th;
+        int  screen_centX, screen_centY;
+
 		int WIDTH, HEIGHT, 
 		    game_width,
 		   	game_height,
@@ -132,6 +141,8 @@ class RuPPAT
 		   	centerY=0,
 		   	xOrigin,
 		   	yOrigin;
+
+        float t = 0.0, dt = 0.004;
 
 		Uint32 thisTime;
 

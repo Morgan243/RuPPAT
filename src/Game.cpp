@@ -25,20 +25,7 @@ Game ::~Game()
 void Game::initGame(vector<section> configSections)
 {
 //{{{
-	//A few defaults, not configurable at the moment
-	key_count_limit = 2;
-	defaultTurnAmnt = 4;
-	fastTurn = 3;
-	w_count = 0;
-	s_count = 0;
-	a_count = 0;
-	d_count = 0;
-
-	k_UP=false; 
-	k_DOWN=false;
-   	k_LEFT=false;
-   	k_RIGHT=false;
-	k_lCTRL=false;
+    initParameters();
 
 	vector<string> tempVect;	
 	vector<string> tempVect_2;
@@ -210,20 +197,7 @@ void Game::initGame(vector<section> configSections)
 void Game::initGame_lua(vector<section> configSections)
 {
 //{{{
-	//A few defaults, not configurable at the moment
-	key_count_limit = 2;
-	defaultTurnAmnt = 4;
-	fastTurn = 3;
-	w_count = 0;
-	s_count = 0;
-	a_count = 0;
-	d_count = 0;
-
-	k_UP=false; 
-	k_DOWN=false;
-   	k_LEFT=false;
-   	k_RIGHT=false;
-	k_lCTRL=false;
+    initParameters();
 
 	vector<string> tempVect;	
 	vector<string> tempVect_2;
@@ -249,26 +223,23 @@ void Game::initGame_lua(vector<section> configSections)
 		{
 			//{{{
 			int width, height;
+            struct RuPPAT_Options options;
 			for(int j = 0; j < configSections[i].sectionOptions.size();j++)
 			{
 				if(configSections[i].sectionOptions[j].option == "width")
-					width = atoi(configSections[i].sectionOptions[j].values[0].c_str());
+					options.width = atoi(configSections[i].sectionOptions[j].values[0].c_str());
 
 				else if(configSections[i].sectionOptions[j].option == "height")
-					height = atoi(configSections[i].sectionOptions[j].values[0].c_str());
+					options.height = atoi(configSections[i].sectionOptions[j].values[0].c_str());
 
 				else if(configSections[i].sectionOptions[j].option == "font")
 					font_sheet = configSections[i].sectionOptions[j].values[0];
 
 				else if(configSections[i].sectionOptions[j].option == "backgroundLayers")
-					tempVect = configSections[i].sectionOptions[j].values;
+					options.background_paths = configSections[i].sectionOptions[j].values;
 			}
 
-            engine = new RuPPAT(width,
-                                        height,
-                                        BPP,
-                                        0,//SDL_HWSURFACE | SDL_DOUBLEBUF,
-                                        tempVect);
+            engine = new RuPPAT(options);
 			//}}}
 		}
 
@@ -432,6 +403,29 @@ void Game::initGame_lua(vector<section> configSections)
 //}}}
 }
 
+void Game::initParameters()
+{
+//{{{
+	//A few defaults, not configurable at the moment
+    x = y = up_count = down_count = left_count = right_count = 0;
+	key_count_limit = 2;
+	defaultTurnAmnt = 4;
+	fastTurn = 3;
+	w_count = 0;
+	s_count = 0;
+	a_count = 0;
+	d_count = 0;
+
+	k_UP=false; 
+	k_DOWN=false;
+   	k_LEFT=false;
+   	k_RIGHT=false;
+	k_lCTRL=false;
+    space = false;
+    done =false;
+//}}}
+}
+
 ///////////////////////////////////////////////////
 //RUN the game!
 ///////////////////////////////////////////////////
@@ -512,8 +506,7 @@ void Game :: handleEvents(Event_desc &mainEvents)
 			if(event.key.keysym.sym == SDLK_ESCAPE)
 				{
 					done = true;
-                   engine->done = true; 
-					cout<<"doneskies!!"<<endl;
+                    engine->done = true; 
 				}
 
 			//SPACE
@@ -610,8 +603,7 @@ void Game :: handleEvents(Event_desc &mainEvents)
         }
         //}}}
 	}
-
-
+    
 		//HANDLE LONG PRESSES
 		if(k_lCTRL)
 			{
@@ -657,16 +649,16 @@ void Game :: handleEvents(Event_desc &mainEvents)
 		if(k_UP)
 			{
             //{{{
-			//reached desired time between accels, so accel and reset counter
-			if(up_count>key_count_limit)
-				{
-					engine->accelPlayer(0,true);
-					up_count=0;
-				}
-			else//otherwise, just increment the count
-				{
-					up_count++;
-				}			
+                //reached desired time between accels, so accel and reset counter
+                if(up_count>key_count_limit)
+                {
+                    engine->accelPlayer(0,true);
+                    up_count = 0;
+                }
+                else//otherwise, just increment the count
+                {
+                    up_count++;
+                }			
             //}}}
 			}
 
