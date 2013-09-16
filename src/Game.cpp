@@ -407,7 +407,7 @@ void Game::initParameters()
 {
 //{{{
 	//A few defaults, not configurable at the moment
-    x = y = up_count = down_count = left_count = right_count = 0;
+    x = y = up_count = down_count = left_count = right_count = space_count = 0;
 	key_count_limit = 2;
 	defaultTurnAmnt = 4;
 	fastTurn = 3;
@@ -512,8 +512,10 @@ void Game :: handleEvents(Event_desc &mainEvents)
 			//SPACE
 			if(event.key.keysym.sym == SDLK_SPACE)
             {
-                engine->firePlayersWeapon(0);
-                mainEvents.space = true;
+                if(!space)
+                    engine->firePlayersWeapon(0);
+
+                space = mainEvents.space = true;
             }
 
 			//UP, W, K
@@ -566,7 +568,7 @@ void Game :: handleEvents(Event_desc &mainEvents)
 
 			//SPACE
 			if(event.key.keysym.sym == SDLK_SPACE )
-				mainEvents.space = false;
+				space = mainEvents.space = false;
 
 			//UP, W,K
 			if(event.key.keysym.sym == SDLK_UP
@@ -678,19 +680,19 @@ void Game :: handleEvents(Event_desc &mainEvents)
 			}
 
 		if(k_LEFT)
-        {
-        //{{{
-			if(left_count>key_count_limit)
             {
-                engine->turnPlayer(0,true, defaultTurnAmnt);
-                left_count=0;
+            //{{{
+                if(left_count>key_count_limit)
+                {
+                    engine->turnPlayer(0,true, defaultTurnAmnt);
+                    left_count=0;
+                }
+                else
+                {
+                    left_count++;
+                }
+                //}}}
             }
-			else
-            {
-                left_count++;
-            }
-            //}}}
-        }
 		if(k_RIGHT)
 			{
             //{{{

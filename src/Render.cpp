@@ -407,13 +407,8 @@ void Render::putSprite(const int x,
 
 void Render::putSprite(const vector<Texture_Container> sprites)
 {
-    cout<<"Put sprites examples...."<<endl;
     for(int i = 0; i < sprites.size(); i++)
     {
-        cout<<"--Sprite (X,Y): "<<sprites.at(i).x<<","<<sprites.at(i).y<<endl;
-//        SDL_Rect location;
-//        SDL_QueryTexture(sprites.at(i).texture, NULL, NULL, &location.w, &location.h);
-//        cout<<"w , h: "<<location.w<<", "<<location.h<<endl;
         putSprite(sprites.at(i).x, sprites.at(i).y, sprites.at(i).texture);
     }
 }

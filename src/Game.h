@@ -86,7 +86,7 @@ class Game
 		int x, y, 
 			up_count, down_count, left_count, right_count,
 			key_count_limit, defaultTurnAmnt, fastTurn,
-			w_count, s_count, a_count, d_count,
+			w_count, s_count, a_count, d_count, space_count,
 			mouse_x, mouse_y;
 
 		bool  k_UP, k_DOWN, k_LEFT, k_RIGHT,

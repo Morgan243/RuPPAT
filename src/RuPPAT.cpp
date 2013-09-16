@@ -529,7 +529,6 @@ void RuPPAT :: parsePlayersToSurface()
 		//Get renderable set from player (ex: missiles)
 		while((players[i]->GetNextAuxDrawInfo(tempRenderables)) )
         {
-                cout<<"Putting missile!\n";
 				mainRender->putSprite(tempRenderables.sprites_text);
 				mainRender->putPixel(tempRenderables.pixels);
         }
@@ -595,7 +594,6 @@ void RuPPAT :: accelPlayer(const int p_ID, const bool isForward)
 	//declare the base pixel used for exhaust
 	Pixel_desc t_pix;
 
-    cout<<"Is forward: "<<isForward<<endl;
 
 	//setAccelVectors needs write lock, get exhaust as well
 	pthread_rwlock_wrlock(&object_rw_lock);
@@ -607,15 +605,14 @@ void RuPPAT :: accelPlayer(const int p_ID, const bool isForward)
 		t_pix.color=0xff0023ff;
 		t_pix.xAcc = 0;
 		t_pix.yAcc = 0;
-		t_pix.accelLength = 2;
-		t_pix.dimFactor = 10;
+		t_pix.accelLength = 1;
+		t_pix.dimFactor = 5;
 		t_pix.dimTimer = 0;
 		t_pix.deleteMe = false;
 		t_pix.updated = 0;
 
 	
 	float origXvel = t_pix.xVel, origYvel = t_pix.yVel;
-	//	cout<<origXvel<<"  "<<origYvel<<endl;	
 	
 	//create 10 pixels with slight random variation
 	for(int i =0; i< 10; i++)
@@ -643,7 +640,6 @@ void RuPPAT :: turnPlayer(const int p_ID,
 	{
 		if(isLeft)
 		{
-            cout<<"left pressed!----------"<<endl;
 			pthread_rwlock_wrlock(&object_rw_lock);
 				players[p_ID]->incrementRotationRate();
 			pthread_rwlock_unlock(&object_rw_lock);
