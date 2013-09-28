@@ -345,7 +345,7 @@ namespace PhysFunc
     float G_force(Entity_desc &state_1, Entity_desc &state_2)
     {
      //{{{
-        const float gravConst = 1;
+        const float gravConst = 10;
 
         float distance = (float)getDistance(state_2.x, state_2.y, state_1.x, state_1.y);
         float theta_1 = 0.0, theta_2 = 0.0, gForce=0.0;
@@ -380,7 +380,11 @@ namespace PhysFunc
             if(state_1.mass > 0)
             {
                 state_1.xForce += (gForce * sin(theta_1));
-                state_1.yForce += (gForce * cos(theta_1));
+
+                if(state_1.y > state_2.y)
+                    state_1.yForce -= (gForce * cos(theta_1));
+                else
+                    state_1.yForce += (gForce * cos(theta_1));
             }
             else
             {
@@ -391,7 +395,11 @@ namespace PhysFunc
             if(state_2.mass > 0)
             {
                 state_2.xForce += (gForce * sin(theta_2));
-                state_2.yForce += (gForce * cos(theta_2));
+
+                if(state_2.y > state_1.y)
+                    state_2.yForce -= (gForce * cos(theta_2));
+                else
+                    state_2.yForce += (gForce * cos(theta_2));
             }
             else
             {

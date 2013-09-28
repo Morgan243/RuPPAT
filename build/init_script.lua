@@ -1,7 +1,5 @@
 print('-------RuPPAT Lua Init Script Loaded---------')
 
-
-
 --set main config information (resolution and background)
 main = {}
 main["width"] = 980
@@ -30,7 +28,7 @@ player0["sprite"] = "red_ship_wraith.png"
 player0["x"] = 100
 player0["y"] = 110
 player0["HC"] = "red_ship_HC.png"
-player0["max accel"] = 350.0
+player0["max accel"] = 500.0
 
 --give player zero some missiles
 player0["missiles"] = {}

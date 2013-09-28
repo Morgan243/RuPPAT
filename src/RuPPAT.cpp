@@ -422,9 +422,9 @@ void RuPPAT::RK4_force(const float t, const float dt)
          pthread_rwlock_unlock(&pix_rw_lock);	
         pthread_rwlock_unlock(&object_rw_lock);
 
-            //do this once and last!
-            if(i == num_objects - 1)
-            {
+        //do this once and last!
+        if(i == num_objects - 1)
+        {
             pthread_rwlock_rdlock(&object_rw_lock);
              pthread_rwlock_wrlock(&pix_rw_lock);
                 PhysFunc::integrate_force(*obj_desc_sec, t, dt);
@@ -457,7 +457,7 @@ void RuPPAT::RK4_force(const float t, const float dt)
                         num_pixels = pixelList_m.size();
                     }
             pthread_rwlock_unlock(&pix_rw_lock);
-            }
+        }
 	}
  }
 //}}}
@@ -748,12 +748,6 @@ void RuPPAT :: accelPlayer(const int p_ID, const bool isForward)
 		players[p_ID]->getExhaustVectors(t_pix.xForce, t_pix.yForce);
 	pthread_rwlock_unlock(&object_rw_lock);
 
-        t_pix.xForce *= .1;
-        t_pix.yForce *= .1;
-
-        cout<<"Pixel X Force = " << t_pix.xForce <<endl;
-        cout<<"Pixel Y Force = " << t_pix.yForce <<endl;
-		
 		//exhaust color starts red
 		t_pix.color=0xff0023ff;
 		t_pix.xAcc = 0;

@@ -81,6 +81,9 @@ class Player : public Object
 		//launch a missile!
 		void fireSelectedMissile();
 		void fireSelectedMissile(Sprite* fired_sprite); 
+
+        Entity_desc* updatePositional(float t, float dt);
+
 		Entity_desc *PhysicsHandler(const float t,
 									const float dt,
 									Entity_desc &state_src);
@@ -88,6 +91,14 @@ class Player : public Object
 		Entity_desc *PhysicsHandler(Entity_desc &state_dest,
 									const float t,
 									const float dt);
+
+        Entity_desc* PhysicsHandler_force(const float t,
+                                            const float dt, 
+                                            Entity_desc &state_src);
+
+        Entity_desc* PhysicsHandler_force(Entity_desc &state_dest, 
+											const float t, 
+											const float dt);
 		
 		vector<Entity_desc*>* GetAuxillaryDescriptors();
 

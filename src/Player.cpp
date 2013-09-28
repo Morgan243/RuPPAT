@@ -352,8 +352,8 @@ Entity_desc* Player::PhysicsHandler(const float t,
 		else 
 		{
 			missiles_free[i]->PhysicsHandler(t,
-							dt,
-						    state_src);
+                                            dt,
+                                            state_src);
 		}
 	}
 
@@ -376,6 +376,73 @@ Entity_desc* Player::PhysicsHandler(Entity_desc &state_dest,
 //}}}
 }
 
+Entity_desc* Player::updatePositional(float t, float dt)
+{
+    PhysFunc::integrate_force(this->descriptor, t, dt);
+
+	int size = missiles_free.size();
+
+	for(int i = 0; i < size; i++)
+        PhysFunc::integrate_force( *missiles_free[i]->getDescriptor_ref(), t, dt);
+}
+
+Entity_desc* Player :: PhysicsHandler_force(const float t,
+                                            const float dt, 
+                                            Entity_desc &state_src)
+{
+//{{{
+    int size = missiles_free.size();
+    //keep track of current time
+	thisTime = t;
+
+	//integrate the sprite location if its alive
+	if(!isDestroying)
+		PhysFunc::G_force(this->descriptor, state_src);
+
+	//calculate fired (free) missiles position
+	for(int i = 0; i < size; i++)
+	{
+		//is the missile completely finished? (no longer relevant)
+		if(missiles_free[i]->killMe)
+		{
+			//remove from the fired list
+			missiles_free.erase(missiles_free.begin()+i);
+
+			//decrement index and size
+			i--;
+			size--;
+		}
+		//time to begin end of life animation/sequence
+		else if(missiles_free[i]->IsBeyondLifeSpan(thisTime) 
+				&& !missiles_free[i]->isDestroying)
+		{
+			//initiate destruction
+			missiles_free[i]->GameDestroy();
+		}
+		//integrate
+		else 
+		{
+			missiles_free[i]->PhysicsHandler_force(t,
+                                                    dt,
+                                                    state_src);
+		}
+	}
+	return &descriptor;
+//}}}
+}
+
+Entity_desc* Player :: PhysicsHandler_force(Entity_desc &state_dest, 
+											const float t, 
+											const float dt)
+{
+//{{{
+	thisTime = t;
+	
+	//default for of this constructor
+	PhysFunc::G_force(state_dest, descriptor);
+	return &state_dest;
+//}}}
+}
 
 bool Player :: GetNextAuxDrawInfo(Renderables_Cont &renderables)
 {
