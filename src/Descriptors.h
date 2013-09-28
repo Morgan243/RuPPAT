@@ -86,6 +86,7 @@ struct Entity_desc
     float xForce, yForce;
 
 	float maxAccel;
+    float maxForce;
 
 	int hitCircle_radius;
 	bool noDrawEffect;

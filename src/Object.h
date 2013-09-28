@@ -151,6 +151,8 @@ class Object
 
 		void setAccelVectors(const bool forward);
 
+        void setForceVectors(const bool forward);
+
 		void getExhaustVectors(float &xVel, float &yVel);
 
 		void GetVectors_FrontRelative(float &xVect,
@@ -178,6 +180,8 @@ class Object
 		virtual Entity_desc*  PhysicsHandler(Entity_desc &state_dest, 
 												const float t,
 												const float dt);
+
+        virtual Entity_desc* updatePositional(float t, float dt);
 
 		virtual Entity_desc* PhysicsHandler_force(const float t,
 											float dt,

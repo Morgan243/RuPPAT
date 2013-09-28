@@ -52,6 +52,7 @@ namespace PhysFunc
 							   	const float objX,
 							   	const float objY);
 
+
 	Derivative evaluate_ent(Entity_desc &initial,
 							float t,
 						   	float dt,
@@ -81,5 +82,19 @@ namespace PhysFunc
 		   			float t,
 				   	float dt, 
 					Entity_desc &state_src);
+
+
+    float G_force(Entity_desc &state_1, Entity_desc &state_2);
+                    
+
+    void evaluate_force(Entity_desc &initial,float t, 
+                        float dt, 
+                        Derivative &output_1);
+
+    void integrate_force (Entity_desc &state,
+                            float t,
+                            float dt);
+          
+
 }
 #endif

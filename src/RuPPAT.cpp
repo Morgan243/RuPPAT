@@ -13,6 +13,7 @@
 //#include <mutex>
 #include <omp.h>
 #include <unistd.h>
+#include "PhysFuncs.h"
 
 
 using namespace std;
@@ -344,22 +345,24 @@ void RuPPAT::RK4_force(const float t, const float dt)
 	Entity_desc *obj_desc_prim , *obj_desc_sec, obj_desc_tri;
 	Pixel_desc pix_desc;
 
+
  //go through object list, apply gravity 
  //to other objects and pixels
  for(int i = 0; i<num_objects;i++)
  {
 
-	//go through the object list to apply grav to other objects
-	for(int j = i+1; j<num_objects; j++)
-	{
+    if(num_objects == 1)
+    {
 		//Runge Kutta integrator
 		pthread_rwlock_wrlock(&object_rw_lock);	
 
 			//Get the outer loop objects descriptor
-			obj_desc_tri = objectList[j]->getDescriptor();
+			obj_desc_tri.mass = 0;
+            obj_desc_tri.x = 0;
+            obj_desc_tri.y = 0;
 		
 			//Apply outer loop object [i] to the current object
-			obj_desc_prim = objectList[i]->PhysicsHandler(t, dt, obj_desc_tri);
+			obj_desc_prim = objectList[i]->PhysicsHandler_force(t, dt, obj_desc_tri);
 
 			if((renderables = objectList[i]->GetRenderables()) != NULL)
 			{
@@ -373,7 +376,39 @@ void RuPPAT::RK4_force(const float t, const float dt)
 			Common::TestBounds(*obj_desc_prim, true);
 
 		pthread_rwlock_unlock(&object_rw_lock);
-	}
+
+    }
+    else 
+    {
+        //go through the object list to apply grav to other objects
+        for(int j = i+1; j<num_objects; j++)
+        {
+            //Runge Kutta integrator
+            pthread_rwlock_wrlock(&object_rw_lock);	
+
+                //Get the outer loop objects descriptor
+                obj_desc_tri = objectList[j]->getDescriptor();
+            
+                //Apply outer loop object [i] to the current object
+                obj_desc_prim = objectList[i]->PhysicsHandler_force(t, dt, obj_desc_tri);
+
+                if((renderables = objectList[i]->GetRenderables()) != NULL)
+                {
+                    for(int i=0; i<renderables->entities.size(); i++)
+                    {
+                        Common::TestBounds(*renderables->entities[i], true);
+                    }
+                }
+
+                //check new locations are valid, reset them if not 
+                Common::TestBounds(*obj_desc_prim, true);
+
+            pthread_rwlock_unlock(&object_rw_lock);
+        }
+    }
+
+    objectList[i]->updatePositional(t, dt);
+
 	//next, go through the pixel structs 
 	for(int j = 0; j<num_pixels; j++)
 	{
@@ -382,36 +417,47 @@ void RuPPAT::RK4_force(const float t, const float dt)
 		 pthread_rwlock_wrlock(&pix_rw_lock);
 
 			obj_desc_sec = &pixelList_m[j];
-			obj_desc_sec = objectList[i]->PhysicsHandler(*obj_desc_sec, t, dt);
+			obj_desc_sec = objectList[i]->PhysicsHandler_force(*obj_desc_sec, t, dt);
 
-			new_x = obj_desc_sec->x;
-			new_y = obj_desc_sec->y;
+         pthread_rwlock_unlock(&pix_rw_lock);	
+        pthread_rwlock_unlock(&object_rw_lock);
 
-			new_xVel = obj_desc_sec->xVel;
-			new_yVel = obj_desc_sec->yVel;
+            //do this once and last!
+            if(i == num_objects - 1)
+            {
+            pthread_rwlock_rdlock(&object_rw_lock);
+             pthread_rwlock_wrlock(&pix_rw_lock);
+                PhysFunc::integrate_force(*obj_desc_sec, t, dt);
 
-		 pthread_rwlock_unlock(&pix_rw_lock);	
-		pthread_rwlock_unlock(&object_rw_lock);
+                new_x = obj_desc_sec->x;
+                new_y = obj_desc_sec->y;
 
-			//make sure the new location is within bounds
-        Common::TestBounds(new_x, new_y, new_xVel, new_yVel, true);
+                new_xVel = obj_desc_sec->xVel;
+                new_yVel = obj_desc_sec->yVel;
 
-		pthread_rwlock_wrlock(&pix_rw_lock);
-			obj_desc_sec->xVel = new_xVel;
-			obj_desc_sec->yVel = new_yVel;	
-			obj_desc_sec->x = new_x;
-			obj_desc_sec->y = new_y;
-		
-            //if the dim factor is not zero, apply it
-			if(pixelList_m[j].dimFactor)
-				Common::ApplyDimming(pixelList_m[j]);
+             pthread_rwlock_unlock(&pix_rw_lock);	
+            pthread_rwlock_unlock(&object_rw_lock);
 
-			if(pixelList_m[j].deleteMe)
-				{
-					handleDelete(j);
-					num_pixels = pixelList_m.size();
-				}
-		pthread_rwlock_unlock(&pix_rw_lock);
+                //make sure the new location is within bounds
+            Common::TestBounds(new_x, new_y, new_xVel, new_yVel, true);
+
+            pthread_rwlock_wrlock(&pix_rw_lock);
+                obj_desc_sec->xVel = new_xVel;
+                obj_desc_sec->yVel = new_yVel;	
+                obj_desc_sec->x = new_x;
+                obj_desc_sec->y = new_y;
+            
+                //if the dim factor is not zero, apply it
+                if(pixelList_m[j].dimFactor)
+                    Common::ApplyDimming(pixelList_m[j]);
+
+                if(pixelList_m[j].deleteMe)
+                    {
+                        handleDelete(j);
+                        num_pixels = pixelList_m.size();
+                    }
+            pthread_rwlock_unlock(&pix_rw_lock);
+            }
 	}
  }
 //}}}
@@ -541,7 +587,7 @@ void RuPPAT :: RunRuPPAT()
     RenderJob_Container *current_job;
 
     //physics thread
-    rk4_th = new std::thread(&RuPPAT::RK4,this,t,dt);
+    rk4_th = new std::thread(&RuPPAT::RK4_force,this,t,dt);
 
 	//keep looping until program end
 	while(!done)
@@ -698,9 +744,15 @@ void RuPPAT :: accelPlayer(const int p_ID, const bool isForward)
 
 	//setAccelVectors needs write lock, get exhaust as well
 	pthread_rwlock_wrlock(&object_rw_lock);
-		players[p_ID]->setAccelVectors(isForward);
-		players[p_ID]->getExhaustVectors(t_pix.xVel, t_pix.yVel);
+		players[p_ID]->setForceVectors(isForward);
+		players[p_ID]->getExhaustVectors(t_pix.xForce, t_pix.yForce);
 	pthread_rwlock_unlock(&object_rw_lock);
+
+        t_pix.xForce *= .1;
+        t_pix.yForce *= .1;
+
+        cout<<"Pixel X Force = " << t_pix.xForce <<endl;
+        cout<<"Pixel Y Force = " << t_pix.yForce <<endl;
 		
 		//exhaust color starts red
 		t_pix.color=0xff0023ff;
@@ -711,6 +763,7 @@ void RuPPAT :: accelPlayer(const int p_ID, const bool isForward)
 		t_pix.dimTimer = 0;
 		t_pix.deleteMe = false;
 		t_pix.updated = 0;
+        t_pix.mass = 1;
 
 	
 	float origXvel = t_pix.xVel, origYvel = t_pix.yVel;
@@ -965,7 +1018,7 @@ void RuPPAT :: createPixElement(const int x, const int y,
 		//if it has mass
 		if(mass!=0)
 		{//assign amss and add to massList
-		tmpPix.mass = mass;
+            tmpPix.mass = mass;
 	  	//massList.push_back(topMap[x][y]);
 	  	}
 
@@ -1082,7 +1135,7 @@ void RuPPAT :: bounce_gfxPlacer(void)
     else
         yOrigin = centerY - screen_centY;
     
-    rk4_th = new std::thread(&RuPPAT::RK4,this,t,dt);
+    rk4_th = new std::thread(&RuPPAT::RK4_force,this,t,dt);
 
     //blit top layer
     //mainRender->applySurface(xOrigin,yOrigin,backgroundLayers[2]);

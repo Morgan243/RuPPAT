@@ -15,57 +15,6 @@ namespace PhysFunc
         return ( sqrt( ((x2-x1)*(x2-x1)) + ((y2-y1)*(y2-y1))  ) );
     }
 
-    float G_force(const Entity_desc &state_1, const Entity_desc &state_2,
-                    Derivative &output_1, Derivative &output_2)
-    {
-     //{{{
-        const float gravConst = 10;
-
-        float distance = (float)getDistance(state_2.x, state_2.y, state_1.x, state_1.y);
-        float theta_1 = 0.0, theta_2 = 0.0, gForce=0.0;
-
-        float deltaX = state_2.x - state_1.x;
-        float deltaY = state_2.y - state_1.y;
-            
-            if(deltaY !=0 && deltaX != 0)	
-                 theta_1 = atan((deltaX)/(deltaY));
-            else if(deltaY == 0 && deltaX != 0)
-                 theta_1 = 3.1415926/2.0;
-            else if(deltaY != 0 && deltaX == 0)
-                 theta_1 = 0.0;
-
-
-            //adjust theta depending on the coordinate
-            if((deltaX<0 && deltaY<0) || (deltaX>0 && deltaY<0))
-                 theta_1 *=(-1.0);
-
-            //theta_2 should be opposite theta 1, save some calculations
-            if(theta_1 > 180)
-                theta_2 = theta_1 - 180.0;
-            else if (theta_1 < 180)
-                theta_2 = theta_1 + 180;
-            else
-                theta_2 = 0;
-
-            if(distance!=0 && distance>31)// && distance < (objMass*2))
-                 gForce = (state_2.mass*state_1.mass*gravConst)/(distance*distance);
-
-            //determine each objects acceleration based on the force and their masses
-            output_1.ddx = (gForce * sin(theta_1))/state_1.mass;
-            output_1.ddy = (gForce * cos(theta_1))/state_1.mass;
-
-            output_2.ddx = (gForce * sin(theta_2))/state_2.mass;
-            output_2.ddy = (gForce * cos(theta_2))/state_2.mass;
-
-            //invers the y accel (caused by reversed y axis in SDL)
-            if(state_1.y > state_2.y)
-                output_1.ddy *=-1;
-            else
-                output_2.ddy *=-1;
-
-        return gForce;
-    //}}}
-    }
 
     //need to decide how to apply all the forces to the object here
     float G_acceleration (const Pixel_desc &state, Derivative &output, float t,
@@ -322,7 +271,6 @@ namespace PhysFunc
 
     Derivative evaluate(Entity_desc &initial,float t, float dt,const Derivative &d,
                 const Entity_desc &init_src)			
-        //const float objMass, const float point_x, const float point_y)
     {
         //{{{
         Entity_desc state;// = initial.getDescriptor();
@@ -391,6 +339,156 @@ namespace PhysFunc
 
         //state.setDescriptor(temp_ent);
         //}}}
+    }
+
+    //-------------------vvvv Forced Based Methodology vvvvv------------
+    float G_force(Entity_desc &state_1, Entity_desc &state_2)
+    {
+     //{{{
+        const float gravConst = 1;
+
+        float distance = (float)getDistance(state_2.x, state_2.y, state_1.x, state_1.y);
+        float theta_1 = 0.0, theta_2 = 0.0, gForce=0.0;
+
+        float deltaX = state_2.x - state_1.x;
+        float deltaY = state_2.y - state_1.y;
+            
+            if(deltaY !=0 && deltaX != 0)	
+                 theta_1 = atan((deltaX)/(deltaY));
+            else if(deltaY == 0 && deltaX != 0)
+                 theta_1 = 3.1415926/2.0;
+            else if(deltaY != 0 && deltaX == 0)
+                 theta_1 = 0.0;
+
+
+            //adjust theta depending on the coordinate
+            if((deltaX<0 && deltaY<0) || (deltaX>0 && deltaY<0))
+                 theta_1 *=(-1.0);
+
+            //theta_2 should be opposite theta 1, save some calculations
+            if(theta_1 > 180)
+                theta_2 = theta_1 - 180.0;
+            else if (theta_1 < 180)
+                theta_2 = theta_1 + 180;
+            else
+                theta_2 = 0;
+
+            if(distance!=0 && distance>31)// && distance < (objMass*2))
+                 gForce = (state_2.mass*state_1.mass*gravConst)/(distance*distance);
+
+            //determine each objects acceleration based on the force and their masses
+            if(state_1.mass > 0)
+            {
+                state_1.xForce += (gForce * sin(theta_1));
+                state_1.yForce += (gForce * cos(theta_1));
+            }
+            else
+            {
+                state_1.xForce = 0;
+                state_1.yForce = 0;
+            }
+
+            if(state_2.mass > 0)
+            {
+                state_2.xForce += (gForce * sin(theta_2));
+                state_2.yForce += (gForce * cos(theta_2));
+            }
+            else
+            {
+                state_2.xForce = 0;
+                state_2.yForce = 0;
+            }
+
+            //invers the y accel (caused by reversed y axis in SDL)
+//            if(state_1.y > state_2.y)
+//                output_1.ddy *=-1;
+//            else
+//                output_2.ddy *=-1;
+
+        return gForce;
+    //}}}
+    }
+
+    void evaluate_force(Entity_desc &initial,float t, float dt,
+                         Derivative &output_1)
+    {
+    //{{{
+        
+        //calc new positions
+        initial.x = initial.x + output_1.dx * dt; 
+        initial.y = initial.y + output_1.dy * dt; 
+
+
+        //calc new velocities
+        initial.xVel = initial.xVel + output_1.ddx*dt;
+        initial.yVel = initial.yVel + output_1.ddy*dt;
+
+        
+        //we already know the new velocity
+        output_1.dx = initial.xVel;
+        output_1.dy = initial.yVel;
+
+        output_1.ddx = initial.xForce / initial.mass;
+        output_1.ddy = initial.yForce / initial.mass;
+
+        //calculate new forces
+        //G_force(initial, init_src, output_1, output_2);
+
+    //}}}
+    }
+
+    void integrate_force (Entity_desc &state, float t, float dt)
+    {
+    //{{{
+        //cout<<"---->state mass = " << state.mass<<endl;
+        Derivative init;
+            init.dx = state.xVel;
+            init.dy = state.yVel;
+
+            init.ddx = state.xAcc;
+            init.ddy = state.yAcc;
+
+
+        Derivative a_1, b_1, c_1, d_1, a_2, b_2, c_2, d_2;
+            a_1=b_1=c_1=d_1=init;
+            
+        
+        evaluate_force( state, t, 0.0f, init );
+        evaluate_force( state, t, dt* 0.5f, a_1);
+        evaluate_force( state, t, dt*0.5f, b_1);
+        evaluate_force( state, t, dt, c_1);
+
+             float dxdt_1 = 1.0f/6.0f * (a_1.dx + 2.0f*(b_1.dx + c_1.dx) + d_1.dx);
+             float dydt_1 = 1.0f/6.0f * (a_1.dy + 2.0f*(b_1.dy + c_1.dy) + d_1.dy);
+
+             float ddxdt_1 = 1.0f/6.0f * (a_1.ddx + 2.0f*(b_1.ddx + c_1.ddx) + d_1.ddx);
+             float ddydt_1 = 1.0f/6.0f * (a_1.ddy + 2.0f*(b_1.ddy + c_1.ddy) + d_1.ddy);
+
+        state.x = state.x + dxdt_1*dt;
+        state.y = state.y + dydt_1*dt;
+
+        state.xVel = state.xVel + ddxdt_1*dt;
+        state.yVel = state.yVel + ddydt_1*dt;
+
+//        cout<<"dxdt_1 = "<< dxdt_1<<endl;
+//        cout<<"dxdt_1 = "<< dxdt_1<<endl;
+//
+//        cout<<"ddxdt_1 = "<< ddxdt_1<<endl;
+//        cout<<"ddxdt_1 = "<< ddxdt_1<<endl;
+//
+//        cout<<"xForce = " <<state.xForce<<endl;
+//        cout<<"yForce = " <<state.yForce<<endl;
+//        cout<<"xAcc = " <<state.xAcc<<endl;
+//        cout<<"yAcc = " <<state.yAcc<<endl;
+//        cout<<"xVel = " <<state.xVel<<endl;
+//        cout<<"yVel = " <<state.yVel<<endl;
+//        cout<<"x = " <<state.x<<endl;
+//        cout<<"y = " <<state.y<<endl;
+//
+        state.xForce = state.yForce = 0;
+        state.xAcc = state.yAcc = 0;
+
+    //}}}
     }
 }
 #endif

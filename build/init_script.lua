@@ -30,7 +30,7 @@ player0["sprite"] = "red_ship_wraith.png"
 player0["x"] = 100
 player0["y"] = 110
 player0["HC"] = "red_ship_HC.png"
-player0["max accel"] = 0.5
+player0["max accel"] = 350.0
 
 --give player zero some missiles
 player0["missiles"] = {}

@@ -16,6 +16,8 @@ Object :: Object(string sprite_path,
 	//set x and y
 	descriptor.x = (float)start_x;
 	descriptor.y = (float)start_y;
+    
+    descriptor.xVel = descriptor.yVel = 0;
 
 	//set mass
 	descriptor.mass = start_mass;
@@ -50,6 +52,8 @@ Object :: Object(string sprite_path,
 	
     //init force vectors
     descriptor.xForce = descriptor.yForce = 0.0;
+
+    descriptor.xVel = descriptor.yVel = 0;
 
 	timeCreated = SDL_GetTicks();
 //}}}
@@ -470,11 +474,105 @@ void Object :: setAccelVectors(const bool forward)
 //}}}
 }
 
+void Object :: setForceVectors(const bool forward)
+{
+//{{{
+
+    float heading = sprite->getAngle();
+	if(forward)
+	{
+		if(heading>0 && heading<90)
+        {
+			exhaustX=-1*descriptor.maxAccel*cos(heading*3.141/180);
+			exhaustY=(descriptor.maxAccel*sin(heading*3.141/180));
+
+
+			descriptor.xForce += descriptor.maxAccel*cos(heading*3.141/180);
+			descriptor.yForce +=-1*(descriptor.maxAccel*sin(heading*3.141/180));
+        }
+		else if(heading>90 && heading<180)
+        {
+			exhaustX=-1*descriptor.maxAccel*cos(heading*3.141/180);
+			exhaustY=(descriptor.maxAccel*sin(heading*3.141/180));
+
+			descriptor.xForce += descriptor.maxAccel*cos(heading*3.141/180);
+			descriptor.yForce += -1*(descriptor.maxAccel*sin(heading*3.141/180));
+        }
+		else if(heading>180 && heading<260)
+        {
+			exhaustX=-1*descriptor.maxAccel*cos(heading*3.141/180);
+			exhaustY=(descriptor.maxAccel*sin(heading*3.141/180));
+
+			descriptor.xForce += descriptor.maxAccel*cos(heading*3.141/180);
+			descriptor.yForce += -1*(descriptor.maxAccel*sin(heading*3.141/180));
+        }
+		else if(heading>260 && heading<360)
+        {
+			heading =360- heading;
+			exhaustX=-1*descriptor.maxAccel*cos(heading*3.141/180);
+			exhaustY=-1*(descriptor.maxAccel*sin(heading*3.141/180));
+
+			descriptor.xForce += (descriptor.maxAccel*cos(heading*3.141/180));
+			descriptor.yForce += (descriptor.maxAccel*sin(heading*3.141/180));
+        }
+
+		else if(heading == 0)
+        {
+            exhaustX = -1*descriptor.maxAccel;
+            exhaustY = 0;
+            descriptor.xForce += descriptor.maxAccel;
+        }
+	}
+	else if (!forward)
+	{
+		if(heading>0 && heading<90)
+        {
+			exhaustX=descriptor.maxAccel*cos(heading*3.141/180);
+			exhaustY=-1*(descriptor.maxAccel*sin(heading*3.141/180));
+
+			descriptor.xForce -= descriptor.maxAccel*cos(heading*3.141/180);
+			descriptor.yForce -=-1*(descriptor.maxAccel*sin(heading*3.141/180));
+        }
+		else if(heading>90 && heading<180)
+        {
+			exhaustX=descriptor.maxAccel*cos(heading*3.141/180);
+			exhaustY=-1*(descriptor.maxAccel*sin(heading*3.141/180));
+
+			descriptor.xForce -= descriptor.maxAccel*cos(heading*3.141/180);
+			descriptor.yForce -= -1*(descriptor.maxAccel*sin(heading*3.141/180));
+        }
+		else if(heading>180 && heading<260)
+        {
+			exhaustX=descriptor.maxAccel*cos(heading*3.141/180);
+			exhaustY=-1*(descriptor.maxAccel*sin(heading*3.141/180));
+
+			descriptor.xForce -= descriptor.maxAccel*cos(heading*3.141/180);
+			descriptor.yForce -= -1*(descriptor.maxAccel*sin(heading*3.141/180));
+        }
+		else if(heading>260 && heading<360)
+        {
+			heading =360- heading;
+			exhaustX=descriptor.maxAccel*cos(heading*3.141/180);
+			exhaustY=(descriptor.maxAccel*sin(heading*3.141/180));
+
+			descriptor.xForce -= (descriptor.maxAccel*cos(heading*3.141/180));
+			descriptor.yForce -= (descriptor.maxAccel*sin(heading*3.141/180));
+        }
+
+		else if(heading == 0)
+        {
+            exhaustX = -1*descriptor.maxAccel;
+            exhaustY = 0;
+			descriptor.xForce -= descriptor.maxAccel;
+        }
+	}
+//}}}
+}
 
 void Object :: getExhaustVectors(float &xVel, float &yVel)
 {
-	xVel=exhaustX;
-	yVel=exhaustY;
+	xVel = exhaustX;
+	yVel = exhaustY;
 }
 
 void Object :: GetVectors_FrontRelative(float &xVect,
@@ -557,6 +655,11 @@ Entity_desc* Object :: PhysicsHandler(Entity_desc &state_dest,
 //}}}
 }
 
+Entity_desc* Object::updatePositional(float t, float dt)
+{
+    PhysFunc::integrate_force(this->descriptor, t, dt);
+}
+
 Entity_desc* Object :: PhysicsHandler_force(const float t,
                                             const float dt, 
                                             Entity_desc &state_src)
@@ -567,7 +670,7 @@ Entity_desc* Object :: PhysicsHandler_force(const float t,
 
 	//integrate the sprite location if its alive
 	if(!isDestroying)
-		PhysFunc::integrate(descriptor, t, dt, state_src);
+		PhysFunc::G_force(this->descriptor, state_src);
 
 	//handle pixels related/tied to object
 	for(int i = 0; i < to_render.pixels.size(); i++)
@@ -602,7 +705,7 @@ Entity_desc* Object :: PhysicsHandler_force(Entity_desc &state_dest,
 	thisTime = t;
 	
 	//default for of this constructor
-	PhysFunc::integrate(state_dest, t, dt, descriptor);
+	PhysFunc::G_force(state_dest, descriptor);
 	return &state_dest;
 //}}}
 }
