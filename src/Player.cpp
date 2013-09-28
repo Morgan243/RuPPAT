@@ -386,7 +386,7 @@ Entity_desc* Player::updatePositional(float t, float dt)
         PhysFunc::integrate_force( *missiles_free[i]->getDescriptor_ref(), t, dt);
 }
 
-Entity_desc* Player :: PhysicsHandler_force(const float t,
+Entity_desc* Player :: stateUpdate(const float t,
                                             const float dt, 
                                             Entity_desc &state_src)
 {
@@ -422,16 +422,16 @@ Entity_desc* Player :: PhysicsHandler_force(const float t,
 		//integrate
 		else 
 		{
-			missiles_free[i]->PhysicsHandler_force(t,
-                                                    dt,
-                                                    state_src);
+			missiles_free[i]->stateUpdate(t,
+                                            dt,
+                                            state_src);
 		}
 	}
 	return &descriptor;
 //}}}
 }
 
-Entity_desc* Player :: PhysicsHandler_force(Entity_desc &state_dest, 
+Entity_desc* Player :: stateUpdate(Entity_desc &state_dest, 
 											const float t, 
 											const float dt)
 {

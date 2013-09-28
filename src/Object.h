@@ -183,13 +183,13 @@ class Object
 
         virtual Entity_desc* updatePositional(float t, float dt);
 
-		virtual Entity_desc* PhysicsHandler_force(const float t,
-											float dt,
-											Entity_desc &state_src);
+		virtual Entity_desc* stateUpdate(const float t,
+                                                    float dt,
+                                                    Entity_desc &state_src);
 
-		virtual Entity_desc*  PhysicsHandler_force(Entity_desc &state_dest, 
-												const float t,
-												const float dt);
+		virtual Entity_desc*  stateUpdate(Entity_desc &state_dest, 
+                                                    const float t,
+                                                    const float dt);
 
 
 		virtual bool GetRenderables(Renderables_Cont &renderables);
@@ -225,7 +225,7 @@ class Object
 		Entity_desc descriptor;
 
 		//generic timestamp for class
-		float thisTime;
+		float thisTime, last_update_t;
 
 		Renderables_Cont to_render;
 

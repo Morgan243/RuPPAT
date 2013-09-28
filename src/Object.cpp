@@ -660,34 +660,37 @@ Entity_desc* Object::updatePositional(float t, float dt)
     PhysFunc::integrate_force(this->descriptor, t, dt);
 }
 
-Entity_desc* Object :: PhysicsHandler_force(const float t,
+Entity_desc* Object :: stateUpdate(const float t,
                                             const float dt, 
                                             Entity_desc &state_src)
 {
 //{{{
-    //keep track of current time
-	thisTime = t;
-
 	//integrate the sprite location if its alive
 	if(!isDestroying)
 		PhysFunc::G_force(this->descriptor, state_src);
 
-	//handle pixels related/tied to object
-	for(int i = 0; i < to_render.pixels.size(); i++)
-	{
-		//dim the pixel
-		Common::ApplyDimming(to_render.pixels[i]);
+    if( last_update_t != t)
+    {
+        //keep track of current time
+        last_update_t = t;
 
-		//if dimmed out, erase from vector
-		if(to_render.pixels[i].deleteMe)
-			to_render.pixels.erase(to_render.pixels.begin()+i);
+        //handle pixels related/tied to object
+        for(int i = 0; i < to_render.pixels.size(); i++)
+        {
+            //dim the pixel
+            Common::ApplyDimming(to_render.pixels[i]);
 
-		//bounce off game bounds
-		Common::TestBounds(to_render.pixels[i], true);
+            //if dimmed out, erase from vector
+            if(to_render.pixels[i].deleteMe)
+                to_render.pixels.erase(to_render.pixels.begin()+i);
 
-		//integrate to find new position
-		PhysFunc::integrate(to_render.pixels[i], t, dt, state_src);
-	}
+            //bounce off game bounds
+            Common::TestBounds(to_render.pixels[i], true);
+
+            //integrate to find new position
+            PhysFunc::integrate(to_render.pixels[i], t, dt, state_src);
+        }
+    }
 
 	//make sure this missile is removed if no longer used
 	if(!to_render.pixels.size() && !to_render.sprites.size() && isDestroying)
@@ -697,12 +700,12 @@ Entity_desc* Object :: PhysicsHandler_force(const float t,
 //}}}
 }
 
-Entity_desc* Object :: PhysicsHandler_force(Entity_desc &state_dest, 
+Entity_desc* Object :: stateUpdate(Entity_desc &state_dest, 
 											const float t, 
 											const float dt)
 {
 //{{{
-	thisTime = t;
+	//thisTime = t;
 	
 	//default for of this constructor
 	PhysFunc::G_force(state_dest, descriptor);
@@ -749,7 +752,7 @@ void Object::GameDestroy()
 	//set the correct coordinates
 	for(int i = 0; i < to_render.pixels.size(); i++)
 	{
-		to_render.pixels[i].dimFactor = 18;
+		to_render.pixels[i].dimFactor = 10;
 		to_render.pixels[i].dimTimer = 0;
         
         Common::RotatePoint(theta, to_render.pixels[i], center);
@@ -757,10 +760,10 @@ void Object::GameDestroy()
         to_render.pixels[i].x += (descriptor.x);
         to_render.pixels[i].y += (descriptor.y);
 
-        to_render.pixels[i].xVel = descriptor.xVel
-						+ rand()%75 - rand()%75;
-        to_render.pixels[i].yVel = descriptor.yVel
-						+ rand()%75 - rand()%75;
+        to_render.pixels[i].xVel = descriptor.xVel*4.0
+						+ rand()%100 - rand()%100;
+        to_render.pixels[i].yVel = descriptor.yVel*4.0
+						+ rand()%100 - rand()%100;
 	}
 	isDestroying = true;
 //}}}

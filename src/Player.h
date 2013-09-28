@@ -92,11 +92,11 @@ class Player : public Object
 									const float t,
 									const float dt);
 
-        Entity_desc* PhysicsHandler_force(const float t,
+        Entity_desc* stateUpdate(const float t,
                                             const float dt, 
                                             Entity_desc &state_src);
 
-        Entity_desc* PhysicsHandler_force(Entity_desc &state_dest, 
+        Entity_desc* stateUpdate(Entity_desc &state_dest, 
 											const float t, 
 											const float dt);
 		
