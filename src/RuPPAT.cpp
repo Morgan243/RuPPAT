@@ -318,6 +318,105 @@ int RuPPAT :: addPlayer(const string spritePath,
 //}}}
 }
 
+//-------------RK4_force--------------
+// 	A new new implementation of the
+// RK4_all functionality. Using force calculations
+// instead of acceleration based calculations will 
+// lead to a more flexible and efficient phys engine
+void RuPPAT::RK4_force(const float t, const float dt)
+{
+//{{{
+	//some temporary variables
+	float new_x=111, new_y=111, new_xVel=0, new_yVel=0;
+
+	//how many Objects are there to deal with
+	pthread_rwlock_rdlock(&object_rw_lock);
+	    int num_objects = objectList.size();
+	pthread_rwlock_unlock(&object_rw_lock);
+
+	//how many Pixels are there to deal with
+	pthread_rwlock_rdlock(&pix_rw_lock);
+        int num_pixels = pixelList_m.size();
+	pthread_rwlock_unlock(&pix_rw_lock);
+
+	Renderables_Cont* renderables;
+	vector<Entity_desc*> *tempAuxDesc_ref;
+	Entity_desc *obj_desc_prim , *obj_desc_sec, obj_desc_tri;
+	Pixel_desc pix_desc;
+
+ //go through object list, apply gravity 
+ //to other objects and pixels
+ for(int i = 0; i<num_objects;i++)
+ {
+
+	//go through the object list to apply grav to other objects
+	for(int j = i+1; j<num_objects; j++)
+	{
+		//Runge Kutta integrator
+		pthread_rwlock_wrlock(&object_rw_lock);	
+
+			//Get the outer loop objects descriptor
+			obj_desc_tri = objectList[j]->getDescriptor();
+		
+			//Apply outer loop object [i] to the current object
+			obj_desc_prim = objectList[i]->PhysicsHandler(t, dt, obj_desc_tri);
+
+			if((renderables = objectList[i]->GetRenderables()) != NULL)
+			{
+				for(int i=0; i<renderables->entities.size(); i++)
+				{
+					Common::TestBounds(*renderables->entities[i], true);
+				}
+			}
+
+			//check new locations are valid, reset them if not 
+			Common::TestBounds(*obj_desc_prim, true);
+
+		pthread_rwlock_unlock(&object_rw_lock);
+	}
+	//next, go through the pixel structs 
+	for(int j = 0; j<num_pixels; j++)
+	{
+
+		pthread_rwlock_rdlock(&object_rw_lock);
+		 pthread_rwlock_wrlock(&pix_rw_lock);
+
+			obj_desc_sec = &pixelList_m[j];
+			obj_desc_sec = objectList[i]->PhysicsHandler(*obj_desc_sec, t, dt);
+
+			new_x = obj_desc_sec->x;
+			new_y = obj_desc_sec->y;
+
+			new_xVel = obj_desc_sec->xVel;
+			new_yVel = obj_desc_sec->yVel;
+
+		 pthread_rwlock_unlock(&pix_rw_lock);	
+		pthread_rwlock_unlock(&object_rw_lock);
+
+			//make sure the new location is within bounds
+        Common::TestBounds(new_x, new_y, new_xVel, new_yVel, true);
+
+		pthread_rwlock_wrlock(&pix_rw_lock);
+			obj_desc_sec->xVel = new_xVel;
+			obj_desc_sec->yVel = new_yVel;	
+			obj_desc_sec->x = new_x;
+			obj_desc_sec->y = new_y;
+		
+            //if the dim factor is not zero, apply it
+			if(pixelList_m[j].dimFactor)
+				Common::ApplyDimming(pixelList_m[j]);
+
+			if(pixelList_m[j].deleteMe)
+				{
+					handleDelete(j);
+					num_pixels = pixelList_m.size();
+				}
+		pthread_rwlock_unlock(&pix_rw_lock);
+	}
+ }
+//}}}
+}
+
 //-------------RK4--------------
 // 	A new implementation of the
 // RK4_all functionality. By using object
@@ -1046,16 +1145,20 @@ void RuPPAT :: wrap_gfxPlacer(void)
 
 int RuPPAT::calcTickInterval(int engineRate)
 {
+//{{{
     this->engine_rate = engineRate;
     this->interval = 1000/engineRate;
     return this->interval;
+//}}}
 }
 
 int RuPPAT::adjustRate(int delta)
 {
+//{{{
     this->engine_rate += delta;
     this->interval = 1000/this->engine_rate;
     return this->interval;
+//}}}
 }
 
 int RuPPAT::adjust_dt(float delta)

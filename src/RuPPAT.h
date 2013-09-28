@@ -78,6 +78,9 @@ class RuPPAT
 		void RK4(const float t,
                  const float dt);
 
+        void RK4_force(const float t,
+                       const float dt);
+
 		void RunRuPPAT();
 
 		void parseSelectPixToSurface();

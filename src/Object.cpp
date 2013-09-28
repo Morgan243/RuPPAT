@@ -7,9 +7,6 @@ Object :: Object(string sprite_path,
             int start_x,
 	       	int start_y,
 	       	int start_mass)
-//        :sprite(sprite_path,
-//                360,
-//                0)
 {
 //{{{
 
@@ -23,6 +20,9 @@ Object :: Object(string sprite_path,
 	//set mass
 	descriptor.mass = start_mass;
 
+    //init force vectors
+    descriptor.xForce = descriptor.yForce = 0.0;
+
 	timeCreated = SDL_GetTicks();
 //}}}	
 }
@@ -33,9 +33,6 @@ Object :: Object(string sprite_path,
 	       	int start_mass,
 			int num_rotations,
 	       	int starting_angle):
-//        :sprite(sprite_path,
-//                num_rotations,
-//                starting_angle), 
         hitCircleSprite()
 {
 //{{{
@@ -43,6 +40,7 @@ Object :: Object(string sprite_path,
 	numRotations = num_rotations;
 
 	refMax = refCounter = -1;
+
 	//set x and y
 	descriptor.x = (float)start_x;
 	descriptor.y = (float)start_y;
@@ -50,6 +48,9 @@ Object :: Object(string sprite_path,
 	//set mass
 	descriptor.mass = start_mass;
 	
+    //init force vectors
+    descriptor.xForce = descriptor.yForce = 0.0;
+
 	timeCreated = SDL_GetTicks();
 //}}}
 }
@@ -63,14 +64,9 @@ Object::Object(string sprite_path,
 	       float xVel,
 	       float yVel,
 	       string HC_path):
-//        :sprite(sprite_path,
-//            num_rotations,
-//            starting_angle), 
         hitCircleSprite(HC_path)
 {
 //{{{
-	//if(HC_path =! NULL)
-	//cout<<"PATH:"<<HC_path<<endl;
     sprite = new Sprite(sprite_path, num_rotations, starting_angle);
 
 	refMax = refCounter = -1;
@@ -88,6 +84,9 @@ Object::Object(string sprite_path,
 
 	//set mass
 	descriptor.mass = start_mass;
+    
+    //init force vectors
+    descriptor.xForce = descriptor.yForce = 0.0;
 
 	numRotations = num_rotations;
 
@@ -97,8 +96,6 @@ Object::Object(string sprite_path,
 
 	cout<<"pixel Sprite_cache in object is :"<< pixelSprite_cache.size()<<endl;
 	isDestroying = false;
-	//buildHitBoxes_fromSprite();
-	//BuildHitBoxes_fromLayer(hitCircleSprite.getBaseSprite());
 //}}}
 }
 
@@ -548,6 +545,56 @@ Entity_desc* Object :: PhysicsHandler(const float t,
 }
 
 Entity_desc* Object :: PhysicsHandler(Entity_desc &state_dest, 
+											const float t, 
+											const float dt)
+{
+//{{{
+	thisTime = t;
+	
+	//default for of this constructor
+	PhysFunc::integrate(state_dest, t, dt, descriptor);
+	return &state_dest;
+//}}}
+}
+
+Entity_desc* Object :: PhysicsHandler_force(const float t,
+                                            const float dt, 
+                                            Entity_desc &state_src)
+{
+//{{{
+    //keep track of current time
+	thisTime = t;
+
+	//integrate the sprite location if its alive
+	if(!isDestroying)
+		PhysFunc::integrate(descriptor, t, dt, state_src);
+
+	//handle pixels related/tied to object
+	for(int i = 0; i < to_render.pixels.size(); i++)
+	{
+		//dim the pixel
+		Common::ApplyDimming(to_render.pixels[i]);
+
+		//if dimmed out, erase from vector
+		if(to_render.pixels[i].deleteMe)
+			to_render.pixels.erase(to_render.pixels.begin()+i);
+
+		//bounce off game bounds
+		Common::TestBounds(to_render.pixels[i], true);
+
+		//integrate to find new position
+		PhysFunc::integrate(to_render.pixels[i], t, dt, state_src);
+	}
+
+	//make sure this missile is removed if no longer used
+	if(!to_render.pixels.size() && !to_render.sprites.size() && isDestroying)
+		this->killMe = true;
+
+	return &descriptor;
+//}}}
+}
+
+Entity_desc* Object :: PhysicsHandler_force(Entity_desc &state_dest, 
 											const float t, 
 											const float dt)
 {

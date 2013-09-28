@@ -179,6 +179,15 @@ class Object
 												const float t,
 												const float dt);
 
+		virtual Entity_desc* PhysicsHandler_force(const float t,
+											float dt,
+											Entity_desc &state_src);
+
+		virtual Entity_desc*  PhysicsHandler_force(Entity_desc &state_dest, 
+												const float t,
+												const float dt);
+
+
 		virtual bool GetRenderables(Renderables_Cont &renderables);
 
 		virtual Renderables_Cont* GetRenderables();

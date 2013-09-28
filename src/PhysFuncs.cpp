@@ -15,6 +15,57 @@ namespace PhysFunc
         return ( sqrt( ((x2-x1)*(x2-x1)) + ((y2-y1)*(y2-y1))  ) );
     }
 
+    float G_force(const Entity_desc &state_1, const Entity_desc &state_2,
+                    Derivative &output_1, Derivative &output_2)
+    {
+     //{{{
+        const float gravConst = 10;
+
+        float distance = (float)getDistance(state_2.x, state_2.y, state_1.x, state_1.y);
+        float theta_1 = 0.0, theta_2 = 0.0, gForce=0.0;
+
+        float deltaX = state_2.x - state_1.x;
+        float deltaY = state_2.y - state_1.y;
+            
+            if(deltaY !=0 && deltaX != 0)	
+                 theta_1 = atan((deltaX)/(deltaY));
+            else if(deltaY == 0 && deltaX != 0)
+                 theta_1 = 3.1415926/2.0;
+            else if(deltaY != 0 && deltaX == 0)
+                 theta_1 = 0.0;
+
+
+            //adjust theta depending on the coordinate
+            if((deltaX<0 && deltaY<0) || (deltaX>0 && deltaY<0))
+                 theta_1 *=(-1.0);
+
+            //theta_2 should be opposite theta 1, save some calculations
+            if(theta_1 > 180)
+                theta_2 = theta_1 - 180.0;
+            else if (theta_1 < 180)
+                theta_2 = theta_1 + 180;
+            else
+                theta_2 = 0;
+
+            if(distance!=0 && distance>31)// && distance < (objMass*2))
+                 gForce = (state_2.mass*state_1.mass*gravConst)/(distance*distance);
+
+            //determine each objects acceleration based on the force and their masses
+            output_1.ddx = (gForce * sin(theta_1))/state_1.mass;
+            output_1.ddy = (gForce * cos(theta_1))/state_1.mass;
+
+            output_2.ddx = (gForce * sin(theta_2))/state_2.mass;
+            output_2.ddy = (gForce * cos(theta_2))/state_2.mass;
+
+            //invers the y accel (caused by reversed y axis in SDL)
+            if(state_1.y > state_2.y)
+                output_1.ddy *=-1;
+            else
+                output_2.ddy *=-1;
+
+        return gForce;
+    //}}}
+    }
 
     //need to decide how to apply all the forces to the object here
     float G_acceleration (const Pixel_desc &state, Derivative &output, float t,
@@ -292,13 +343,10 @@ namespace PhysFunc
         output.dy = state.yVel;
 
         //calculate the new accelerations
-         //G_acceleration(state, output, t + dt, init_src);
          G_acceleration_ent(state, output, t+dt, 
                  init_src.mass, init_src.x, init_src.y);
-         //cout<<"Dest: ("<<state.x<<" , "<<state.y<<")"<<endl;
 
-         //cout<<"Source: ("<<init_src.getX()<<" , "<<init_src.getY()<<")"<<endl;
-         //cout<<"mass: "<<init_src.getMass()<<endl;
+         
          
 
     return output;
@@ -308,11 +356,8 @@ namespace PhysFunc
 
     void integrate (Entity_desc &state, float t, float dt, 
                 Entity_desc &state_src)
-            //	Object &state_src)	
-            //const float objMass, const float point_x, const float point_y )
     {
         //{{{
-    //	Entity_desc temp_ent = state.getDescriptor();
         Derivative init;
         init.dx = state.x;
         init.dy = state.y;

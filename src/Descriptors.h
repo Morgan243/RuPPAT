@@ -74,14 +74,17 @@ struct Circle_desc
 //Base descriptor for all entities, or on screen moving things
 struct Entity_desc
 {
+	int ID;
+
 	float x;
 	float y;
 
+	int mass;
+
 	float xVel, yVel;//velocity vector
 	float xAcc, yAcc;//acceleration vector
+    float xForce, yForce;
 
-	int mass;
-	int ID;
 	float maxAccel;
 
 	int hitCircle_radius;
