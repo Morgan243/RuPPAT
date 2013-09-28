@@ -553,6 +553,16 @@ void Game :: handleEvents(Event_desc &mainEvents)
 					x+=2;
 					k_RIGHT=true;
 				}
+
+            if(event.key.keysym.sym == SDLK_MINUS)
+                //engine->adjust_dt(-0.0001);
+                engine->adjustRate(-10);
+            if(event.key.keysym.sym == SDLK_EQUALS)
+            {
+                //engine->adjust_dt(0.0001);
+                engine->adjustRate(10);
+                cout<<"Plus!!!"<<endl;
+            }
             //}}}
         }
 

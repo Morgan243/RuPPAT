@@ -249,6 +249,8 @@ void Player::fireSelectedMissile()
 		tempDesc.xVel += descriptor.xVel;
 		tempDesc.yVel += descriptor.yVel;
 
+        cout<<"X velocity = "<< tempDesc.xVel <<endl;
+
 		//update positional stats with descriptor: set descriptor
 		firedMissile->setDescriptor(tempDesc);
 
@@ -284,6 +286,12 @@ void Player::fireSelectedMissile(Sprite* fired_sprite)
     //add velocity of player to missile
     tempDesc.xVel += descriptor.xVel;
     tempDesc.yVel += descriptor.yVel;
+    tempDesc.xVel /= 2;
+    tempDesc.yVel /= 2;
+    tempDesc.xAcc = 20 * tempDesc.xVel;
+    tempDesc.yAcc = 20 * tempDesc.yVel;
+
+    cout<<"X Velocy = " << tempDesc.xVel<<endl;
 
     //create our new missile
     Missile *firedMissile = new Missile(fired_sprite,

@@ -41,7 +41,7 @@ player0["missiles"][0]["sprite"] = "white_rocket.png"
 player0["missiles"][0]["name"] = "White Rocket"
 player0["missiles"][0]["amount"] = 100
 player0["missiles"][0]["damage"] = 10
-player0["missiles"][0]["velocity"] = 40
+player0["missiles"][0]["velocity"] = 100
 player0["missiles"][0]["lifespan"] = 4
 
 

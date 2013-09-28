@@ -123,12 +123,17 @@ class RuPPAT
         
 		//if this goes true, all threads stop, engine stops
 		bool done;
+
+        int calcTickInterval(int engineRate);
+        int adjustRate(int delta);
+        int adjust_dt(float delta);
 		
 	private:
 
         void (RuPPAT::*gfxPlacer)(void) = NULL;
         void wrap_gfxPlacer(void);
         void bounce_gfxPlacer(void);
+
         std::thread *rk4_th;
         int  screen_centX, screen_centY;
 
@@ -141,6 +146,10 @@ class RuPPAT
 		   	centerY=0,
 		   	xOrigin,
 		   	yOrigin;
+
+        int engine_rate,
+            interval,
+            nextTick;
 
         float t = 0.0, dt = 0.004;
 

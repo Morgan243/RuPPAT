@@ -432,10 +432,12 @@ void RuPPAT :: RunRuPPAT()
     Uint32 T1 = SDL_GetTicks(),
            T2 = 1000;
 
-    int engine_rate = 160,
-         interval = 1000/engine_rate,
-         nextTick = SDL_GetTicks() + interval,
-         num_jobs;
+    engine_rate = 160;
+     //interval = 1000/engine_rate,
+     interval = calcTickInterval(engine_rate);
+     nextTick = SDL_GetTicks() + interval;
+
+     int num_jobs = 0;
 
     RenderJob_Container *current_job;
 
@@ -1040,4 +1042,23 @@ void RuPPAT :: wrap_gfxPlacer(void)
     mainRender->OnRender(xOrigin,yOrigin);
     //mainRender->OnRender();
 //}}}
+}
+
+int RuPPAT::calcTickInterval(int engineRate)
+{
+    this->engine_rate = engineRate;
+    this->interval = 1000/engineRate;
+    return this->interval;
+}
+
+int RuPPAT::adjustRate(int delta)
+{
+    this->engine_rate += delta;
+    this->interval = 1000/this->engine_rate;
+    return this->interval;
+}
+
+int RuPPAT::adjust_dt(float delta)
+{
+    this->dt += delta;
 }

@@ -407,10 +407,12 @@ void Render::putSprite(const int x,
 
 void Render::putSprite(const vector<Texture_Container> sprites)
 {
+    //{{{
     for(int i = 0; i < sprites.size(); i++)
     {
         putSprite(sprites.at(i).x, sprites.at(i).y, sprites.at(i).texture);
     }
+    //}}}
 }
 
 
@@ -454,7 +456,7 @@ void Render::applyTextureToMain(const int x,
 
 void Render::clearMainText()
 {
-    //{{{
+//{{{
     void *mainPix;
     int pitch;
     SDL_Rect lock_area;
