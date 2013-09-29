@@ -40,7 +40,7 @@ player0["missiles"][0]["name"] = "White Rocket"
 player0["missiles"][0]["amount"] = 100
 player0["missiles"][0]["damage"] = 10
 player0["missiles"][0]["velocity"] = 100
-player0["missiles"][0]["lifespan"] = 4
+player0["missiles"][0]["lifespan"] = 5
 
 
 players[0] = player0

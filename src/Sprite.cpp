@@ -22,7 +22,7 @@ Sprite :: Sprite(string path_to_sprite)
     rotations.push_back(
             rotozoomSurface(tempSprite,
                                     0.0,
-                                    1.0,0));
+                                    1.0,1));
 
 //}}}
 }
@@ -60,7 +60,7 @@ Sprite::Sprite(string path_to_sprite,int numRotations, int startingAngle)
 		rotations.push_back(
 				rotozoomSurface(tempSprite,
 							i*degreeIncrement,
-							1.0,0));	
+							1.0,1));	
 
         tempTextCont.texture = SDL_CreateTextureFromSurface(this->render_context, rotations.back());
         this->rotations_text.push_back(tempTextCont);
@@ -107,7 +107,7 @@ Sprite::Sprite(string path_to_sprite, int numRotations, int startingAngle, SDL_R
 		rotations.push_back(
 				rotozoomSurface(tempSprite,
 							i*degreeIncrement,
-							1.0,0));	
+							1.0,1));	
         tempTextCont.texture = SDL_CreateTextureFromSurface(render_context, rotations.back());
         this->rotations_text.push_back(tempTextCont);
 		//SDL_DisplayFormatAlpha(rotations.back());
@@ -296,7 +296,7 @@ void Sprite :: generateRotations()
 		rotations.push_back(
 							rotozoomSurface(base_sprite,
 							i*degreeIncrement,
-							1.0,0));	
+							1.0,1));	
         if(render_context != NULL && rotations.back() != NULL)
             tempTextCont.texture = SDL_CreateTextureFromSurface(render_context, rotations.back());
         else
@@ -331,7 +331,7 @@ void Sprite :: generateRotations(SDL_Renderer* renderer_use)
 		rotations.push_back(
 							rotozoomSurface(base_sprite,
 							i*degreeIncrement,
-							1.0,0));	
+							1.0,1));	
         if(render_context != NULL && rotations.back() != NULL)
             tempTextCont.texture = SDL_CreateTextureFromSurface(renderer_use, rotations.back());
         else
@@ -519,6 +519,13 @@ if (SDL_MUSTLOCK(rotations[rotation_i]))
 //}}}
 }
 
+int Sprite::getLargestDimension()
+{
+    if(base_sprite->w > base_sprite->h)
+        return base_sprite -> w;
+    else
+        return base_sprite -> h;
+}
 
 void Sprite::getDimensions(int &w, int &h)
 {

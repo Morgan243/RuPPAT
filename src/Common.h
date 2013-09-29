@@ -55,6 +55,8 @@ class Common
 
         static Uint32 putPixel(SDL_Surface* dest, int x, int y);
 
+        static bool isCircleIntersecting(Entity_desc ent_1, Entity_desc ent_2);
+
 	private:
 		static unsigned int width, height;
 };

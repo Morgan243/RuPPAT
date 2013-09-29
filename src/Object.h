@@ -211,9 +211,10 @@ class Object
 		bool killMe,
 			 isDestroying;
 
+        Object* owning_object;
+
 	protected:
-		
-		
+		static int next_obj_id;
 		int refMax, 
 			refCounter,
 		   	numRotations;

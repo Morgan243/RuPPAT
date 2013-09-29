@@ -112,7 +112,7 @@ void Player :: addMissile(const string sprite_path,
 
 	//init and add missile
 	missiles.push_back(
-			new Missile(sprite_path, numRotations, 0, 1, 10.0, 
+			new Missile(sprite_path, numRotations, 0, 10, 10.0, 
 			descriptor.x, descriptor.y, descriptor.xVel, descriptor.yVel, sprite_path
 			));
 
@@ -299,6 +299,8 @@ void Player::fireSelectedMissile(Sprite* fired_sprite)
                                         tempDesc.maxAccel,
                                         descriptor.x, descriptor.y,
                                         0,0, "");
+
+    firedMissile->owning_object = this;
 
     //update positional stats with descriptor: set descriptor
     firedMissile->setDescriptor(tempDesc);

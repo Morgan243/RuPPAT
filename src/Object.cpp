@@ -3,15 +3,20 @@
 #include "Object.h"
 #include "PhysFuncs.h"
 
+    int Object::next_obj_id = 0;
+
 Object :: Object(string sprite_path, 
             int start_x,
 	       	int start_y,
 	       	int start_mass)
 {
 //{{{
+    owning_object = NULL;
 
     sprite = new Sprite(sprite_path, 360, 0);
 	refMax = refCounter = -1;
+
+    this->descriptor.hitCircle_radius = sprite->getLargestDimension();
 
 	//set x and y
 	descriptor.x = (float)start_x;
@@ -26,6 +31,8 @@ Object :: Object(string sprite_path,
     descriptor.xForce = descriptor.yForce = 0.0;
 
 	timeCreated = SDL_GetTicks();
+
+    descriptor.ID = next_obj_id++;
 //}}}	
 }
 
@@ -38,7 +45,12 @@ Object :: Object(string sprite_path,
         hitCircleSprite()
 {
 //{{{
+    owning_object = NULL;
+
     sprite = new Sprite(sprite_path, num_rotations, starting_angle);
+
+    this->descriptor.hitCircle_radius = sprite->getLargestDimension();
+
 	numRotations = num_rotations;
 
 	refMax = refCounter = -1;
@@ -56,6 +68,8 @@ Object :: Object(string sprite_path,
     descriptor.xVel = descriptor.yVel = 0;
 
 	timeCreated = SDL_GetTicks();
+
+    descriptor.ID = next_obj_id++;
 //}}}
 }
 
@@ -71,7 +85,11 @@ Object::Object(string sprite_path,
         hitCircleSprite(HC_path)
 {
 //{{{
+    owning_object = NULL;
+
     sprite = new Sprite(sprite_path, num_rotations, starting_angle);
+
+    this->descriptor.hitCircle_radius = sprite->getLargestDimension();
 
 	refMax = refCounter = -1;
 
@@ -100,6 +118,9 @@ Object::Object(string sprite_path,
 
 	cout<<"pixel Sprite_cache in object is :"<< pixelSprite_cache.size()<<endl;
 	isDestroying = false;
+
+    descriptor.ID = next_obj_id++;
+    cout<<"Object ID: "<< descriptor.ID <<endl;
 //}}}
 }
 
@@ -669,6 +690,16 @@ Entity_desc* Object :: stateUpdate(const float t,
 	if(!isDestroying)
 		PhysFunc::G_force(this->descriptor, state_src);
 
+    if(Common::isCircleIntersecting(this->descriptor, state_src))
+        if(this->owning_object != NULL&& !this->isDestroying 
+                && this->owning_object->descriptor.ID != state_src.ID)
+        {
+            cout<<"x vel = "<<this->descriptor.xVel<<", mass = "<<descriptor.mass<<endl;
+            state_src.xForce += 500*this->descriptor.xVel *this->descriptor.mass;
+            state_src.yForce += 500*this->descriptor.yVel *this->descriptor.mass;
+            this->GameDestroy();
+        }
+
     if( last_update_t != t)
     {
         //keep track of current time
@@ -752,7 +783,7 @@ void Object::GameDestroy()
 	//set the correct coordinates
 	for(int i = 0; i < to_render.pixels.size(); i++)
 	{
-		to_render.pixels[i].dimFactor = 10;
+		to_render.pixels[i].dimFactor = 3;
 		to_render.pixels[i].dimTimer = 0;
         
         Common::RotatePoint(theta, to_render.pixels[i], center);
@@ -765,6 +796,7 @@ void Object::GameDestroy()
         to_render.pixels[i].yVel = descriptor.yVel*4.0
 						+ rand()%100 - rand()%100;
 	}
+
 	isDestroying = true;
 //}}}
 }

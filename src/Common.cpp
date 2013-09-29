@@ -1,5 +1,6 @@
 #include "math.h"
 #include "Common.h"
+#include "PhysFuncs.h"
 
 
 unsigned int Common::width;
@@ -495,4 +496,14 @@ Uint32 Common::putPixel(SDL_Surface* dest, int x, int y)
 //	if( SDL_MUSTLOCK(dest))
 //		SDL_UnlockSurface(dest);
 //}}}
+}
+
+bool Common::isCircleIntersecting(Entity_desc ent_1, Entity_desc ent_2)
+{
+    float distance = PhysFunc::getDistance(ent_1.x, ent_1.y, ent_2.x, ent_2.y);
+
+    if( (ent_1.hitCircle_radius + ent_2.hitCircle_radius) >= distance)
+        return true;
+
+    return false;
 }

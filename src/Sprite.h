@@ -101,6 +101,8 @@ class Sprite
 					   	Uint32 color,
 					   	const int rotation_i);
 
+        int getLargestDimension();
+
 		void getDimensions(int &w, int &h);
 
 		void getDimensions(int &w, int &h, const int rotation);
