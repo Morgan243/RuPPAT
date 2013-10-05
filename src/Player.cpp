@@ -306,7 +306,7 @@ void Player::fireSelectedMissile(Sprite* fired_sprite)
     firedMissile->setDescriptor(tempDesc);
 
     firedMissile->SetTimeCreated(thisTime);
-    firedMissile->SetLifespan(1.0);
+    firedMissile->SetLifespan(selected_missile->getLifespan());
 
     //Missile is free, add it to vector of fired missiles
     missiles_free.push_back(firedMissile);
@@ -420,6 +420,7 @@ Entity_desc* Player :: stateUpdate(const float t,
 		{
 			//initiate destruction
 			missiles_free[i]->GameDestroy();
+            cout<<"!!!!!!!GAME DESTORY!!!!!!"<<endl;
 		}
 		//integrate
 		else 

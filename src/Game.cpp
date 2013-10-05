@@ -278,13 +278,13 @@ void Game::initGame_lua(vector<section> configSections)
 					maxAcc =
                         atof(configSections[i].sectionOptions[j].values[0].c_str());
 				
-				//else if(configSections[i].sectionOptions[j].option == "missle")
                 if(configSections[i].sectionOptions[j].option.
                         find("missile-") != string::npos)
 				{
                     
                     int missile_id =
                         configSections[i].sectionOptions[j].option.find('-', 8);
+
                     missile_id = 
                         atoi(configSections[i].sectionOptions[j].option.substr(7, missile_id - 7).c_str());
 
@@ -329,6 +329,7 @@ void Game::initGame_lua(vector<section> configSections)
 											x, y,
 											tempVect_2[0]);
 		
+            cout<<"LIFESPAN OF MISSILE: "<< missile_life<<endl;
 			//add default missile	
 			tempPlayer->addMissile(missile_sprite, missile_name, 
 									true,//make this the selected missile?

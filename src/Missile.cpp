@@ -175,8 +175,14 @@ bool Missile::IsBeyondLifeSpan(const float gameTime)
 //{{{
 	thisTime = gameTime;
 
-	if( (thisTime - timeCreated) > lifespan)
+	if( (thisTime - timeCreated) > (float)lifespan)
+    {
+        cout<<"time created: " << timeCreated<<endl;
+        cout<<"This Time: "<<thisTime<<endl;
+        cout<<"--->Lifespan: "<<lifespan<<endl;
+        cout<<"--->IsDestroying? : "<<this->isDestroying<<endl;
 		return true;
+    }
 	else
 		return false;
 //}}}
@@ -209,4 +215,9 @@ bool Missile::UpdateAndGetRenderables(Renderables_Cont &rnder)
 
 	return false;
 //}}}
+}
+
+float Missile::getLifespan()
+{
+    return this->lifespan;
 }

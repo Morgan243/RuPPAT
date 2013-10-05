@@ -84,6 +84,8 @@ class Missile : public Object
 
 		bool UpdateAndGetRenderables(Renderables_Cont &rnder);
 
+        float getLifespan();
+
 	protected:
 		//how many of this missile do we have
 		int amount,
