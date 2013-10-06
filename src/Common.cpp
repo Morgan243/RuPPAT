@@ -1,6 +1,7 @@
 #include "math.h"
 #include "Common.h"
 #include "PhysFuncs.h"
+#include <cmath>
 
 
 unsigned int Common::width;
@@ -506,4 +507,72 @@ bool Common::isCircleIntersecting(Entity_desc ent_1, Entity_desc ent_2)
         return true;
 
     return false;
+}
+
+void Common::ThetaAndRadius_toXY(float theta, float radius, int &x, int &y)
+{
+//{{{
+    x = radius*cos(theta*PI/180);
+    y = radius*sin(theta*PI/180);
+//}}}
+}
+
+void Common::XY_toThetaAndRadius(float &theta, float &radius, int x, int y)
+{
+   theta = (atan( (float)y/(float)x ))*180.0/PI;
+   radius = (float)x/cos(theta*PI/180.0);
+}
+
+float Common::abs_val(float x)
+{
+    return abs(x);
+}
+
+float Common::areSliceseIntersecting(Entity_desc ent1, Entity_desc ent2)
+{
+    float ent1_theta = 0.0, ent2_theta = 0.0, radius = 0.0;
+
+    float distance = PhysFunc::getDistance(ent1.x, ent1.y, ent2.x, ent2.y);
+
+    //determine ent1's angle to ent 2
+    XY_toThetaAndRadius(ent1_theta, radius, ent2.x - ent1.x, ent2.y - ent1.y);
+    
+    //determine ent1's angle to ent 2
+    XY_toThetaAndRadius(ent2_theta, radius, ent1.x - ent2.x, ent1.y - ent2.y);
+
+    int ent1_slice = (int)(ent1_theta/ent1.hit_slices.deg_per_slice);
+    int ent2_slice = (int)(ent2_theta/ent2.hit_slices.deg_per_slice);
+
+    ent1_slice = (ent1_slice < 0) ? ent1_slice * -1 : ent1_slice;
+    ent2_slice = (ent2_slice < 0) ? ent2_slice * -1 : ent2_slice;
+
+    if(ent1_slice > ent1.hit_slices.slice_radius.size())
+            ent1_slice -= 1;
+
+    if(ent2_slice > ent2.hit_slices.slice_radius.size())
+            ent2_slice -= 1;
+
+
+    int ent1_radius;
+    int ent2_radius;
+    try
+    {
+        ent1_radius = ent1.hit_slices.slice_radius.at(ent1_slice);
+        ent2_radius = ent2.hit_slices.slice_radius.at(ent2_slice);
+    }
+    catch(exception &e)
+    {
+        cout<<"ERROR:"<<endl;
+       cout<<" ent1_slice = "<<ent1_slice<<endl;
+       cout<<" ent1_theta = "<<ent1_theta<<endl;
+
+       cout<<" ent2_slice = "<<ent2_slice<<endl;
+       cout<<" ent2_theta = "<<ent2_theta<<endl;
+    }
+
+    if( (ent1_radius + ent2_radius) >= distance)
+        return true;
+
+    return false;
+
 }

@@ -127,6 +127,10 @@ class Sprite
 		void clearPixel(const int rotation, const int x, const int y);
 
         static SDL_Renderer* render_context;
+        
+        //matrix of sprite: true where not alpha (color!)
+        vector< vector<bool> > sprite_silhouette;
+
 	protected:
 		float rotationRate,
 				degreeIncrement,

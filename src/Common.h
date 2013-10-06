@@ -9,6 +9,7 @@
 #define COMMON_H
 #include "SDL2/SDL.h"
 #include "Descriptors.h"
+#define PI 3.14159265
 
 class Common
 {
@@ -55,7 +56,15 @@ class Common
 
         static Uint32 putPixel(SDL_Surface* dest, int x, int y);
 
+        static float areSliceseIntersecting(Entity_desc ent1, Entity_desc ent2);
+
         static bool isCircleIntersecting(Entity_desc ent_1, Entity_desc ent_2);
+
+        static void ThetaAndRadius_toXY(float theta, float radius, int &x, int &y);
+
+        static void XY_toThetaAndRadius(float &theta, float &radius, int x, int y);
+
+        static float abs_val(float x);
 
 	private:
 		static unsigned int width, height;

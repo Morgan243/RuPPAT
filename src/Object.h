@@ -21,6 +21,7 @@
 #include <iostream>
 
 
+#define PI 3.14159265
 
 //#include "PhysFuncs.h"
 using namespace std;
@@ -206,6 +207,10 @@ class Object
 
 		float getTime();
 
+        CollisionCircleSlices_Container getCollisionSlices();
+
+        CollisionCircleSlices_Container generateCollisionSlices(int numSlices);
+
 		Sprite *sprite, hitCircleSprite;
 
 		bool killMe,
@@ -231,5 +236,8 @@ class Object
 		Renderables_Cont to_render;
 
 		vector<Pixel_desc> pixelSprite_cache;
+
+        //matrix of sprite: true where not alpha (color!)
+        vector< vector<bool> > sprite_silhouette;
 };
 #endif

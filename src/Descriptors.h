@@ -71,6 +71,13 @@ struct Circle_desc
 	unsigned int r;
 };
 
+struct CollisionCircleSlices_Container
+{
+    int num_slices;
+    float deg_per_slice;
+    vector<int> slice_radius;
+};
+
 //Base descriptor for all entities, or on screen moving things
 struct Entity_desc
 {
@@ -89,6 +96,7 @@ struct Entity_desc
     float maxForce;
 
 	int hitCircle_radius;
+    CollisionCircleSlices_Container hit_slices;
 	bool noDrawEffect;
 };
 
@@ -182,4 +190,5 @@ struct RunOptions
 {
     string config_path;
 };
+
 #endif

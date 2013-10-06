@@ -176,13 +176,7 @@ bool Missile::IsBeyondLifeSpan(const float gameTime)
 	thisTime = gameTime;
 
 	if( (thisTime - timeCreated) > (float)lifespan)
-    {
-        cout<<"time created: " << timeCreated<<endl;
-        cout<<"This Time: "<<thisTime<<endl;
-        cout<<"--->Lifespan: "<<lifespan<<endl;
-        cout<<"--->IsDestroying? : "<<this->isDestroying<<endl;
 		return true;
-    }
 	else
 		return false;
 //}}}

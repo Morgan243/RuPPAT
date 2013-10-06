@@ -388,6 +388,7 @@ Entity_desc* Player::updatePositional(float t, float dt)
         PhysFunc::integrate_force( *missiles_free[i]->getDescriptor_ref(), t, dt);
 }
 
+//apply another objects physics properties to this object
 Entity_desc* Player :: stateUpdate(const float t,
                                             const float dt, 
                                             Entity_desc &state_src)
@@ -410,7 +411,7 @@ Entity_desc* Player :: stateUpdate(const float t,
 			//remove from the fired list
 			missiles_free.erase(missiles_free.begin()+i);
 
-			//decrement index and size
+			//vector size was adjusted, so adjust loop
 			i--;
 			size--;
 		}
@@ -418,9 +419,8 @@ Entity_desc* Player :: stateUpdate(const float t,
 		else if(missiles_free[i]->IsBeyondLifeSpan(thisTime) 
 				&& !missiles_free[i]->isDestroying)
 		{
-			//initiate destruction
+			//initiate destruction (beyond life and not already destroyed)
 			missiles_free[i]->GameDestroy();
-            cout<<"!!!!!!!GAME DESTORY!!!!!!"<<endl;
 		}
 		//integrate
 		else 
@@ -434,6 +434,7 @@ Entity_desc* Player :: stateUpdate(const float t,
 //}}}
 }
 
+//method to apply this objects (player) mass to another
 Entity_desc* Player :: stateUpdate(Entity_desc &state_dest, 
 											const float t, 
 											const float dt)

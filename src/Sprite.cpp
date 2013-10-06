@@ -69,7 +69,7 @@ Sprite::Sprite(string path_to_sprite,int numRotations, int startingAngle)
 		//cout<<"generating rotation #"<<i<<endl;
 	}
 	
-	generatePixelSprite(false);
+	generatePixelSprite(true);
 //}}}
 }
 
@@ -115,7 +115,7 @@ Sprite::Sprite(string path_to_sprite, int numRotations, int startingAngle, SDL_R
 		//cout<<"generating rotation #"<<i<<endl;
 	}
 	
-	generatePixelSprite(false);
+	generatePixelSprite(true);
 //}}}
 }
 
@@ -581,6 +581,8 @@ void Sprite::generatePixelSprite(const bool print)
 
 	tmpPix.xVel = tmpPix.xAcc = tmpPix.yVel = tmpPix.yAcc = 0.0;
 
+    this->sprite_silhouette.resize(rotations[0]->w, vector<bool>(rotations[0]->h, false)); 
+
 	for(int k = 0; k < rotations.size(); k++)
 	{
 		for(int i = 0; i < rotations[k]->h; i++)
@@ -594,8 +596,11 @@ void Sprite::generatePixelSprite(const bool print)
 					tmpPix.y = i;
 					pixel_sprite.push_back(tmpPix);
 
+                    this->sprite_silhouette[j][i] = true;
+
 					if(print)
-						printf("1 [%u] ", tmpPix.color);
+						//printf("1 [%u] ", tmpPix.color);
+						printf("1 ");
 				}
 				else if (k==0 && print)
 				{	

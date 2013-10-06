@@ -351,6 +351,7 @@ void RuPPAT::RK4_force(const float t, const float dt)
  for(int i = 0; i<num_objects;i++)
  {
 
+     //FIX: need to run phys against dummy object if isolated object
     if(num_objects == 1)
     {
 		//Runge Kutta integrator
@@ -387,10 +388,11 @@ void RuPPAT::RK4_force(const float t, const float dt)
             pthread_rwlock_wrlock(&object_rw_lock);	
 
                 //Get the outer loop objects descriptor
-                obj_desc_tri = objectList[j]->getDescriptor();
+                //obj_desc_tri = objectList[j]->getDescriptor();
+                obj_desc_sec = objectList[j]->getDescriptor_ref();
             
                 //Apply outer loop object [i] to the current object
-                obj_desc_prim = objectList[i]->stateUpdate(t, dt, obj_desc_tri);
+                obj_desc_prim = objectList[i]->stateUpdate(t, dt, *obj_desc_sec);
 
                 if((renderables = objectList[i]->GetRenderables()) != NULL)
                 {

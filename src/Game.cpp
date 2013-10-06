@@ -329,7 +329,6 @@ void Game::initGame_lua(vector<section> configSections)
 											x, y,
 											tempVect_2[0]);
 		
-            cout<<"LIFESPAN OF MISSILE: "<< missile_life<<endl;
 			//add default missile	
 			tempPlayer->addMissile(missile_sprite, missile_name, 
 									true,//make this the selected missile?

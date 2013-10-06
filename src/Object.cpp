@@ -3,7 +3,7 @@
 #include "Object.h"
 #include "PhysFuncs.h"
 
-    int Object::next_obj_id = 0;
+int Object::next_obj_id = 0;
 
 Object :: Object(string sprite_path, 
             int start_x,
@@ -33,6 +33,10 @@ Object :: Object(string sprite_path,
 	timeCreated = SDL_GetTicks();
 
     descriptor.ID = next_obj_id++;
+
+    this->sprite_silhouette = sprite->sprite_silhouette;
+
+    this->descriptor.hit_slices = this->generateCollisionSlices(4);
 //}}}	
 }
 
@@ -70,6 +74,10 @@ Object :: Object(string sprite_path,
 	timeCreated = SDL_GetTicks();
 
     descriptor.ID = next_obj_id++;
+
+    this->sprite_silhouette = sprite->sprite_silhouette;
+
+    this->descriptor.hit_slices = this->generateCollisionSlices(4);
 //}}}
 }
 
@@ -115,6 +123,10 @@ Object::Object(string sprite_path,
 	timeCreated = SDL_GetTicks();
 
 	pixelSprite_cache = sprite->getPixelSprite();
+
+    this->sprite_silhouette = sprite->sprite_silhouette;
+
+    this->descriptor.hit_slices = this->generateCollisionSlices(4);
 
 	cout<<"pixel Sprite_cache in object is :"<< pixelSprite_cache.size()<<endl;
 	isDestroying = false;
@@ -681,6 +693,7 @@ Entity_desc* Object::updatePositional(float t, float dt)
     PhysFunc::integrate_force(this->descriptor, t, dt);
 }
 
+//override the phys check of this missile against other objects
 Entity_desc* Object :: stateUpdate(const float t,
                                             const float dt, 
                                             Entity_desc &state_src)
@@ -690,11 +703,14 @@ Entity_desc* Object :: stateUpdate(const float t,
 	if(!isDestroying)
 		PhysFunc::G_force(this->descriptor, state_src);
 
-    if(Common::isCircleIntersecting(this->descriptor, state_src))
-        if(this->owning_object != NULL&& !this->isDestroying 
+    //is it colliding with anything?
+    //if(Common::isCircleIntersecting(this->descriptor, state_src))
+    if(Common::areSliceseIntersecting(this->descriptor, state_src))
+        //can't intersect owning object and can't already be in death seq
+        if(this->owning_object != NULL && !this->isDestroying 
                 && this->owning_object->descriptor.ID != state_src.ID)
         {
-            cout<<"x vel = "<<this->descriptor.xVel<<", mass = "<<descriptor.mass<<endl;
+            //cout<<"x vel = "<<this->descriptor.xVel<<", mass = "<<descriptor.mass<<endl;
             state_src.xForce += 500*this->descriptor.xVel *this->descriptor.mass;
             state_src.yForce += 500*this->descriptor.yVel *this->descriptor.mass;
             this->GameDestroy();
@@ -797,7 +813,8 @@ void Object::GameDestroy()
 						+ rand()%100 - rand()%100;
 	}
 
-	isDestroying = true;
+    //let everything know this is in its death sequence
+	this->isDestroying = true;
 //}}}
 }
 
@@ -813,6 +830,189 @@ Renderables_Cont* Object::GetRenderables()
 
 bool Object::UpdateAndGetRenderables(Renderables_Cont rnder)
 {
+}
+
+CollisionCircleSlices_Container Object::generateCollisionSlices(int numSlices)
+{
+    //{{{
+    float theta_granularity = 15.0;
+    CollisionCircleSlices_Container slices_cont;
+        slices_cont.num_slices = numSlices;
+        slices_cont.deg_per_slice = 360.0/(float)numSlices;
+
+    int num_checks_per_slice = slices_cont.deg_per_slice / theta_granularity;
+
+    cout<<endl<<endl<<"Generating "<<numSlices<<" Slices!!"<<endl;
+    int height = this->sprite_silhouette.size();
+    int width = this->sprite_silhouette.at(0).size();
+
+    int radial_height = height/2.0;
+    int radial_width = width/2.0;
+
+    cout<<"Silhouette height: "<<height<<endl;
+    cout<<"Silhouette length: "<<width<<endl;
+    cout<<"Silhouette radial height: "<<radial_height<<endl;
+    cout<<"Silhouette radial length: "<<radial_width<<endl;
+
+  int x, y;
+  float radius = 0.0, max_radius = 0.0, last_radius, radius_sum = 0.0,
+        slope = 0.0,
+        theta = 0.0,
+        slice_low_bound = 0.0,
+        slice_high_bound = slices_cont.deg_per_slice;
+
+
+  for(int i = 0; i < numSlices; i++)
+  {
+      slice_low_bound = i * slices_cont.deg_per_slice;
+      slice_high_bound = (i+1) * slices_cont.deg_per_slice;
+
+      bool edge_found;
+
+        //get theta's for slice
+        for(theta = slice_low_bound; theta < slice_high_bound; theta += theta_granularity)
+        {
+        //{{{            
+            cout<<"Theta = "<< theta<<endl;
+            //{{{
+            if(theta <= 45.0 || theta > 315)
+            {
+                if(theta == 0)
+                {
+                    max_radius = radial_width;
+                    cout<<"Max Radius: "<<max_radius<<endl;
+                }
+                else
+                {
+                    max_radius = Common::abs_val((float)radial_width/cos(theta*PI/180.0));
+                    cout<<"Max Radius: "<<max_radius<<endl;
+                }
+            } 
+            else if(theta <= 135.0)
+            {
+                if(theta == 90)
+                {
+                    max_radius = radial_height;
+                    cout<<"Max Radius: "<<max_radius<<endl;
+                }
+                else
+                {
+                    max_radius = Common::abs_val((float)radial_height/sin(theta*PI/180.0));
+                    cout<<"Max Radius: "<<max_radius<<endl;
+                }
+            }
+            else if( theta <= 225.0)
+            {
+                if(theta == 180)
+                {
+                    max_radius = radial_width;
+                    cout<<"Max Radius: "<<max_radius<<endl;
+                }
+                else
+                {
+                    max_radius = Common::abs_val((float)radial_width/cos(theta*PI/180.0));
+                    cout<<"Max Radius: "<<max_radius<<endl;
+                }
+            }
+            else if(theta <= 315.0)
+            {
+                if(theta == 270)
+                {
+                    max_radius = radial_height;
+                    cout<<"Max Radius: "<<max_radius<<endl;
+                }
+                else
+                {
+                    max_radius = Common::abs_val((float)radial_height/sin(theta*PI/180.0));
+                    cout<<"Max Radius: "<<max_radius<<endl;
+                }
+            }
+            //}}}
+
+            //binary search, but first check edge condition
+            radius = max_radius;
+            float jump_size = max_radius/2.0;
+
+            int count = 0;
+            while(!edge_found)
+            {
+                count++;
+                //cout<<"\t->radius = "<<radius<<endl;
+                Common::ThetaAndRadius_toXY(theta, radius, x, y);
+
+                //offset the x and y
+                x += radial_width;
+                y = (-1.0 * y) + radial_height;
+                //cout<<"\t->(x,y) = ("<<x<<","<<y<<")"<<endl;
+
+                if(this->sprite_silhouette[x][y])
+                {
+                    //cout<<"Silhouette is true! ("<<count<<")"<<endl;
+                    //is there any adjacent empty area (is this close to an edge?)
+                    //check all 8 adjacent elements (with bounds checking)...really ugly
+                    if(    !this->sprite_silhouette[ (x == width - 1) ? x : x+1 ]  [y] 
+                        || !this->sprite_silhouette[(x == width - 1) ? x : x+1]  [ (y == height -1) ? y : y+1 ] 
+                        || !this->sprite_silhouette[x]  [ (y == height -1) ? y : y+1 ] 
+                        || !this->sprite_silhouette[(x > 0) ? x-1: 0]  [(y == height -1) ? y : y+1] 
+                        || !this->sprite_silhouette[(x > 0) ? x-1: 0]  [y] 
+                        || !this->sprite_silhouette[(x > 0) ? x-1: 0]  [(y > 0) ? y-1: 0]
+                        || !this->sprite_silhouette[x]  [(y > 0) ? y-1: 0]
+                        || !this->sprite_silhouette[(x == width - 1) ? x : x+1]  [(y > 0) ? y-1: 0])
+                    {
+                        edge_found = true;
+                    }
+                    else //no adjacent pixel is 0 (unset), not edge
+                    {
+                        //if this check is close to the max, and there is no edge here
+                        //then the sprite may have data all along the radius at this theta
+                        //consider radius here to be the max radius here
+                        if( (max_radius - radius ) < 2)
+                        {
+                            radius = max_radius;
+                            Common::ThetaAndRadius_toXY(theta, radius, x, y);
+                            x += radial_width;
+                            y = (-1.0 * y) + radial_height;
+                            edge_found = true;
+                        }
+                        else
+                        {
+                            //move radius outward to find edge
+                            last_radius = radius;
+                            radius = radius + jump_size;
+                           
+                            //keep jump size from becoming to small
+                            if(jump_size >= 1.0)
+                                jump_size /= 2.0;
+                        }
+                    }
+                }
+                else
+                {
+                   last_radius = radius; 
+                   radius = radius - jump_size;
+                   if(jump_size >= 1.0)
+                       jump_size /= 2.0;
+                }
+                if(count >100)
+                {
+                    edge_found = true;
+                    cout<<"---------------No edge found!------"<<endl;
+                }
+            }
+            edge_found = false;
+            radius_sum += radius;
+            //}}}
+        }
+        slices_cont.slice_radius.push_back((int)(radius_sum / num_checks_per_slice));
+        radius_sum = 0.0;
+  }
+
+  for(int i = 0; i < slices_cont.slice_radius.size(); i ++)
+      cout<<"Slice "<<i<<" = "<<slices_cont.slice_radius.at(i)<<endl;
+
+  
+    return slices_cont;
+    //}}}
 }
 
 //void Object::buildHitBoxes_fromLayer(SDL_Surface *HB_surface)
