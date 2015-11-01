@@ -13,31 +13,35 @@ Render::Render(int width, int height, int bpp, Uint32 flags)
 {
  //{{{
 	//assign private members for use later
-	mainWidth = width;
+	mainWidth  = width;
 	mainHeight = height;
-	mainBPP = bpp;
-	mainFlags = flags;
+	mainBPP    = bpp;
+	mainFlags  = flags;
 
 	//just init the sdl video stuff
 	SDL_Init(SDL_INIT_VIDEO);
 
 	//finally, assign mainscreen to 
-    this->mainWindow = SDL_CreateWindow("RuPPAT Demon",
-                                      SDL_WINDOWPOS_UNDEFINED,
-                                      SDL_WINDOWPOS_UNDEFINED,
-                                      width, height,
-                                      0);
+    this->mainWindow = SDL_CreateWindow("RuPPAT Demo",
+                                        //SDL_WINDOWPOS_UNDEFINED,
+                                        //SDL_WINDOWPOS_UNDEFINED,
+                                        SDL_WINDOWPOS_CENTERED,
+                                        SDL_WINDOWPOS_CENTERED,
+                                        width, height,
+                                        0);
 
     //associate the main window with a new renderer
-    this->renderer = SDL_CreateRenderer(this->mainWindow, -1, 0);
+    this->renderer = SDL_CreateRenderer(this->mainWindow, -1,
+                                        SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 
     //create the primary streaming texture
-    this->mainTexture = SDL_CreateTexture(this->renderer,
-                                            //SDL_PIXELFORMAT_RGBA8888,
-                                            SDL_PIXELFORMAT_ABGR8888,
-                                            SDL_TEXTUREACCESS_STREAMING,
-                                            1920, 1080);
+    //this->mainTexture = SDL_CreateTexture(this->renderer,
+    //                                      //SDL_PIXELFORMAT_RGBA8888,
+    //                                      SDL_PIXELFORMAT_ABGR8888,
+    //                                      SDL_TEXTUREACCESS_STREAMING,
+    //                                    1920, 1080);
 
+    //Set the clear screen color
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
     SDL_RenderClear(renderer);
     SDL_RenderPresent(renderer);
@@ -48,7 +52,7 @@ Render::Render(int width, int height, int bpp, Uint32 flags)
     {
         printf("Pixel format thing failed!\n");
     }
-                                    
+
 
     pre_surface = SDL_CreateRGBSurface(0, width, height, bpp, r, g, b, a);
 
@@ -69,10 +73,10 @@ Render::Render(int width, int height, int bpp, Uint32 flags)
 //		SDL_CreateRGBSurface(SDL_SWSURFACE,width,height,32, 0x000000FF, 
 //		0x0000FF00, 0x00FF0000, 0xFF000000); 
 //	#endif 
-       
+
     sprite_surface = IMG_Load("small_red_circle.png");
     test_text = SDL_CreateTextureFromSurface(this->renderer, sprite_surface);
-    SDL_SetTextureBlendMode(mainTexture, SDL_BLENDMODE_BLEND);
+    //SDL_SetTextureBlendMode(mainTexture, SDL_BLENDMODE_BLEND);
     //SDL_SetSurfaceBlendMode(pre_surface, SDL_BLENDMODE_BLEND);
   //}}}
 }
@@ -94,7 +98,7 @@ Render::Render(int width, int height, int bpp, Uint32 flags,
 	//just init the sdl video stuff
 	SDL_Init(SDL_INIT_VIDEO);
 
-    this->mainWindow = SDL_CreateWindow("RuPPAT Demon",
+    this->mainWindow = SDL_CreateWindow("RuPPAT Demo",
                                       SDL_WINDOWPOS_UNDEFINED,
                                       SDL_WINDOWPOS_UNDEFINED,
                                       width, height,
@@ -273,7 +277,7 @@ void Render::putPixel(const vector<Pixel_desc> pixels)
 				| ((color&0x000000ff)<<16)
 				| (color&0xff000000);
 
-		putPixel(pixels[i].x, pixels[i].y,color, 0);
+		putPixel(pixels[i].x, pixels[i].y, color, 0);
 	}
 //}}}
 }

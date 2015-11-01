@@ -25,6 +25,7 @@ RuPPAT :: RuPPAT(struct RuPPAT_Options options)
 //{{{
     
     initLocks();
+    this->done = false;
 
 	//start up the renderer
 	mainRender = new Render(options.width,
@@ -104,6 +105,7 @@ RuPPAT :: RuPPAT(int width,
 //{{{
     
     initLocks();
+    this->done = false;
 
 	//start up the renderer
 	mainRender = new Render(width, height, BPP, flags);
@@ -592,7 +594,7 @@ void RuPPAT :: RunRuPPAT()
     rk4_th = new std::thread(&RuPPAT::RK4_force,this,t,dt);
 
 	//keep looping until program end
-	while(!done)
+	while(!this->done)
 	{
 		//increment time
 		t += dt;
@@ -614,7 +616,7 @@ void RuPPAT :: RunRuPPAT()
                 current_job->return_obj = (void*)tmpSprite;
             }
         }
-	    
+
         //points to a function that will determine where to place things
         //this function must also handle the joining and re-launching rk4 thread
         (*this.*gfxPlacer)();
@@ -627,7 +629,7 @@ void RuPPAT :: RunRuPPAT()
         nextTick = SDL_GetTicks() + interval;
 	}
 
-	cout<<"Main thread terminating....!"<<endl;
+	cout<<"RuPPAT's main thread terminating....!"<<endl;
 //}}}
 }
 
@@ -1100,7 +1102,7 @@ void RuPPAT :: bounce_gfxPlacer(void)
     //blit bottom layer	
     //mainRender->applySurface(xOrigin/1.2,yOrigin/1.2,backgroundLayers[0]);
     mainRender->applyTextureToMain(xOrigin/1.2, yOrigin/1.2, backgroundLayers[0]);
-    
+
     //blit middle layer
     //mainRender->applySurface(xOrigin,yOrigin,backgroundLayers[1]);
     mainRender->applyTextureToMain(xOrigin, yOrigin, backgroundLayers[1]);

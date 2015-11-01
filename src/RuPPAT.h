@@ -32,106 +32,106 @@ using namespace std;
 class RuPPAT
 {
 	public:
-		//CONSTRUCTOR(S)
-		RuPPAT(int width,
-			   int height,
-			   int bpp,
-			   unsigned int flags,
-			   string bkg_paths[],
-			   int num_bkgs);
+        //CONSTRUCTOR(S)
+        RuPPAT(int width,
+               int height,
+               int bpp,
+               unsigned int flags,
+               string bkg_paths[],
+               int num_bkgs);
 
-		RuPPAT(int width,
-			   int height,
-			   int bpp,
-			   unsigned int flags,
-			   vector<string> bkg_paths);
+        RuPPAT(int width,
+                int height,
+                int bpp,
+                unsigned int flags,
+                vector<string> bkg_paths);
 
         RuPPAT(struct RuPPAT_Options options);
 
-		//DECONSTRUCTOR
-		~RuPPAT();
+        //DECONSTRUCTOR
+        ~RuPPAT();
 
         //----Initialization and construction methods----
         void initLocks();
 
-		int addObject(const string spritePath,
-			   		  const int x,
-					  const int y, 
-				      const int mass,
-					  const float rotationRate,
-					  const float xVel,
-					  const float yVel,
-					  const string HB_path);
+        int addObject(const string spritePath,
+                        const int x,
+                        const int y, 
+                        const int mass,
+                        const float rotationRate,
+                        const float xVel,
+                        const float yVel,
+                        const string HB_path);
 
-		void addPlayer(Player* new_player);
+        void addPlayer(Player* new_player);
 
-		int addPlayer(const string spritePath,
-			   		  const int numRotations,
-					  const int startingAngle, 
-				      const float maxAccel,
-					  const int x,
-					  const int y,
-					  const string HC_path);
+        int addPlayer(const string spritePath,
+                        const int numRotations,
+                        const int startingAngle, 
+                        const float maxAccel,
+                        const int x,
+                        const int y,
+                        const string HC_path);
 
 
         //----Core backend routines----
-		void RK4(const float t,
+        void RK4(const float t,
                  const float dt);
 
         void RK4_force(const float t,
                        const float dt);
 
-		void RunRuPPAT();
+        void RunRuPPAT();
 
-		void parseSelectPixToSurface();
+        void parseSelectPixToSurface();
 
-		void parsePlayersToSurface();
+        void parsePlayersToSurface();
 
-		void parseObjectsToSurface();
+        void parseObjectsToSurface();
 
 
         //---player control and manipulations
-		void accelPlayer(const int p_ID, const bool isForward);
-		
-		void turnPlayer(const int p_ID,
+        void accelPlayer(const int p_ID, const bool isForward);
+
+        void turnPlayer(const int p_ID,
                         const bool isLeft,
                         const int numTurns);
 
-		void turnPlayerToCoord(const int p_ID,
-			   				   const int x,
-							   const int y,
-							   const int rate);
+        void turnPlayerToCoord(const int p_ID,
+                               const int x,
+                               const int y,
+                               const int rate);
 
-		void firePlayersWeapon(const int p_ID);
+        void firePlayersWeapon(const int p_ID);
 
-		//----Pixel creation and handling methods----
-		void createPixElement(Pixel_desc *pixel); 
+        //----Pixel creation and handling methods----
+        void createPixElement(Pixel_desc *pixel); 
 
-		void createPixElement(const int x,
-							  const int y,	
-							  const int color,
-							  const int xAccel,
-							  const int yAccel,
-							  const int accLength,
-							  const int dimFactor,
+        void createPixElement(const int x,
+                              const int y,	
+                              const int color,
+                              const int xAccel,
+                              const int yAccel,
+                              const int accLength,
+                              const int dimFactor,
                               const int mass  );
 
-		void setUpdateOnSelectPix(const int set);
+        void setUpdateOnSelectPix(const int set);
 
-		void handleAllDeleteMe();
+        void handleAllDeleteMe();
 
-		void handleDelete(const int index);
+        void handleDelete(const int index);
 
-		Primitives *primitive_maker;
-        
-		//if this goes true, all threads stop, engine stops
-		bool done;
+        Primitives *primitive_maker;
+
+        //if this goes true, all threads stop, engine stops
+        bool done;
 
         int calcTickInterval(int engineRate);
         int adjustRate(int delta);
         int adjust_dt(float delta);
-		
-	private:
+
+    private:
 
         void (RuPPAT::*gfxPlacer)(void) = NULL;
         void wrap_gfxPlacer(void);
@@ -140,15 +140,15 @@ class RuPPAT
         std::thread *rk4_th;
         int  screen_centX, screen_centY;
 
-		int WIDTH, HEIGHT, 
-		    game_width,
-		   	game_height,
-		    gravitationalConstant,
-		    baseID = 0,
- 			centerX,
-		   	centerY=0,
-		   	xOrigin,
-		   	yOrigin;
+        int WIDTH, HEIGHT,
+            game_width,
+            game_height,
+            gravitationalConstant,
+            baseID = 0,
+            centerX,
+            centerY=0,
+            xOrigin,
+            yOrigin;
 
         int engine_rate,
             interval,

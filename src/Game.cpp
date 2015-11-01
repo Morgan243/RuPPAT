@@ -17,7 +17,7 @@ Game::Game(vector<section> configSections)
 
 
 //-----DECONSTRUCTOR
-Game ::~Game()
+Game::~Game()
 {
 //	delete engine;
 }
@@ -421,8 +421,8 @@ void Game::initParameters()
    	k_LEFT=false;
    	k_RIGHT=false;
 	k_lCTRL=false;
-    space = false;
-    done =false;
+    this->space = false;
+    this->done =false;
 //}}}
 }
 
@@ -445,6 +445,7 @@ void Game :: run(string selection, string option)
 
     //wait for game loop to end
 	g_loop_th.join();
+
 //}}}
 }
 
@@ -461,7 +462,7 @@ void Game::game_loop()
     nextTick = SDL_GetTicks() + interval;
 
 
-	while(!done)
+	while(!this->done)
 	{
 		handleEvents(mainEvents);
 
@@ -488,7 +489,7 @@ void Game :: handleEvents(Event_desc &mainEvents)
 		//if evenet was quit, finsh everything up
 		if(event.type == SDL_QUIT)
         {
-			done = true;
+		   done = true;
            engine->done = true; 
         }
 

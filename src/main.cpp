@@ -103,7 +103,7 @@ int main(int argc, char *argv[])
 		rl.rlim_cur = 16*1024*1024*4; //64MB
 
 		if(setrlimit(RLIMIT_STACK, &rl))
-			{
+        {
 				fprintf(stderr, "setrlimit failed\n");
 				printf("stack limit setting failed!\n");
 			}	
